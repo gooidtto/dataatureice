@@ -68,7 +68,8 @@ class Store:
  def search(self,q='',cat='全部'):
   q=key(q);return self._sort([r for r in self.rows if (cat=='全部' or r['category']==cat) and (not q or q in key(' '.join(r.get(x,'') for x in ('brand','series','model','model_code','alias','source_image'))))])
  def history(self,targets):
-  ks={rid(r) for r in targets};return self._sort([r for r in self.rows if rid(r) in ks])
+  def hk(r):return tuple(key(r.get(x)) for x in ('category','subtype','brand','series','model'))
+  ks={hk(r) for r in targets};return self._sort([r for r in self.rows if hk(r) in ks])
 class JsonList:
  MAX_ITEMS=50
  def __init__(self,p):self.p=p;self.items=[];self.load()
@@ -93,7 +94,10 @@ class JsonList:
   os.makedirs(os.path.dirname(self.p),exist_ok=True);tmp=self.p+'.tmp'
   with open(tmp,'w',encoding='utf-8') as f:json.dump(self.items,f,ensure_ascii=False,indent=2)
   os.replace(tmp,self.p)
- def clear(self):self.items=[]
+ def clear(self):
+  self.items=[]
+  try:os.remove(self.p)
+  except FileNotFoundError:pass
 class Favorites:
  MAX_ITEMS=200
  def __init__(self,p):self.p=p;self.items=[];self.load()
