@@ -101,7 +101,9 @@ class JsonList:
    if len(out)>=max(0,limit):break
   return out
  def save(self):
-  os.makedirs(os.path.dirname(self.p),exist_ok=True);tmp=self.p+'.tmp'
+  parent=os.path.dirname(self.p)
+  if parent:os.makedirs(parent,exist_ok=True)
+  tmp=self.p+'.tmp'
   with open(tmp,'w',encoding='utf-8') as f:json.dump(self.items,f,ensure_ascii=False,indent=2)
   os.replace(tmp,self.p)
  def clear(self):
@@ -138,7 +140,9 @@ class Favorites:
  def remove(self,rows):
   ks={self.identity(r) for r in rows};self.items=[r for r in self.dedupe() if self.identity(r) not in ks];self.save()
  def save(self):
-  os.makedirs(os.path.dirname(self.p),exist_ok=True);tmp=self.p+'.tmp'
+  parent=os.path.dirname(self.p)
+  if parent:os.makedirs(parent,exist_ok=True)
+  tmp=self.p+'.tmp'
   with open(tmp,'w',encoding='utf-8') as f:json.dump(self.items,f,ensure_ascii=False,indent=2)
   os.replace(tmp,self.p)
 class App:
@@ -147,7 +151,7 @@ class App:
  def setup(self):
   st=ttk.Style();st.configure('T.Treeview',font=('微软雅黑',10),rowheight=32);st.configure('T.Treeview.Heading',font=('微软雅黑',11,'bold'));st.configure('TButton',font=('微软雅黑',10))
  def ui(self):
-  top=ttk.Frame(self.root,padding=10);top.pack(fill='x');ttk.Label(top,text='🔍 品牌 / 系列 / 型号 / 别名',font=('微软雅黑',11,'bold')).pack(side='left');self.q=tk.StringVar();self.entry=tk.Entry(top,textvariable=self.q,font=('微软雅黑',14),width=34);self.entry.pack(side='left',padx=(10,2),ipady=4);self.entry.bind('<Return>',lambda e:self.search());self.q.trace_add('write',lambda *_:self.refresh_suggestions());self.entry.bind('<Escape>',lambda e:self.hide_suggestions());ttk.Button(top,text='×',width=3,command=self.clear_search).pack(side='left',padx=(0,4));ttk.Button(top,text='🔍',width=3,command=self.search).pack(side='left',padx=(0,8));self.cat=tk.StringVar(value='全部');ttk.Combobox(top,textvariable=self.cat,values=['全部','手机','平板','电脑','其它'],state='readonly',width=8).pack(side='left',padx=4)
+  top=ttk.Frame(self.root,padding=10);top.pack(fill='x');ttk.Label(top,text='🔍 品牌 / 系列 / 型号 / 别名',font=('微软雅黑',11,'bold')).pack(side='left');self.q=tk.StringVar();self.entry=tk.Entry(top,textvariable=self.q,font=('微软雅黑',14),width=34);self.entry.pack(side='left',padx=(10,2),ipady=4);self.entry.bind('<Return>',lambda e:self.search());self.q.trace_add('write',lambda *_:self.refresh_suggestions());self.entry.bind('<FocusIn>',lambda e:self.refresh_suggestions());self.entry.bind('<Escape>',lambda e:self.hide_suggestions());ttk.Button(top,text='×',width=3,command=self.clear_search).pack(side='left',padx=(0,4));ttk.Button(top,text='🔍',width=3,command=self.search).pack(side='left',padx=(0,8));self.cat=tk.StringVar(value='全部');ttk.Combobox(top,textvariable=self.cat,values=['全部','手机','平板','电脑','其它'],state='readonly',width=8).pack(side='left',padx=4)
   for t,c in [('查询',self.search),('🔄刷新',self.load),('📁数据目录',self.open_dir),('🧾来源结构',self.sources),('⭐收藏',self.show_favorites)]:ttk.Button(top,text=t,command=c).pack(side='left',padx=4)
   self.status=ttk.Label(top,text='');self.status.pack(side='right')
   info=ttk.Frame(self.root,padding=(10,0,10,8));info.pack(fill='x');self.target=ttk.Label(info,text='搜索结果：全部日期，日期优先、同日期价格降序',font=('微软雅黑',11,'bold'));self.target.pack(side='left');self.meta=ttk.Label(info,text='');self.meta.pack(side='right')
@@ -162,17 +166,16 @@ class App:
  def load(self):
   self.s.load();self.meta.config(text=f'最新：{self.s.latest or "无"} · 快照 {len(self.s.dates)} · 已验证价格行 {len(self.s.rows)}');self.search(False);self.status.config(text='数据校验通过' if not self.s.errors else '数据校验提示：'+self.s.errors[0]);self.refresh_suggestions()
  def show_suggestions(self):
-  if not self.h.items:return self.hide_suggestions();
+  if not self.h.items:return self.hide_suggestions()
   if self.suggest_popup is None or not self.suggest_popup.winfo_exists():
    self.suggest_popup=tk.Toplevel(self.root);self.suggest_popup.overrideredirect(True);self.suggest_popup.transient(self.root);self.suggest_popup.configure(bg='#d9d9d9')
   self.refresh_suggestions()
  def refresh_suggestions(self):
-  if not hasattr(self,'entry') or self.suggest_popup is None or not self.suggest_popup.winfo_exists():
-   if hasattr(self,'entry') and clean(self.q.get()): self.after_suggest()
+  if not hasattr(self,'entry'):return
+  if self.suggest_popup is None or not self.suggest_popup.winfo_exists():
    return
   for w in self.suggest_popup.winfo_children():w.destroy()
   q=clean(self.q.get());items=self.h.suggestions(q,5)
-  if not items and not q:items=self.h.suggestions('',5)
   if not items:self.hide_suggestions();return
   frame=tk.Frame(self.suggest_popup,bg='white',bd=1,relief='solid');frame.pack(fill='both',expand=True)
   for text in items:
@@ -180,23 +183,24 @@ class App:
   tk.Frame(frame,bg='#e5e7eb',height=1).pack(fill='x',padx=8)
   tk.Button(frame,text='☰  显示所有历史',anchor='w',font=('微软雅黑',10),bg='white',activebackground='#f1f5f9',relief='flat',bd=0,padx=12,pady=9,command=self.show_all_history).pack(fill='x')
   x=self.entry.winfo_rootx();y=self.entry.winfo_rooty()+self.entry.winfo_height();w=max(self.entry.winfo_width()+42,420);h=min(46*len(items)+54,320);self.suggest_popup.geometry(f'{w}x{h}+{x}+{y}');self.suggest_popup.lift()
- def after_suggest(self):
-  self.root.after_idle(self.show_suggestions)
+ def show_suggestion_popup(self):
+  if self.h.items:
+   if self.suggest_popup is None or not self.suggest_popup.winfo_exists():self.show_suggestions()
  def dismiss_suggestions(self,e):
   if self.suggest_popup is None or not self.suggest_popup.winfo_exists():return
-  w=e.widget
-  if w is self.entry:return
+  if e.widget is self.entry or e.widget in self.suggest_popup.winfo_children():return
+  self.hide_suggestions()
  def hide_suggestions(self):
   if self.suggest_popup is not None and self.suggest_popup.winfo_exists():self.suggest_popup.destroy()
   self.suggest_popup=None
  def use_suggestion(self,text):self.q.set(text);self.hide_suggestions();self.search()
  def show_all_history(self):
-  self.hide_suggestions();w=tk.Toplevel(self.root);w.title('搜索历史');w.geometry('560x620');w.minsize(420,420);ttk.Label(w,text=f'全部搜索历史 · {len(self.h.items)} 条',font=('微软雅黑',12,'bold')).pack(anchor='w',padx=12,pady=10);f=ttk.Frame(w,padding=(12,0,12,10));f.pack(fill='both',expand=True);lb=tk.Listbox(f,font=('微软雅黑',11),selectmode='browse',exportselection=False);sb=ttk.Scrollbar(f,orient='vertical',command=lb.yview);lb.configure(yscrollcommand=sb.set);lb.pack(side='left',fill='both',expand=True);sb.pack(side='right',fill='y');[lb.insert('end','🔍  '+x) for x in self.h.items];lb.bind('<Double-Button-1>',lambda e:self.use_full_history(w,lb));bar=ttk.Frame(w,padding=8);bar.pack(fill='x');ttk.Button(bar,text='使用选中',command=lambda:self.use_full_history(w,lb)).pack(side='left',padx=4);ttk.Button(bar,text='清空历史',command=lambda:self.clear_history_from(w,lb)).pack(side='left',padx=4);ttk.Button(bar,text='关闭',command=w.destroy).pack(side='right',padx=4)
+  self.hide_suggestions();w=tk.Toplevel(self.root);w.title('搜索历史');w.geometry('560x620');w.minsize(420,420);ttk.Label(w,text=f'全部搜索历史 · {len(self.h.items)} 条',font=('微软雅黑',12,'bold')).pack(anchor='w',padx=12,pady=10);f=ttk.Frame(w,padding=(12,0,12,10));f.pack(fill='both',expand=True);lb=tk.Listbox(f,font=('微软雅黑',11),selectmode='browse',exportselection=False);sb=ttk.Scrollbar(f,orient='vertical',command=lb.yview);lb.configure(yscrollcommand=sb.set);lb.pack(side='left',fill='both',expand=True);sb.pack(side='right',fill='y');[lb.insert('end','🔍  '+x) for x in self.h.items];lb.bind('<Double-Button-1>',lambda e:self.use_full_history(w,lb));bar=ttk.Frame(w,padding=8);bar.pack(fill='x');ttk.Button(bar,text='使用选中',command=lambda:self.use_full_history(w,lb)).pack(side='left',padx=4);ttk.Button(bar,text='清空历史',command=lambda:self.clear_history_from(w)).pack(side='left',padx=4);ttk.Button(bar,text='关闭',command=w.destroy).pack(side='right',padx=4)
  def use_full_history(self,w,lb):
   s=lb.curselection()
   if not s:return
   text=lb.get(s[0]).replace('🔍  ','',1);w.destroy();self.q.set(text);self.search()
- def clear_history_from(self,w,lb):
+ def clear_history_from(self,w):
   if not self.h.items:return
   if messagebox.askyesno('清除搜索历史','确定清除全部搜索历史吗？',parent=w):self.h.clear();w.destroy();self.status.config(text='搜索历史已清除')
  def clear_search(self):
