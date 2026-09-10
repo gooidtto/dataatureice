@@ -17,7 +17,7 @@ def test_valid(tmp_path):
 def test_duplicate_id_fails(tmp_path):
     write_snapshot(tmp_path,[base(),base(condition='屏坏',price='80')]); e,_,_=validate(str(tmp_path)); assert any('record_id重复' in x for x in e)
 def test_snapshot_date_mismatch_fails(tmp_path):
-    write_snapshot(tmp_path,[base(data_date='2026-08-25')]); e,_,_=validate(str(tmp_path)); assert any('日期' in x for x in e)
+    write_snapshot(tmp_path,[base(data_date='2026-08-25')]); e,_,_=validate(str(tmp_path)); assert any('data_date=' in x and '快照 2026-08-31' in x for x in e)
 def test_duplicate_id_across_shards_fails(tmp_path):
     root=tmp_path/'snapshots'/'2026-08-31'; root.mkdir(parents=True)
     for name,rows in [('part-01.csv',[base()]),('part-02.csv',[base(condition='屏坏',price='80')])]:
