@@ -3,10 +3,13 @@ from pathlib import Path
 from types import SimpleNamespace
 
 ROOT = Path(__file__).parents[1]
-spec = importlib.util.spec_from_file_location('ui_bootstrap', ROOT / 'ui_bootstrap.py')
-mod = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(mod)
-phone_search = mod.phone_search
+spec = importlib.util.spec_from_file_location('phone_search', ROOT / 'phone_search.py')
+phone_search = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(phone_search)
+
+toggle_spec = importlib.util.spec_from_file_location('favorite_toggle', ROOT / 'favorite_toggle.py')
+toggle_mod = importlib.util.module_from_spec(toggle_spec)
+toggle_spec.loader.exec_module(toggle_mod)
 
 
 def row(**kw):
@@ -41,14 +44,14 @@ def test_one_click_favorite_toggles_remove_and_add(tmp_path):
         toast=lambda text: messages.append(text),
     )
 
-    assert mod.toggle_favorite(app, target) is False
+    assert toggle_mod.toggle_favorite(app, target) is False
     assert not fav.has(target)
     assert messages[-1] == '已移除收藏'
     assert rendered
 
     added = []
     app.addToFavorites = lambda rows: (added.append(rows), fav.add(rows))[1]
-    assert mod.toggle_favorite(app, target) is True
+    assert toggle_mod.toggle_favorite(app, target) is True
     assert fav.has(target)
     assert added == [[target]]
 
@@ -68,6 +71,6 @@ def test_one_click_uses_content_identity_not_record_id(tmp_path):
         toast=lambda text: messages.append(text),
     )
 
-    assert mod.toggle_favorite(app, same_content) is False
+    assert toggle_mod.toggle_favorite(app, same_content) is False
     assert not fav.items
     assert messages[-1] == '已移除收藏'
