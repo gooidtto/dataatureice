@@ -8,7 +8,9 @@ def test_history_is_deduplicated_and_recent_first():
 
 
 def test_history_suggestions_are_limited_to_five():
-    h = SearchHistory([f"问问{i}" for i in range(10)])
+    # SearchHistory receives persisted history in recent-first order.
+    h = SearchHistory([f"问问{i}" for i in range(4, -1, -1)])
+    h.items.extend(f"问问{i}" for i in range(5, 10))
     assert [x.text for x in h.suggestions("问问")] == [f"问问{i}" for i in range(4, -1, -1)]
 
 
