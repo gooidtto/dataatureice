@@ -41,17 +41,18 @@ jobs:
         run: |
           pyinstaller --noconfirm --clean --windowed --name "数码回收价格秒查工具" phone_search.py
 
-      - name: Include data
+      - name: Include callable data
         shell: pwsh
         run: |
-          if (!(Test-Path "data")) { throw "data directory missing" }
+          if (!(Test-Path "data/snapshots/2026-08-31")) { throw "latest callable snapshot missing" }
           Copy-Item -Path "data" -Destination "dist/数码回收价格秒查工具/data" -Recurse -Force
 
       - name: Smoke-check package contents
         shell: pwsh
         run: |
           if (!(Test-Path "dist/数码回收价格秒查工具/数码回收价格秒查工具.exe")) { throw "EXE missing" }
-          if (!(Test-Path "dist/数码回收价格秒查工具/data/2026-08-31.csv")) { throw "latest snapshot missing" }
+          $parts = Get-ChildItem "dist/数码回收价格秒查工具/data/snapshots/2026-08-31" -Filter *.csv
+          if ($parts.Count -lt 1) { throw "latest snapshot has no CSV shards" }
 
       - name: Create ZIP package
         shell: pwsh
