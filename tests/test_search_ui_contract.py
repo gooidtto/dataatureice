@@ -41,5 +41,7 @@ def test_favorite_groups_keep_same_model_together_and_dates_descending():
         row(record_id='m2-new', model='M2', data_date='2026-08-31', price='110'),
     ]
     groups = app.favorite_groups()
-    assert [block[0]['model'] for _, blocks in groups for block in blocks] == ['M1','M1','M2','M2']
+    # Model groups are ordered by newest date first; ties use the group key
+    # in descending order, while dates inside each model stay descending.
+    assert [block[0]['model'] for _, blocks in groups for block in blocks] == ['M2','M2','M1','M1']
     assert [[r['data_date'] for r in block] for _, blocks in groups for block in blocks] == [['2026-08-31'],['2026-08-20'],['2026-08-31'],['2026-08-20']]
