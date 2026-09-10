@@ -39,13 +39,13 @@ jobs:
 
       - name: Validate source and callable data
         run: |
-          python -X utf8 -m py_compile phone_search.py data_validator.py tools/materialize_data.py
+          python -X utf8 -m py_compile phone_search.py ui_bootstrap.py data_validator.py tools/materialize_data.py
           python -X utf8 data_validator.py data
           python -X utf8 -m pytest -q
 
       - name: Build EXE
         run: |
-          pyinstaller --noconfirm --clean --windowed --name "数码回收价格秒查工具" phone_search.py
+          pyinstaller --noconfirm --clean --windowed --name "数码回收价格秒查工具" ui_bootstrap.py
 
       - name: Include callable data
         shell: pwsh
