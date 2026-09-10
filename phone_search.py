@@ -1,4 +1,5 @@
 import csv,os,re,sys,subprocess,unicodedata,tkinter as tk
+from pathlib import Path
 from tkinter import ttk,messagebox,filedialog
 try:
  from openpyxl import Workbook
@@ -10,6 +11,7 @@ SHARD_RE=re.compile(r'^\d{4}-\d{2}-\d{2}$')
 FIELDS=['record_id','data_date','category','subtype','brand','series','model','model_code','alias','condition','price','unit','note','origin','source_image','source_path','verified','confidence','verification']
 COLS=[('data_date','数据日期',105),('category','分类',70),('subtype','子类型',75),('brand','品牌',110),('series','系列',110),('model','型号',250),('condition','价格条件',175),('price','价格',85),('unit','单位',85),('note','备注',260),('source_image','来源图片',150)]
 CATEGORY_CANONICAL={'手机':'手机','平板':'平板','电脑':'电脑','其它':'其它','phone':'手机','tablet':'平板','computer':'电脑','other':'其它'}
+TRUE={'1','true','yes','verified'}
 def clean(v): return re.sub(r'\s+',' ',unicodedata.normalize('NFKC','' if v is None else str(v)).replace('\ufeff','').replace('\u200b','').replace('\xa0',' ')).strip()
 def key(v): return re.sub(r'[\s_\-—–·•/\\（）()【】\[\],，.;；:：|、]+','',clean(v).casefold())
 def num(v):
@@ -26,49 +28,50 @@ def read_csv(p):
    with open(p,encoding=enc,newline='') as f:return list(csv.DictReader(f))
   except Exception as e:last=e
  raise last or ValueError('CSV无法读取')
-def verified(r): return clean(r.get('verified')).lower() in {'1','true','yes','verified'}
+def verified(r): return clean(r.get('verified')).lower() in TRUE
 def canonical_category(v): return CATEGORY_CANONICAL.get(clean(v),clean(v))
 def row_valid(r): return bool(r.get('model') and r.get('condition') and r.get('price') and verified(r))
 class Store:
- def __init__(self,d):self.d=d;self.rows=[];self.snapshots={};self.manifest=[];self.errors=[]
+ def __init__(self,d): self.d=d;self.rows=[];self.snapshots={};self.manifest=[];self.errors=[]
  def load(self):
   self.rows=[];self.snapshots={};self.errors=[];self.manifest=[];files=[]
-  for n in os.listdir(self.d) if os.path.isdir(self.d) else []:
+  if not os.path.isdir(self.d): return
+  for n in os.listdir(self.d):
    p=os.path.join(self.d,n)
    if DATE_RE.match(n) and os.path.isfile(p): files.append((n[:10],p))
-  shard_root=os.path.join(self.d,'snapshots')
-  if os.path.isdir(shard_root):
-   for date_name in os.listdir(shard_root):
-    date_dir=os.path.join(shard_root,date_name)
-    if not SHARD_RE.match(date_name) or not os.path.isdir(date_dir): continue
-    for n in sorted(os.listdir(date_dir)):
-     p=os.path.join(date_dir,n)
-     if n.lower().endswith('.csv') and os.path.isfile(p): files.append((date_name,p))
+  sr=os.path.join(self.d,'snapshots')
+  if os.path.isdir(sr):
+   for date in os.listdir(sr):
+    dp=os.path.join(sr,date)
+    if SHARD_RE.match(date) and os.path.isdir(dp):
+     for n in sorted(os.listdir(dp)):
+      p=os.path.join(dp,n)
+      if n.lower().endswith('.csv') and os.path.isfile(p): files.append((date,p))
   grouped={}
-  for date_name,p in files: grouped.setdefault(date_name,[]).append(p)
-  for date_name,paths in grouped.items():
+  for date,p in files: grouped.setdefault(date,[]).append(p)
+  for date,paths in grouped.items():
    try:
     data=[]
     for p in paths:
      for raw in read_csv(p):
       r={k:clean(raw.get(k,'')) for k in FIELDS};r['category']=canonical_category(r['category'])
-      if row_valid(r):data.append(r)
+      if r['data_date']!=date: self.errors.append(f'{date}: data_date不一致')
+      if r['category'] not in {'手机','平板','电脑','其它'}: self.errors.append(f'{date}: 非标准分类 {r["category"]!r}')
+      if row_valid(r): data.append(r)
     ids={}
-    for r in data:
-     rid=r.get('record_id','')
-     if rid: ids.setdefault(rid,0);ids[rid]+=1
-    dup=sum(n-1 for n in ids.values() if n>1)
-    if dup:self.errors.append(f'{date_name}: 重复 record_id {dup} 条')
-    self.snapshots[date_name]=data;self.rows+=data
-   except Exception as e:self.errors.append(f'{date_name}: {e}')
-  p=os.path.join(self.d,'source_image_manifest.csv')
-  if os.path.isfile(p):
-   try:self.manifest=read_csv(p)
+    for r in data: ids[r['record_id']]=ids.get(r['record_id'],0)+1
+    dup=sum(v-1 for v in ids.values() if v>1)
+    if dup:self.errors.append(f'{date}: 重复 record_id {dup} 条')
+    self.snapshots[date]=data;self.rows+=data
+   except Exception as e:self.errors.append(f'{date}: {e}')
+  mp=os.path.join(self.d,'source_image_manifest.csv')
+  if os.path.isfile(mp):
+   try:self.manifest=read_csv(mp)
    except Exception as e:self.errors.append(f'来源清单: {e}')
  @property
- def dates(self):return sorted(self.snapshots)
+ def dates(self): return sorted(self.snapshots)
  @property
- def latest(self):return self.dates[-1] if self.dates else ''
+ def latest(self): return self.dates[-1] if self.dates else ''
  def search(self,q='',cat='全部',history=False):
   q=key(q);dates=set(self.dates) if history else ({self.latest} if self.latest else set());out=[]
   for r in self.rows:
@@ -100,14 +103,15 @@ class App:
   y=ttk.Scrollbar(f,orient='vertical',command=self.tree.yview);x=ttk.Scrollbar(f,orient='horizontal',command=self.tree.xview);self.tree.configure(yscrollcommand=y.set,xscrollcommand=x.set);self.tree.grid(row=0,column=0,sticky='nsew');y.grid(row=0,column=1,sticky='ns');x.grid(row=1,column=0,sticky='ew');f.grid_rowconfigure(0,weight=1);f.grid_columnconfigure(0,weight=1)
   self.tree.bind('<Control-c>',self.copy);self.tree.bind('<Control-C>',self.copy);self.tree.bind('<Control-a>',lambda e:(self.tree.selection_set(self.tree.get_children()),'break')[1]);self.tree.bind('<Control-A>',lambda e:(self.tree.selection_set(self.tree.get_children()),'break')[1]);self.tree.bind('<Button-3>',self.menu);self.tree.bind('<Double-1>',self.detail)
  def load(self):
-  self.s.load();self.meta.config(text=f'最新：{self.s.latest or "无"} · 快照 {len(self.s.dates)} · 已验证价格行 {len(self.s.rows)} · 图片 {sum(clean(r.get("include")) in {"1","true"} for r in self.s.manifest)}');self.search();self.status.config(text=('加载完成 · '+(self.s.errors[0] if self.s.errors else '数据校验通过')+(' · 其余错误请看来源结构' if len(self.s.errors)>1 else '')))
+  self.s.load();self.meta.config(text=f'最新：{self.s.latest or "无"} · 快照 {len(self.s.dates)} · 已验证价格行 {len(self.s.rows)} · 图片 {sum(clean(r.get("include")) in TRUE for r in self.s.manifest)}');self.search()
+  self.status.config(text=('数据校验提示：'+self.s.errors[0] if self.s.errors else '数据校验通过'))
  def search(self):
   self.rows=self.s.search(self.q.get(),self.cat.get(),self.hist.get());self.tree.delete(*self.tree.get_children())
   for i,r in enumerate(self.rows):self.tree.insert('', 'end',iid=str(i),values=tuple(r.get(c,'') for c,_,_ in COLS),tags=('odd' if i%2 else ''))
   if clean(self.q.get()):self.target.config(text=f'搜索目标：{clean(self.q.get())} · {len({(r["brand"],r["series"],r["model"]) for r in self.rows})} 个目标 · {len(self.rows)} 条价格条件')
   else:self.target.config(text='当前快照：按图片原始价格条件逐行显示')
-  self.status.config(text=f'结果 {len(self.rows)} 条')
- def selected(self):return [self.rows[int(i)] for i in self.tree.selection() if i.isdigit() and int(i)<len(self.rows)]
+  self.status.config(text=f'结果 {len(self.rows)} 条' + (f' · 数据问题 {len(self.s.errors)}' if self.s.errors else ''))
+ def selected(self): return [self.rows[int(i)] for i in self.tree.selection() if i.isdigit() and int(i)<len(self.rows)]
  def table(self,rows,header=True):
   lines=['\t'.join(h for _,h,_ in COLS)] if header else [];lines += ['\t'.join(str(r.get(c,'') if isinstance(r,dict) else r[i]) for i,(c,_,_) in enumerate(COLS)) for r in rows];return '\r\n'.join(lines)
  def copy(self,event=None):
@@ -163,27 +167,28 @@ class App:
     a=[maps[i][k] for i in range(len(picks))];ps=[num(r['price']) for r in a];diff='-' if ps[0] is None or ps[-1] is None else f'{ps[-1]-ps[0]:g}';ct.insert('','end',values=[a[0]['brand'],a[0]['series'],a[0]['model'],a[0]['condition']]+[r['price'] for r in a]+[diff])
   ttk.Button(w,text='重新对比',command=run).pack(pady=8);run()
  def sources(self):
-  w=tk.Toplevel(self.root);w.title('图片来源文件结构');w.geometry('1200x700');t=ttk.Treeview(w,columns=('date','cat','sub','path'),show='headings');t.pack(fill='both',expand=True,padx=15,pady=15)
-  for c,h,wd in [('date','数据日期',110),('cat','分类',80),('sub','子类型',80),('path','原始文件层级',850)]:t.heading(c,text=h);t.column(c,width=wd)
-  for r in self.s.manifest:
-   if clean(r.get('include')) in {'1','true'}:t.insert('','end',values=(r.get('data_date',''),r.get('category',''),r.get('subtype',''),r.get('source_path','')))
-  ttk.Label(w,text=f'纳入 {sum(clean(r.get("include")).lower() in {"1","true"} for r in self.s.manifest)} 张；排除 {sum(clean(r.get("include")).lower() not in {"1","true"} for r in self.s.manifest)} 张；source_path 是数据事实的原始层级引用').pack(anchor='w',padx=15,pady=5)
+  w=tk.Toplevel(self.root);w.title('图片来源文件结构');w.geometry('1250x720');t=ttk.Treeview(w,columns=('date','cat','status','img','rows'),show='headings');t.pack(fill='both',expand=True,padx=10,pady=10)
+  for c,h in [('date','日期'),('cat','分类'),('status','状态'),('img','来源图片'),('rows','已入库行数')]:t.heading(c,text=h)
+  counts={}
+  for r in self.s.rows:counts[(r['data_date'],r['source_image'])]=counts.get((r['data_date'],r['source_image']),0)+1
+  for r in sorted(self.s.manifest,key=lambda x:(x.get('data_date',''),x.get('source_image',''))): t.insert('','end',values=(r.get('data_date',''),r.get('category',''),r.get('status',''),r.get('source_image',''),counts.get((r.get('data_date',''),r.get('source_image','')),0)))
+ def _picked_one(self):
+  rows=self.selected();return rows[0] if rows else None
+ def detail(self,event=None):
+  r=self._picked_one()
+  if not r:return
+  w=tk.Toplevel(self.root);w.title('图片事实记录详情');w.geometry('760x620');txt=tk.Text(w,font=('微软雅黑',11));txt.pack(fill='both',expand=True,padx=12,pady=12)
+  txt.insert('1.0','\n'.join(f'{k}: {r.get(k,"")}' for k in FIELDS));txt.config(state='disabled')
+ def menu(self,event):
+  row=self.tree.identify_row(event.y)
+  if row:self.tree.selection_set(row)
+  m=tk.Menu(self.root,tearoff=0);m.add_command(label='复制选中',command=self.copy);m.add_command(label='查看详情',command=self.detail);m.tk_popup(event.x_root,event.y_root)
  def open_dir(self):
   try:
-   if sys.platform=='win32':os.startfile(self.d)
+   if os.name=='nt':os.startfile(self.d)
    elif sys.platform=='darwin':subprocess.Popen(['open',self.d])
    else:subprocess.Popen(['xdg-open',self.d])
-  except Exception as e:messagebox.showerror('错误',str(e))
- def detail(self,e=None):
-  rows=self.selected()
-  if not rows:return
-  r=rows[0];w=tk.Toplevel(self.root);w.title('价格记录详情 · 图片事实');w.geometry('820x650');ttk.Label(w,text='图片事实记录',font=('微软雅黑',15,'bold')).pack(anchor='w',padx=18,pady=(16,10));f=ttk.Frame(w);f.pack(fill='both',expand=True,padx=18,pady=8);txt=tk.Text(f,font=('微软雅黑',11),wrap='word');txt.pack(side='left',fill='both',expand=True);y=ttk.Scrollbar(f,orient='vertical',command=txt.yview);y.pack(side='right',fill='y');txt.configure(yscrollcommand=y.set)
-  labels={'record_id':'记录ID','data_date':'数据日期','category':'分类','subtype':'子类型','brand':'品牌','series':'系列','model':'型号','model_code':'网络/型号代码','alias':'别名','condition':'价格条件','price':'价格','unit':'单位','note':'备注','origin':'来源/原产地','source_image':'来源图片','source_path':'原始层级','verified':'已验证','confidence':'置信度','verification':'验证方式'}
-  txt.insert('1.0','\n'.join(f'{labels.get(k,k)}：{r.get(k,"")}' for k in FIELDS));txt.configure(state='disabled');ttk.Button(w,text='关闭',command=w.destroy).pack(anchor='e',padx=18,pady=12)
- def menu(self,e):
-  rid=self.tree.identify_row(e.y)
-  if not rid:return
-  if rid not in self.tree.selection():self.tree.selection_set(rid)
-  m=tk.Menu(self.root,tearoff=False);m.add_command(label='查看详情',command=self.detail);m.add_command(label='复制选中',command=self.copy);m.add_command(label='导出CSV',command=self.export_csv);m.add_command(label='导出Excel',command=self.export_xlsx);m.add_separator();m.add_command(label='全选',command=lambda:self.tree.selection_set(self.tree.get_children()));m.tk_popup(e.x_root,e.y_root)
-if __name__=='__main__':
- r=tk.Tk();App(r);r.mainloop()
+  except Exception as e:messagebox.showerror('数据目录',str(e))
+def main():
+ root=tk.Tk();App(root);root.mainloop()
+if __name__=='__main__':main()
