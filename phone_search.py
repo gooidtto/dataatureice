@@ -275,14 +275,31 @@ class App:
    messagebox.showinfo('导出成功',f'已导出 {len(rs)} 条记录\n{p}');self.status.config(text=f'导出成功：{len(rs)} 条');return True
   except Exception as e:messagebox.showerror('导出失败',f'无法写入文件：\n{p}\n\n{e}');return False
  def add_favorite_unused(self):return self.add_favorite()
+ def favorite_groups(self):
+  groups={}
+  for r in self.fav.items:
+   k=rid(r);groups.setdefault(k,[]).append(r)
+  ordered=[]
+  for k,rs in groups.items():
+   rs=sorted(rs,key=lambda r:(r['data_date'],num(r['price']) if num(r['price']) is not None else float('-inf')),reverse=True)
+   dates={r['data_date'] for r in rs};date_blocks=[]
+   for d in sorted(dates,reverse=True):
+    date_blocks.append([r for r in rs if r['data_date']==d])
+   ordered.append((k,date_blocks))
+  ordered.sort(key=lambda x:(x[1][0][0]['data_date'] if x[1] else '',x[0]),reverse=True)
+  return ordered
  def show_favorites(self):
-  w=tk.Toplevel(self.root);w.title('⭐ 我的收藏');w.geometry('1500x760');w.minsize(1050,560);ttk.Label(w,text=f'收藏内容 · {len(self.fav.items)} 条',font=('微软雅黑',12,'bold')).pack(anchor='w',padx=10,pady=8);f=ttk.Frame(w,padding=10);f.pack(fill='both',expand=True);tr=ttk.Treeview(f,columns=[x[0] for x in COLS],show='headings',selectmode='extended')
+  w=tk.Toplevel(self.root);w.title('⭐ 我的收藏');w.geometry('1500x760');w.minsize(1050,560);ttk.Label(w,text=f'收藏内容 · {len(self.fav.items)} 条 · 按型号分组，日期倒序',font=('微软雅黑',12,'bold')).pack(anchor='w',padx=10,pady=8);f=ttk.Frame(w,padding=10);f.pack(fill='both',expand=True);tr=ttk.Treeview(f,columns=[x[0] for x in COLS],show='headings',selectmode='extended')
   for c,h,ww in COLS:tr.heading(c,text=h);tr.column(c,width=ww,anchor='center' if c in {'data_date','category','subtype','price'} else 'w')
-  y=ttk.Scrollbar(f,orient='vertical',command=tr.yview);tr.configure(yscrollcommand=y.set);tr.grid(row=0,column=0,sticky='nsew');y.grid(row=0,column=1,sticky='ns');f.grid_rowconfigure(0,weight=1);f.grid_columnconfigure(0,weight=1);mp={};last=None;i=0
-  for r in self.s._sort(self.fav.items):
-   if last and r['data_date']!=last:
+  y=ttk.Scrollbar(f,orient='vertical',command=tr.yview);tr.configure(yscrollcommand=y.set);tr.grid(row=0,column=0,sticky='nsew');y.grid(row=0,column=1,sticky='ns');f.grid_rowconfigure(0,weight=1);f.grid_columnconfigure(0,weight=1);mp={};i=0
+  for group_index,(_,date_blocks) in enumerate(self.favorite_groups()):
+   if group_index:
     for _ in range(2):gid=f'g{i}';i+=1;tr.insert('', 'end',iid=gid,values=('',)*len(COLS));mp[gid]=None
-   iid=f'r{i}';i+=1;tr.insert('', 'end',iid=iid,values=tuple(r.get(c,'') for c,_,_ in COLS));mp[iid]=r;last=r['data_date']
+   for date_index,block in enumerate(date_blocks):
+    if date_index:
+     gid=f'g{i}';i+=1;tr.insert('', 'end',iid=gid,values=('',)*len(COLS));mp[gid]=None
+    for r in block:
+     iid=f'r{i}';i+=1;tr.insert('', 'end',iid=iid,values=tuple(r.get(c,'') for c,_,_ in COLS));mp[iid]=r
   def sel():return [mp[i] for i in tr.selection() if mp.get(i)]
   bar=ttk.Frame(w,padding=8);bar.pack(fill='x');ttk.Button(bar,text='查看详情',command=lambda:self.detail_rows(sel() or self._all(mp))).pack(side='left',padx=4);ttk.Button(bar,text='移除收藏',command=lambda:self.remove_favorites(w,tr,mp)).pack(side='left',padx=4);ttk.Button(bar,text='复制',command=lambda:self.copy_popup(sel() or self._all(mp))).pack(side='left',padx=4);ttk.Button(bar,text='导出CSV',command=lambda:self.export_popup(sel() or self._all(mp),False)).pack(side='left',padx=4);ttk.Button(bar,text='导出Excel',command=lambda:self.export_popup(sel() or self._all(mp),True)).pack(side='left',padx=4);ttk.Button(bar,text='关闭',command=w.destroy).pack(side='right',padx=4);tr.bind('<Double-1>',lambda e:self.detail_rows(sel()));tr.bind('<Button-3>',lambda e:self.favorite_menu(e,tr,mp))
  def _all(self,mp):return [r for r in mp.values() if r]
