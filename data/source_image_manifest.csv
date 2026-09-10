@@ -1,0 +1,43 @@
+﻿include,data_date,category,status,source_path,source_image,sha256,bytes,verification,verification_note
+0,,,excluded,需要获取数据与不需要获数据原文件/不需要的图片内的内容部分/不需要的图片里内容001.png,不需要的图片里内容001.png,bd157ab643f8b9ca7e9a8a538f06f70e8368b0ce7612bc3a655d6ae46ed52f45,442280,,
+0,,,excluded,需要获取数据与不需要获数据原文件/不需要的图片内的内容部分/不需要的图片里内容002.png,不需要的图片里内容002.png,6512423b22e74584fcd7f139b8001229b10fb14f0a9ecf79d740ae08cfcc1d17,83555,,
+1,2026-08-25,平板,verified,数码网报价单-0825更新/平板相关/EVD 唱戏机.jpg,EVD 唱戏机.jpg,d86696e6e592bf31f0a79c83d0948877b8363e8a92157c2268a5b4462d1cea3d,122512,,
+1,2026-08-25,平板,verified,数码网报价单-0825更新/平板相关/ov平板.jpg,ov平板.jpg,b3bfc5496cff3b3f91c1a767cb6c973cf42aeec4668c713570f9b8faf5f0e64e,151656,,
+1,2026-08-25,平板,verified,数码网报价单-0825更新/平板相关/三星平板.jpg,三星平板.jpg,780cb422ee9bce0903dc813094fa9c7bf1ff1b6e54799a3f43d0e19314603dfe,406683,,
+1,2026-08-25,平板,verified,数码网报价单-0825更新/平板相关/家教机.jpg,家教机.jpg,fcc65aed1c6e348cc7730a0cd54a73d69555b75963f79f85447d694226d45779,262699,,
+1,2026-08-25,平板,verified,数码网报价单-0825更新/平板相关/小米平板.jpg,小米平板.jpg,6de5607d3bf6c45f35eae5dd24b198f5e05ae83843fed2e0a8e8065aa8a54e51,194244,,
+1,2026-08-25,平板,verified,数码网报价单-0825更新/平板相关/杂牌国产平板.jpg,杂牌国产平板.jpg,320de290bdedaa9524e4b5275737efea50dbc7984241e11c8737a3f0e5794340,140346,,
+1,2026-08-25,平板,verified,数码网报价单-0825更新/平板相关/荣耀平板.jpg,荣耀平板.jpg,46580264c891cf96698bc48381785d4b8f22c67b5ae6d5793a84bd6fba72e85c,193210,,
+1,2026-08-25,手机,verified,数码网报价单-0825更新/手机相关/360.jpg,360.jpg,ca5e65643313945cad17f20a23766df5681ca94fcfaff666d15b644f7cd6db5d,200830,visual_0825_vs_0831_pixel_crosscheck_and_header_structure,
+1,2026-08-25,手机,verified,数码网报价单-0825更新/手机相关/HTC.jpg,HTC.jpg,b9c745f09e56a27f9e592c15f62ade3f272281912b91eb7623b620e70c37699b,224785,visual_header_body_rows_crosschecked,
+1,2026-08-25,手机,verified,数码网报价单-0825更新/手机相关/TCL.jpg,TCL.jpg,72d0c2bac512af9bae2388184802c6fe9acdf7114920a5c589446076db9f17e5,170174,visual_0825_vs_0831_pixel_crosscheck_and_header_structure,
+1,2026-08-25,手机,verified,数码网报价单-0825更新/手机相关/ipad.jpg,ipad.jpg,3ffec2f29e361a8724b78092e8de88e3eae4b2e231940778ba26138f94faa637,455836,visual_0825_source_crosschecked,
+1,2026-08-25,手机,verified,数码网报价单-0825更新/手机相关/oppo.jpg,oppo.jpg,60bc18c380b724ff3a5317718c83c86566084fc01d284a3620adc5a8023bdd43,896193,visual_header_body_rows_crosschecked,
+1,2026-08-25,手机,verified,数码网报价单-0825更新/手机相关/realme.jpg,realme.jpg,5ac3cc7b4a680efaf5539fb722a738c793f4d3235b42132515477c395d79bd6c,733069,visual_header_body_rows_crosschecked,
+1,2026-08-25,手机,verified,数码网报价单-0825更新/手机相关/vivo.jpg,vivo.jpg,27e96b1ad0d7b7de271e8366a573e14b489c8f27f45336382f1b4b20be684fc4,1143566,visual_header_body_rows_crosschecked,
+1,2026-08-25,手机,verified,数码网报价单-0825更新/手机相关/一加.jpg,一加.jpg,09d0df87df7c8eaf018a83aa825f944ceade6d4240afa81862cf43f8a24aa91e,354430,visual_header_body_rows_crosschecked,
+1,2026-08-25,手机,verified,数码网报价单-0825更新/手机相关/三星.jpg,三星.jpg,de1f1a0357df2ff75ba4b6133fa3854dd1ba041ad93bf1317eb379571988051b,994352,,visual source crosschecked; full source table mapped to dynamic condition rows
+1,2026-08-25,手机,verified,数码网报价单-0825更新/手机相关/中国移动.jpg,中国移动.jpg,a22ee51eb81132c228c6c2cdb31fa18b5e0e5c7f8c38f2e17d0bdfba2f69438e,186864,visual_0825_vs_0831_pixel_crosscheck_and_header_structure,
+1,2026-08-25,手机,verified,数码网报价单-0825更新/手机相关/乐视.jpg,乐视.jpg,079706f2269f3dce1e27f139f7cea2e947e8f58a191c696a1aef4ca5bb301ab5,168304,visual_0825_vs_0831_pixel_crosscheck_and_header_structure,
+1,2026-08-25,手机,verified,数码网报价单-0825更新/手机相关/努比亚.jpg,努比亚.jpg,8f624f29ca40cd9e4c1d9aeef4f9991d77615aaf9037e433c59837ed96a681be,495235,visual_0825_source_crosschecked,
+1,2026-08-25,手机,verified,数码网报价单-0825更新/手机相关/华为.jpg,华为.jpg,946be7d2fe10f889dea6297ffe03d0f05d638c430253f5525b974f6031bd088b,1364964,visual_0825_source_crosschecked,
+1,2026-08-25,手机,verified,数码网报价单-0825更新/手机相关/华为2.jpg,华为2.jpg,bd4fe74f16076a5dadbe77d3d522a7d8f8687cedff63abf20f847087050dc183,745770,,visual source crosschecked; full source table mapped to dynamic condition rows
+0,2026-08-25,手机,pending_visual_verification,数码网报价单-0825更新/手机相关/华为主板.jpg,华为主板.jpg,5f9628db827b2694bbab4876fe351ea2576ece36268c1b8e75730488a05e8553,750525,,当前发布版按不可可靠获取/未完成数据规则暂不进入可调用数据
+1,2026-08-25,手机,verified,数码网报价单-0825更新/手机相关/华为平板.jpg,华为平板.jpg,a365e762d1173c965bee9ec95f514a560a0795065dff7f7fffcbeb845154653d,510893,visual_0825_vs_0831_pixel_crosscheck_and_header_structure,
+1,2026-08-25,手机,verified,数码网报价单-0825更新/手机相关/华硕.jpg,华硕.jpg,e8216cbd7745bb821944451599737b1d8e6dd9e3bd84304ef39deba62c198c6d,178825,visual_0825_vs_0831_pixel_crosscheck_and_header_structure,
+0,2026-08-25,手机,pending_visual_verification,数码网报价单-0825更新/手机相关/小米.jpg,小米.jpg,9647840248ed128082cc36b1474c6ee13d98e735ee63856aa279f77df2aac848,1335532,,当前发布版按不可可靠获取/未完成数据规则暂不进入可调用数据
+0,2026-08-25,手机,pending_visual_verification,数码网报价单-0825更新/手机相关/小米2.jpg,小米2.jpg,62d57a7325ed9105c1b68f49fce8899e5571d4647613fe3fe6f6f971a3cd7,849946,,当前发布版按不可可靠获取/未完成数据规则暂不进入可调用数据
+1,2026-08-25,手机,verified,数码网报价单-0825更新/手机相关/手机拆机件.jpg,手机拆机件.jpg,0b74831f7d0e463508e9ee4ec98e34fd2a9ec6fa4897ff91524626983d7ced31,123078,visual_0825_vs_0831_pixel_crosscheck_and_header_structure,
+1,2026-08-25,手机,verified,数码网报价单-0825更新/手机相关/摩托罗拉.jpg,摩托罗拉.jpg,6b8b041b724318d153572a5619e7ffae09168805530fa3ec2f157be0a3551cae,240922,visual_0825_vs_0831_pixel_crosscheck_and_header_structure,
+1,2026-08-25,手机,verified,数码网报价单-0825更新/手机相关/朵唯.jpg,朵唯.jpg,ccafaf5ae302f2fedad75630691411530bec060be11a655580130ee9f011d267,248261,visual_0825_vs_0831_pixel_crosscheck_and_header_structure,
+1,2026-08-25,手机,verified,数码网报价单-0825更新/手机相关/柔宇.jpg,柔宇.jpg,e9edfd8abbff469f24e683dc4a1b5636c3456be1302a9ff053d10ef73af715f3,116030,visual_0825_vs_0831_pixel_crosscheck_and_header_structure,
+1,2026-08-25,手机,verified,数码网报价单-0825更新/手机相关/格力.jpg,格力.jpg,edf42a86ce58dcbfd5618300ec871aa4da86a809fc69ac1435dc65d4f0cf5405,107592,visual_0825_vs_0831_pixel_crosscheck_and_header_structure,
+1,2026-08-25,手机,verified,数码网报价单-0825更新/手机相关/海信.jpg,海信.jpg,b153b120177c2896d985e7853f7470ed94a8ca11e268fc416eab5cb7ae6331f0,232778,visual_0825_vs_0831_pixel_crosscheck_and_header_structure,
+1,2026-08-25,手机,verified,数码网报价单-0825更新/手机相关/电容屏.jpg,电容屏.jpg,68fbfb9f5dabb7a5c590ca2792dc82cde307055b2ef276963672e3397d8a0f75,199987,visual_0825_source_crosschecked,
+1,2026-08-25,手机,verified,数码网报价单-0825更新/手机相关/电池.jpg,电池.jpg,6f6094a84b461f6d6a515695b2b88f1733915492953f76a383f975a964e9b90b,315605,visual_0825_source_crosschecked,
+1,2026-08-25,手机,verified,数码网报价单-0825更新/手机相关/美图.jpg,美图.jpg,728932c30e23704fb0c833558bd33a8101c77d0e8b9e07d7eac2864caddb92f5,167330,visual_0825_vs_0831_pixel_crosscheck_and_header_structure,
+1,2026-08-25,手机,verified,数码网报价单-0825更新/手机相关/老年机.jpg,老年机.jpg,5ef85e06f578cd4018df563e2161505c3c01fcde4018e28134356c0071e6332a,604623,visual_0825_vs_0831_pixel_crosscheck_and_header_structure,
+1,2026-08-25,手机,verified,数码网报价单-0825更新/手机相关/联想.jpg,联想.jpg,626ea372bbaa5fd61dd9e1971d09a100e8c7abd334b4cd6571dfaf3abc08d288,589776,visual_0825_vs_0831_pixel_crosscheck_and_header_structure,
+1,2026-08-25,手机,verified,数码网报价单-0825更新/手机相关/苹果.jpg,苹果.jpg,fb0b6f8c1d5a3f1fffaf4cb8c27e6b7c5c548ce0b45ba44c83a17c1e7d44e4f9,586024,visual_0825_vs_0831_pixel_crosscheck_and_header_structure,
+1,2026-08-25,手机,verified,数码网报价单-0825更新/手机相关/诺基亚.jpg,诺基亚.jpg,75f3d2abf96ccacb1d3eafe228e1fe3b50c524ed6e78084acaaa07f10c726ef8,510140,visual_0825_vs_0831_pixel_crosscheck_and_header_structure,
+1,2026-08-25,手机,verified,数码网报价单-0825更新/手机相关/谷歌.jpg,谷歌.jpg,8791d9e20e153bfe8403f74...
