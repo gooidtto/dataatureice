@@ -1,6 +1,7 @@
 """UI startup/child-window standard for the Windows release build."""
 import tkinter as tk
 import phone_search
+from favorite_toggle import toggle_favorite
 
 
 _EMPTY_HINT = "输入品牌 / 系列 / 型号开始查询\n\n数据来自已验证的图片事实价格库"
@@ -64,21 +65,6 @@ def load(self):
         self.status.config(text="数据已就绪，请输入查询条件")
     self.root.after_idle(self.entry.focus_set)
     self.root.after_idle(self.show_suggestions)
-
-
-def toggle_favorite(self, row):
-    """Toggle one result-row favorite using the same content-level identity."""
-    if not row:
-        return False
-    if self.fav.has(row):
-        self.fav.remove([row])
-        if hasattr(self, "rows"):
-            self.render(self.rows)
-        if hasattr(self, "toast"):
-            self.toast("已移除收藏")
-        return False
-    self.addToFavorites([row])
-    return True
 
 
 def on_tree_click(self, event):
