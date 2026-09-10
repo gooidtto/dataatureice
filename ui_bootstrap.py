@@ -8,6 +8,7 @@ _EMPTY_HINT = "输入品牌 / 系列 / 型号开始查询\n\n数据来自已验�
 _original_ui = phone_search.App.ui
 _original_load = phone_search.App.load
 _original_search = phone_search.App.search
+_original_tree_click = phone_search.App.on_tree_click
 _real_toplevel = phone_search.tk.Toplevel
 
 
@@ -65,6 +66,34 @@ def load(self):
     self.root.after_idle(self.show_suggestions)
 
 
+def toggle_favorite(self, row):
+    """Toggle one result-row favorite using the same content-level identity."""
+    if not row:
+        return False
+    if self.fav.has(row):
+        self.fav.remove([row])
+        if hasattr(self, "rows"):
+            self.render(self.rows)
+        if hasattr(self, "toast"):
+            self.toast("已移除收藏")
+        return False
+    self.addToFavorites([row])
+    return True
+
+
+def on_tree_click(self, event):
+    region = self.tree.identify("region", event.x, event.y)
+    column = self.tree.identify_column(event.x)
+    iid = self.tree.identify_row(event.y)
+    favorite_column = f"#{len(phone_search.COLS) + 1}"
+    row = self.map.get(iid) if iid else None
+    if region == "cell" and column == favorite_column and row:
+        self.tree.selection_set(iid)
+        toggle_favorite(self, row)
+        return "break"
+    return _original_tree_click(self, event)
+
+
 def _standardize_window(w):
     try:
         if not w.winfo_exists() or bool(w.overrideredirect()):
@@ -109,6 +138,7 @@ def standardized_toplevel(*args, **kwargs):
 phone_search.App.ui = ui
 phone_search.App.search = search
 phone_search.App.load = load
+phone_search.App.on_tree_click = on_tree_click
 phone_search.tk.Toplevel = standardized_toplevel
 
 
