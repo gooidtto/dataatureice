@@ -25,6 +25,10 @@ def read_csv(p):
  raise last
 def rid(r):return tuple(key(r.get(x)) for x in ('category','subtype','brand','series','model','model_code'))
 def valid(r):return bool(r.get('model') and r.get('condition') and r.get('price') and clean(r.get('verified')).lower() in TRUE)
+def normalizeContent(r):
+ fields=('category','subtype','brand','series','model','model_code','condition','price','unit')
+ return {f:key(r.get(f,'')) for f in fields}
+def generateContentKey(r):return '|'.join(normalizeContent(r)[f] for f in ('category','subtype','brand','series','model','model_code','condition','price','unit'))
 class Store:
  def __init__(self,d):self.d=d;self.rows=[];self.snapshots={};self.manifest=[];self.errors=[]
  def load(self):
@@ -90,6 +94,12 @@ class JsonList:
   q=clean(q)
   if not q:return
   k=key(q);self.items=[x for x in self.dedupe() if key(x)!=k];self.items.insert(0,q);self.items=self.items[:self.MAX_ITEMS];self.save()
+ def suggestions(self,q='',limit=5):
+  qk=key(q);out=[]
+  for x in self.dedupe():
+   if not qk or qk in key(x):out.append(x)
+   if len(out)>=max(0,limit):break
+  return out
  def save(self):
   os.makedirs(os.path.dirname(self.p),exist_ok=True);tmp=self.p+'.tmp'
   with open(tmp,'w',encoding='utf-8') as f:json.dump(self.items,f,ensure_ascii=False,indent=2)
@@ -101,7 +111,7 @@ class JsonList:
 class Favorites:
  MAX_ITEMS=200
  def __init__(self,p):self.p=p;self.items=[];self.load()
- def identity(self,r):return '|'.join(str(x) for x in rid(r))+'|'+key(r.get('condition'))+'|'+clean(r.get('data_date'))+'|'+clean(r.get('price'))+'|'+clean(r.get('unit'))
+ def identity(self,r):return generateContentKey(r)
  def load(self):
   try:
    with open(self.p,encoding='utf-8') as f:x=json.load(f)
@@ -115,12 +125,16 @@ class Favorites:
    k=self.identity(r)
    if k not in seen:seen.add(k);out.append(r)
   return out[:self.MAX_ITEMS]
+ def has(self,r):return any(self.identity(x)==self.identity(r) for x in self.items)
  def add(self,rows):
-  cur=self.dedupe();seen={self.identity(r) for r in cur}
+  added=[];duplicate=[];cur=self.dedupe();seen={self.identity(r) for r in cur}
   for r in rows:
    k=self.identity(r)
-   if k not in seen:cur.insert(0,dict(r));seen.add(k)
-  self.items=cur[:self.MAX_ITEMS];self.save()
+   if k in seen:duplicate.append(r);continue
+   cur.insert(0,dict(r));seen.add(k);added.append(r)
+  self.items=cur[:self.MAX_ITEMS]
+  if added:self.save()
+  return added,duplicate
  def remove(self,rows):
   ks={self.identity(r) for r in rows};self.items=[r for r in self.dedupe() if self.identity(r) not in ks];self.save()
  def save(self):
@@ -129,45 +143,89 @@ class Favorites:
   os.replace(tmp,self.p)
 class App:
  def __init__(self,root):
-  self.root=root;root.title('数码回收价格秒查工具 · 图片事实库版');root.geometry('1720x930');root.minsize(1250,720);self.base=os.path.dirname(sys.executable) if getattr(sys,'frozen',False) else os.path.dirname(os.path.abspath(__file__));self.d=os.path.join(self.base,'data');os.makedirs(self.d,exist_ok=True);self.s=Store(self.d);self.h=JsonList(os.path.join(self.d,'search_history.json'));self.fav=Favorites(os.path.join(self.d,'favorites.json'));self.rows=[];self.map={};self.anchor=None;self.dragging=False;self.setup();self.ui();self.load()
+  self.root=root;root.title('数码回收价格秒查工具 · 图片事实库版');root.geometry('1720x930');root.minsize(1250,720);self.base=os.path.dirname(sys.executable) if getattr(sys,'frozen',False) else os.path.dirname(os.path.abspath(__file__));self.d=os.path.join(self.base,'data');os.makedirs(self.d,exist_ok=True);self.s=Store(self.d);self.h=JsonList(os.path.join(self.d,'search_history.json'));self.fav=Favorites(os.path.join(self.d,'favorites.json'));self.rows=[];self.map={};self.anchor=None;self.dragging=False;self.suggest_popup=None;self.setup();self.ui();self.load()
  def setup(self):
   st=ttk.Style();st.configure('T.Treeview',font=('微软雅黑',10),rowheight=32);st.configure('T.Treeview.Heading',font=('微软雅黑',11,'bold'));st.configure('TButton',font=('微软雅黑',10))
  def ui(self):
-  top=ttk.Frame(self.root,padding=10);top.pack(fill='x');ttk.Label(top,text='🔎 品牌 / 系列 / 型号 / 别名',font=('微软雅黑',11,'bold')).pack(side='left');self.q=tk.StringVar();self.entry=tk.Entry(top,textvariable=self.q,font=('微软雅黑',14),width=30);self.entry.pack(side='left',padx=(10,2),ipady=4);self.entry.bind('<Return>',lambda e:self.search());ttk.Button(top,text='✕',width=3,command=self.clear_search).pack(side='left',padx=(0,8));self.cat=tk.StringVar(value='全部');ttk.Combobox(top,textvariable=self.cat,values=['全部','手机','平板','电脑','其它'],state='readonly',width=8).pack(side='left',padx=4)
+  top=ttk.Frame(self.root,padding=10);top.pack(fill='x');ttk.Label(top,text='🔍 品牌 / 系列 / 型号 / 别名',font=('微软雅黑',11,'bold')).pack(side='left');self.q=tk.StringVar();self.entry=tk.Entry(top,textvariable=self.q,font=('微软雅黑',14),width=34);self.entry.pack(side='left',padx=(10,2),ipady=4);self.entry.bind('<Return>',lambda e:self.search());self.q.trace_add('write',lambda *_:self.refresh_suggestions());self.entry.bind('<Escape>',lambda e:self.hide_suggestions());ttk.Button(top,text='×',width=3,command=self.clear_search).pack(side='left',padx=(0,4));ttk.Button(top,text='🔍',width=3,command=self.search).pack(side='left',padx=(0,8));self.cat=tk.StringVar(value='全部');ttk.Combobox(top,textvariable=self.cat,values=['全部','手机','平板','电脑','其它'],state='readonly',width=8).pack(side='left',padx=4)
   for t,c in [('查询',self.search),('🔄刷新',self.load),('📁数据目录',self.open_dir),('🧾来源结构',self.sources),('⭐收藏',self.show_favorites)]:ttk.Button(top,text=t,command=c).pack(side='left',padx=4)
   self.status=ttk.Label(top,text='');self.status.pack(side='right')
-  hb=ttk.Frame(self.root,padding=(10,0,10,8));hb.pack(fill='x');ttk.Label(hb,text='搜索历史',font=('微软雅黑',10,'bold')).pack(side='left');self.hl=tk.Listbox(hb,height=3,font=('微软雅黑',10),selectmode='browse',exportselection=False);self.hl.pack(side='left',fill='x',expand=True,padx=6);self.hl.bind('<Double-Button-1>',self.use_history);ttk.Button(hb,text='清空历史',command=self.clear_history).pack(side='left',padx=4);self.refresh_history()
   info=ttk.Frame(self.root,padding=(10,0,10,8));info.pack(fill='x');self.target=ttk.Label(info,text='搜索结果：全部日期，日期优先、同日期价格降序',font=('微软雅黑',11,'bold'));self.target.pack(side='left');self.meta=ttk.Label(info,text='');self.meta.pack(side='right')
-  act=ttk.Frame(self.root,padding=(10,0,10,8));act.pack(fill='x');
+  act=ttk.Frame(self.root,padding=(10,0,10,8));act.pack(fill='x')
   for t,c in [('📋复制选中',self.copy),('📋复制整表',self.copy_all),('💾导出CSV',self.export_csv),('📗导出Excel',self.export_xlsx),('📊条件统计',self.stats),('💰批量报价',self.quote),('📈历史对比',self.compare)]:ttk.Button(act,text=t,command=c).pack(side='left',padx=4)
   ttk.Label(act,text='新日期在上；同日期价格从高到低；日期间隔两空行',foreground='#666').pack(side='right')
-  f=ttk.Frame(self.root);f.pack(fill='both',expand=True,padx=10);self.tree=ttk.Treeview(f,columns=[x[0] for x in COLS],show='headings',selectmode='extended')
+  f=ttk.Frame(self.root);f.pack(fill='both',expand=True,padx=10);self.tree=ttk.Treeview(f,columns=[x[0] for x in COLS]+['favorite'],show='headings',selectmode='extended')
   for c,h,w in COLS:self.tree.heading(c,text=h);self.tree.column(c,width=w,anchor='center' if c in {'data_date','category','subtype','price'} else 'w')
-  y=ttk.Scrollbar(f,orient='vertical',command=self.tree.yview);x=ttk.Scrollbar(f,orient='horizontal',command=self.tree.xview);self.tree.configure(yscrollcommand=y.set,xscrollcommand=x.set);self.tree.grid(row=0,column=0,sticky='nsew');y.grid(row=0,column=1,sticky='ns');x.grid(row=1,column=0,sticky='ew');f.grid_rowconfigure(0,weight=1);f.grid_columnconfigure(0,weight=1);self.tree.bind('<Control-c>',self.copy);self.tree.bind('<Control-C>',self.copy);self.tree.bind('<Control-a>',self.select_all);self.tree.bind('<Control-A>',self.select_all);self.tree.bind('<Button-1>',self.drag_start,add='+');self.tree.bind('<B1-Motion>',self.drag_select,add='+');self.tree.bind('<ButtonRelease-1>',self.drag_end,add='+');self.tree.bind('<Button-3>',self.menu);self.tree.bind('<Double-1>',self.detail)
+  self.tree.heading('favorite',text='收藏');self.tree.column('favorite',width=105,anchor='center')
+  y=ttk.Scrollbar(f,orient='vertical',command=self.tree.yview);x=ttk.Scrollbar(f,orient='horizontal',command=self.tree.xview);self.tree.configure(yscrollcommand=y.set,xscrollcommand=x.set);self.tree.grid(row=0,column=0,sticky='nsew');y.grid(row=0,column=1,sticky='ns');x.grid(row=1,column=0,sticky='ew');f.grid_rowconfigure(0,weight=1);f.grid_columnconfigure(0,weight=1);self.tree.bind('<Control-c>',self.copy);self.tree.bind('<Control-C>',self.copy);self.tree.bind('<Control-a>',self.select_all);self.tree.bind('<Control-A>',self.select_all);self.tree.bind('<Button-1>',self.on_tree_click,add='+');self.tree.bind('<B1-Motion>',self.drag_select,add='+');self.tree.bind('<ButtonRelease-1>',self.drag_end,add='+');self.tree.bind('<Button-3>',self.menu);self.tree.bind('<Double-1>',self.detail)
+  self.root.bind('<Button-1>',self.dismiss_suggestions,add='+')
  def load(self):
-  self.s.load();self.meta.config(text=f'最新：{self.s.latest or "无"} · 快照 {len(self.s.dates)} · 已验证价格行 {len(self.s.rows)}');self.refresh_history();self.search(False);self.status.config(text='数据校验通过' if not self.s.errors else '数据校验提示：'+self.s.errors[0])
- def refresh_history(self):
-  if not hasattr(self,'hl'):return
-  self.hl.delete(0,'end');[self.hl.insert('end',x) for x in self.h.items]
- def use_history(self,e=None):
-  s=self.hl.curselection()
-  if s:self.q.set(self.hl.get(s[0]));self.search()
- def clear_history(self):
+  self.s.load();self.meta.config(text=f'最新：{self.s.latest or "无"} · 快照 {len(self.s.dates)} · 已验证价格行 {len(self.s.rows)}');self.search(False);self.status.config(text='数据校验通过' if not self.s.errors else '数据校验提示：'+self.s.errors[0]);self.refresh_suggestions()
+ def show_suggestions(self):
+  if not self.h.items:return self.hide_suggestions();
+  if self.suggest_popup is None or not self.suggest_popup.winfo_exists():
+   self.suggest_popup=tk.Toplevel(self.root);self.suggest_popup.overrideredirect(True);self.suggest_popup.transient(self.root);self.suggest_popup.configure(bg='#d9d9d9')
+  self.refresh_suggestions()
+ def refresh_suggestions(self):
+  if not hasattr(self,'entry') or self.suggest_popup is None or not self.suggest_popup.winfo_exists():
+   if hasattr(self,'entry') and clean(self.q.get()): self.after_suggest()
+   return
+  for w in self.suggest_popup.winfo_children():w.destroy()
+  q=clean(self.q.get());items=self.h.suggestions(q,5)
+  if not items and not q:items=self.h.suggestions('',5)
+  if not items:self.hide_suggestions();return
+  frame=tk.Frame(self.suggest_popup,bg='white',bd=1,relief='solid');frame.pack(fill='both',expand=True)
+  for text in items:
+   b=tk.Button(frame,text='🔍  '+text,anchor='w',font=('微软雅黑',11),bg='white',activebackground='#f1f5f9',relief='flat',bd=0,padx=12,pady=8,command=lambda v=text:self.use_suggestion(v));b.pack(fill='x')
+  tk.Frame(frame,bg='#e5e7eb',height=1).pack(fill='x',padx=8)
+  tk.Button(frame,text='☰  显示所有历史',anchor='w',font=('微软雅黑',10),bg='white',activebackground='#f1f5f9',relief='flat',bd=0,padx=12,pady=9,command=self.show_all_history).pack(fill='x')
+  x=self.entry.winfo_rootx();y=self.entry.winfo_rooty()+self.entry.winfo_height();w=max(self.entry.winfo_width()+42,420);h=min(46*len(items)+54,320);self.suggest_popup.geometry(f'{w}x{h}+{x}+{y}');self.suggest_popup.lift()
+ def after_suggest(self):
+  self.root.after_idle(self.show_suggestions)
+ def dismiss_suggestions(self,e):
+  if self.suggest_popup is None or not self.suggest_popup.winfo_exists():return
+  w=e.widget
+  if w is self.entry:return
+ def hide_suggestions(self):
+  if self.suggest_popup is not None and self.suggest_popup.winfo_exists():self.suggest_popup.destroy()
+  self.suggest_popup=None
+ def use_suggestion(self,text):self.q.set(text);self.hide_suggestions();self.search()
+ def show_all_history(self):
+  self.hide_suggestions();w=tk.Toplevel(self.root);w.title('搜索历史');w.geometry('560x620');w.minsize(420,420);ttk.Label(w,text=f'全部搜索历史 · {len(self.h.items)} 条',font=('微软雅黑',12,'bold')).pack(anchor='w',padx=12,pady=10);f=ttk.Frame(w,padding=(12,0,12,10));f.pack(fill='both',expand=True);lb=tk.Listbox(f,font=('微软雅黑',11),selectmode='browse',exportselection=False);sb=ttk.Scrollbar(f,orient='vertical',command=lb.yview);lb.configure(yscrollcommand=sb.set);lb.pack(side='left',fill='both',expand=True);sb.pack(side='right',fill='y');[lb.insert('end','🔍  '+x) for x in self.h.items];lb.bind('<Double-Button-1>',lambda e:self.use_full_history(w,lb));bar=ttk.Frame(w,padding=8);bar.pack(fill='x');ttk.Button(bar,text='使用选中',command=lambda:self.use_full_history(w,lb)).pack(side='left',padx=4);ttk.Button(bar,text='清空历史',command=lambda:self.clear_history_from(w,lb)).pack(side='left',padx=4);ttk.Button(bar,text='关闭',command=w.destroy).pack(side='right',padx=4)
+ def use_full_history(self,w,lb):
+  s=lb.curselection()
+  if not s:return
+  text=lb.get(s[0]).replace('🔍  ','',1);w.destroy();self.q.set(text);self.search()
+ def clear_history_from(self,w,lb):
   if not self.h.items:return
-  if messagebox.askyesno('清除搜索历史','确定清除全部搜索历史吗？'):self.h.clear();self.refresh_history();self.status.config(text='搜索历史已清除')
+  if messagebox.askyesno('清除搜索历史','确定清除全部搜索历史吗？',parent=w):self.h.clear();w.destroy();self.status.config(text='搜索历史已清除')
  def clear_search(self):
-  self.q.set('');self.rows=[];self.map={};self.tree.delete(*self.tree.get_children());self.target.config(text='已清空搜索框');self.status.config(text='搜索框已清空');self.entry.focus_set()
+  self.q.set('');self.rows=[];self.map={};self.tree.delete(*self.tree.get_children());self.target.config(text='已清空搜索框');self.status.config(text='搜索框已清空');self.hide_suggestions();self.entry.focus_set()
  def search(self,record_history=True):
   q=clean(self.q.get())
-  if record_history and q:self.h.add(q);self.refresh_history()
+  self.hide_suggestions()
+  if record_history and q:self.h.add(q)
   self.rows=self.s.search(q,self.cat.get());self.render(self.rows);n=len({rid(r) for r in self.rows});self.target.config(text=f'搜索：{q} · {n} 个型号目标 · {len(self.rows)} 条价格记录 · 全部日期' if q else '搜索结果：全部日期，日期优先、同日期价格降序');self.status.config(text=f'结果 {len(self.rows)} 条'+(f' · 数据问题 {len(self.s.errors)}' if self.s.errors else ''))
  def render(self,rows):
   self.tree.delete(*self.tree.get_children());self.map={};last=None;i=0
   for r in rows:
    if last and r['data_date']!=last:
-    for _ in range(2):gid=f'g{i}';i+=1;self.tree.insert('', 'end',iid=gid,values=('',)*len(COLS));self.map[gid]=None
-   iid=f'r{i}';i+=1;self.tree.insert('', 'end',iid=iid,values=tuple(r.get(c,'') for c,_,_ in COLS));self.map[iid]=r;last=r['data_date']
- def select_all(self,e=None):self.tree.selection_set([i for i,r in self.map.items() if r]);return 'break'
+    for _ in range(2):gid=f'g{i}';i+=1;self.tree.insert('', 'end',iid=gid,values=('',)*(len(COLS)+1));self.map[gid]=None
+   iid=f'r{i}';i+=1;self.tree.insert('', 'end',iid=iid,values=tuple(r.get(c,'') for c,_,_ in COLS)+(self.favorite_label(r),));self.map[iid]=r;last=r['data_date']
+ def favorite_label(self,r):return '★ 已收藏' if self.fav.has(r) else '☆ 一键收藏'
+ def toast(self,text):self.status.config(text=text);self.root.after(2200,lambda:self.status.config(text=''))
+ def addToFavorites(self,rows):
+  rows=[r for r in rows if r]
+  if not rows:return ([],[])
+  added,duplicate=self.fav.add(rows);self.render(self.rows)
+  if duplicate and not added:self.toast('已经收藏')
+  elif duplicate:self.toast(f'已收藏 {len(added)} 条，{len(duplicate)} 条已经收藏')
+  else:self.toast(f'已收藏 {len(added)} 条')
+  return added,duplicate
+ def on_tree_click(self,e):
+  region=self.tree.identify('region',e.x,e.y);col=self.tree.identify_column(e.x);iid=self.tree.identify_row(e.y)
+  if region=='cell' and col==f'#{len(COLS)+1}' and iid and self.map.get(iid):self.tree.selection_set(iid);self.addToFavorites([self.map[iid]]);return 'break'
+  self.drag_start(e)
  def drag_start(self,e):
   iid=self.tree.identify_row(e.y)
   if not iid or self.map.get(iid) is None:self.anchor=None;self.dragging=False;return
@@ -180,6 +238,7 @@ class App:
   if iid not in ch or self.anchor not in ch:return
   a,b=ch.index(self.anchor),ch.index(iid);lo,hi=sorted((a,b));self.tree.selection_set([x for x in ch[lo:hi+1] if self.map.get(x)]);self.tree.see(iid)
  def drag_end(self,e):self.dragging=False
+ def select_all(self,e=None):self.tree.selection_set([i for i,r in self.map.items() if r]);return 'break'
  def selected(self):return [self.map[i] for i in self.tree.selection() if self.map.get(i)]
  def table(self,rows):
   lines=['\t'.join(h for _,h,_ in COLS)];last=None
@@ -219,10 +278,7 @@ class App:
       w.writerow([r.get(c,'') for c,_,_ in COLS]);last=r['data_date']
    messagebox.showinfo('导出成功',f'已导出 {len(rs)} 条记录\n{p}');self.status.config(text=f'导出成功：{len(rs)} 条');return True
   except Exception as e:messagebox.showerror('导出失败',f'无法写入文件：\n{p}\n\n{e}');return False
- def add_favorite(self):
-  rs=self.selected()
-  if not rs:return messagebox.showinfo('收藏','请先选择一个或多个搜索结果')
-  before={self.fav.identity(r) for r in self.fav.items};self.fav.add(rs);added=sum(1 for r in self.fav.items if self.fav.identity(r) not in before);self.status.config(text=f'已收藏 {added} 条 · 收藏总数 {len(self.fav.items)}')
+ def add_favorite(self):self.addToFavorites(self.selected())
  def show_favorites(self):
   w=tk.Toplevel(self.root);w.title('⭐ 我的收藏');w.geometry('1500x760');w.minsize(1050,560);ttk.Label(w,text=f'收藏内容 · {len(self.fav.items)} 条',font=('微软雅黑',12,'bold')).pack(anchor='w',padx=10,pady=8)
   f=ttk.Frame(w,padding=10);f.pack(fill='both',expand=True);tr=ttk.Treeview(f,columns=[x[0] for x in COLS],show='headings',selectmode='extended')
@@ -253,7 +309,7 @@ class App:
  def menu(self,e):
   iid=self.tree.identify_row(e.y)
   if iid and self.map.get(iid) is not None:self.tree.selection_set(iid)
-  m=tk.Menu(self.root,tearoff=0);m.add_command(label='查看详情',command=self.detail);m.add_command(label='⭐ 添加收藏',command=self.add_favorite);m.add_command(label='复制选中',command=self.copy);m.add_separator();m.add_command(label='历史对比',command=self.compare);m.tk_popup(e.x_root,e.y_root)
+  m=tk.Menu(self.root,tearoff=0);m.add_command(label='查看详情',command=self.detail);m.add_command(label='⭐ 添加收藏',command=lambda:self.addToFavorites(self.selected()));m.add_command(label='复制选中',command=self.copy);m.add_separator();m.add_command(label='历史对比',command=self.compare);m.tk_popup(e.x_root,e.y_root)
  def stats(self):
   rs=self.selected() or self.rows;g={}
   for r in rs:
