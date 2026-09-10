@@ -23,8 +23,15 @@ class SearchHistory:
 
     def __init__(self, items: Iterable[str] = ()) -> None:
         self.items: list[str] = []
+        # Preserve the input order as the initial recent-history order.
+        seen: set[str] = set()
         for item in items:
-            self.add(item, persist=False)
+            value = normalize_query(item)
+            k = query_key(value)
+            if value and k not in seen:
+                self.items.append(value)
+                seen.add(k)
+        self.items = self.items[: self.MAX_ITEMS]
 
     def add(self, value: str, persist: bool = True) -> None:
         value = normalize_query(value)
@@ -41,7 +48,7 @@ class SearchHistory:
         for item in self.items:
             if not q or q in query_key(item):
                 out.append(Suggestion(item))
-                if len(out) >= limit:
+                if len(out) >= max(0, limit):
                     break
         return out
 
