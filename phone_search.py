@@ -152,7 +152,7 @@ class App:
  def setup(self):
   st=ttk.Style();st.configure('T.Treeview',font=('微软雅黑',10),rowheight=32);st.configure('T.Treeview.Heading',font=('微软雅黑',11,'bold'));st.configure('TButton',font=('微软雅黑',10))
  def ui(self):
-  top=ttk.Frame(self.root,padding=10);top.pack(fill='x');ttk.Label(top,text='🔍 品牌 / 系列 / 型号 / 别名',font=('微软雅黑',11,'bold')).pack(side='left');self.q=tk.StringVar();self.entry=tk.Entry(top,textvariable=self.q,font=('微软雅黑',14),width=34);self.entry.pack(side='left',padx=(10,2),ipady=4);self.entry.bind('<Return>',lambda e:self.search());self.q.trace_add('write',lambda *_:self.refresh_suggestions());self.entry.bind('<FocusIn>',lambda e:self.refresh_suggestions());self.entry.bind('<Escape>',lambda e:self.hide_suggestions());ttk.Button(top,text='×',width=3,command=self.clear_search).pack(side='left',padx=(0,4));ttk.Button(top,text='🔍',width=3,command=self.search).pack(side='left',padx=(0,8));self.cat=tk.StringVar(value='全部');ttk.Combobox(top,textvariable=self.cat,values=['全部','手机','平板','电脑','其它'],state='readonly',width=8).pack(side='left',padx=4)
+  top=ttk.Frame(self.root,padding=10);top.pack(fill='x');ttk.Label(top,text='🔍 品牌 / 系列 / 型号 / 别名',font=('微软雅黑',11,'bold')).pack(side='left');self.q=tk.StringVar();self.entry=tk.Entry(top,textvariable=self.q,font=('微软雅黑',14),width=34);self.entry.pack(side='left',padx=(10,2),ipady=4);self.entry.bind('<Return>',lambda e:self.search());self.q.trace_add('write',lambda *_:self.refresh_suggestions());self.entry.bind('<FocusIn>',lambda e:self.show_suggestions());self.entry.bind('<Escape>',lambda e:self.hide_suggestions());ttk.Button(top,text='×',width=3,command=self.clear_search).pack(side='left',padx=(0,4));ttk.Button(top,text='🔍',width=3,command=self.search).pack(side='left',padx=(0,8));self.cat=tk.StringVar(value='全部');ttk.Combobox(top,textvariable=self.cat,values=['全部','手机','平板','电脑','其它'],state='readonly',width=8).pack(side='left',padx=4)
   for t,c in [('查询',self.search),('🔄刷新',self.load),('📁数据目录',self.open_dir),('🧾来源结构',self.sources),('⭐收藏',self.show_favorites)]:ttk.Button(top,text=t,command=c).pack(side='left',padx=4)
   self.status=ttk.Label(top,text='');self.status.pack(side='right')
   info=ttk.Frame(self.root,padding=(10,0,10,8));info.pack(fill='x');self.target=ttk.Label(info,text='搜索结果：全部日期，日期优先、同日期价格降序',font=('微软雅黑',11,'bold'));self.target.pack(side='left');self.meta=ttk.Label(info,text='');self.meta.pack(side='right')
@@ -169,7 +169,10 @@ class App:
   if self.suggest_popup is None or not self.suggest_popup.winfo_exists():self.suggest_popup=tk.Toplevel(self.root);self.suggest_popup.overrideredirect(True);self.suggest_popup.transient(self.root);self.suggest_popup.configure(bg='#d9d9d9')
   self.refresh_suggestions()
  def refresh_suggestions(self):
-  if not hasattr(self,'entry') or self.suggest_popup is None or not self.suggest_popup.winfo_exists():return
+  if not hasattr(self,'entry'):return
+  if self.suggest_popup is None or not self.suggest_popup.winfo_exists():
+   if not self.h.items:return
+   self.show_suggestions();return
   for w in self.suggest_popup.winfo_children():w.destroy()
   q=clean(self.q.get());items=self.h.suggestions(q,5)
   if not items:return self.hide_suggestions()
@@ -178,20 +181,20 @@ class App:
   tk.Frame(frame,bg='#e5e7eb',height=1).pack(fill='x',padx=8);tk.Button(frame,text='☰  显示所有历史',anchor='w',font=('微软雅黑',10),bg='white',activebackground='#f1f5f9',relief='flat',bd=0,padx=12,pady=9,command=self.show_all_history).pack(fill='x');x=self.entry.winfo_rootx();y=self.entry.winfo_rooty()+self.entry.winfo_height();w=max(self.entry.winfo_width()+42,420);h=min(46*len(items)+54,320);self.suggest_popup.geometry(f'{w}x{h}+{x}+{y}');self.suggest_popup.lift()
  def dismiss_suggestions(self,e):
   if self.suggest_popup is None or not self.suggest_popup.winfo_exists():return
-  if e.widget is self.entry or e.widget in self.suggest_popup.winfo_children():return
+  if e.widget is self.entry or e.widget.winfo_toplevel() is self.suggest_popup:return
   self.hide_suggestions()
  def hide_suggestions(self):
   if self.suggest_popup is not None and self.suggest_popup.winfo_exists():self.suggest_popup.destroy()
   self.suggest_popup=None
  def use_suggestion(self,text):self.q.set(text);self.hide_suggestions();self.search()
  def show_all_history(self):
-  self.hide_suggestions();w=tk.Toplevel(self.root);w.title('搜索历史');w.geometry('560x620');w.minsize(420,420);ttk.Label(w,text=f'全部搜索历史 · {len(self.h.items)} 条',font=('微软雅黑',12,'bold')).pack(anchor='w',padx=12,pady=10);f=ttk.Frame(w,padding=(12,0,12,10));f.pack(fill='both',expand=True);lb=tk.Listbox(f,font=('微软雅黑',11),selectmode='browse',exportselection=False);sb=ttk.Scrollbar(f,orient='vertical',command=lb.yview);lb.configure(yscrollcommand=sb.set);lb.pack(side='left',fill='both',expand=True);sb.pack(side='right',fill='y');[lb.insert('end','🔍  '+x) for x in self.h.items];lb.bind('<Double-Button-1>',lambda e:self.use_full_history(w,lb));bar=ttk.Frame(w,padding=8);bar.pack(fill='x');ttk.Button(bar,text='使用选中',command=lambda:self.use_full_history(w,lb)).pack(side='left',padx=4);ttk.Button(bar,text='清空历史',command=lambda:self.clear_history_from(w)).pack(side='left',padx=4);ttk.Button(bar,text='关闭',command=w.destroy).pack(side='right',padx=4)
+  self.hide_suggestions();w=tk.Toplevel(self.root);w.title('搜索历史');w.geometry('560x620');w.minsize(420,420);ttk.Label(w,text=f'全部搜索历史 · {len(self.h.items)} 条',font=('微软雅黑',12,'bold')).pack(anchor='w',padx=12,pady=10);f=ttk.Frame(w,padding=(12,0,12,10));f.pack(fill='both',expand=True);lb=tk.Listbox(f,font=('微软雅黑',11),selectmode='browse',exportselection=False);sb=ttk.Scrollbar(f,orient='vertical',command=lb.yview);lb.configure(yscrollcommand=sb.set);lb.pack(side='left',fill='both',expand=True);sb.pack(side='right',fill='y');[lb.insert('end','🔍  '+x) for x in self.h.items];lb.bind('<Double-Button-1>',lambda e:self.use_full_history(w,lb));bar=ttk.Frame(w,padding=8);bar.pack(fill='x');ttk.Button(bar,text='使用选中',command=lambda:self.use_full_history(w,lb)).pack(side='left',padx=4);ttk.Button(bar,text='清除历史',command=lambda:self.clear_history_from(w)).pack(side='left',padx=4);ttk.Button(bar,text='关闭',command=w.destroy).pack(side='right',padx=4)
  def use_full_history(self,w,lb):
   s=lb.curselection()
   if not s:return
   text=lb.get(s[0]).replace('🔍  ','',1);w.destroy();self.q.set(text);self.search()
  def clear_history_from(self,w):
-  if self.h.items and messagebox.askyesno('清除搜索历史','确定清除全部搜索历史吗？',parent=w):self.h.clear();w.destroy();self.status.config(text='搜索历史已清除')
+  if self.h.items and messagebox.askyesno('清除搜索历史','确定要清除全部搜索历史吗？',parent=w):self.h.clear();w.destroy();self.status.config(text='搜索历史已清除')
  def clear_search(self):self.q.set('');self.rows=[];self.map={};self.tree.delete(*self.tree.get_children());self.target.config(text='已清空搜索框');self.status.config(text='搜索框已清空');self.hide_suggestions();self.entry.focus_set()
  def search(self,record_history=True):
   q=clean(self.q.get());self.hide_suggestions()
@@ -214,9 +217,8 @@ class App:
   else:self.toast(f'已收藏 {len(added)} 条')
   return added,duplicate
  def add_favorite(self):
-  rs=self.selected()
-  if not rs:return self.toast('请先选择搜索结果')
-  return self.addToFavorites(rs)
+  if not self.rows:return self.toast('当前没有搜索结果')
+  return self.addToFavorites(self.rows)
  def on_tree_click(self,e):
   region=self.tree.identify('region',e.x,e.y);col=self.tree.identify_column(e.x);iid=self.tree.identify_row(e.y)
   if region=='cell' and col==f'#{len(COLS)+1}' and iid and self.map.get(iid):self.tree.selection_set(iid);self.addToFavorites([self.map[iid]]);return 'break'
@@ -269,7 +271,7 @@ class App:
      w=csv.writer(f);w.writerow([h for _,h,_ in COLS]);last=None
      for r in rs:
       if last and r['data_date']!=last:w.writerow([]);w.writerow([])
-      w.writerow([r.get(c,'') for c,_,_ in COLS]);last=r['data_date']
+      w.writerow([r.get(c,'') for c,_,_ in COLS])
    messagebox.showinfo('导出成功',f'已导出 {len(rs)} 条记录\n{p}');self.status.config(text=f'导出成功：{len(rs)} 条');return True
   except Exception as e:messagebox.showerror('导出失败',f'无法写入文件：\n{p}\n\n{e}');return False
  def add_favorite_unused(self):return self.add_favorite()
