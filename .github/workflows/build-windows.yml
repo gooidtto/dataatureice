@@ -33,11 +33,13 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pytest
+
+      - name: Materialize callable data
+        run: python -X utf8 tools/materialize_data.py
 
       - name: Validate source and callable data
         run: |
-          python -X utf8 -m py_compile phone_search.py data_validator.py
+          python -X utf8 -m py_compile phone_search.py data_validator.py tools/materialize_data.py
           python -X utf8 data_validator.py data
           python -X utf8 -m pytest -q
 
@@ -49,6 +51,7 @@ jobs:
         shell: pwsh
         run: |
           if (!(Test-Path "data/snapshots/2026-08-31")) { throw "latest callable snapshot missing" }
+          if (Test-Path "data/callable_release_payload.tar.xz") { Remove-Item "data/callable_release_payload.tar.xz" -Force }
           Copy-Item -Path "data" -Destination "dist/数码回收价格秒查工具/data" -Recurse -Force
 
       - name: Smoke-check package contents
