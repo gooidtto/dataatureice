@@ -29,3 +29,17 @@ def test_favorite_content_key_changes_for_condition_or_price():
     a = row(condition='开机屏好', price='100')
     b = row(condition='开机屏坏', price='80')
     assert fav.identity(a) != fav.identity(b)
+
+
+def test_favorite_groups_keep_same_model_together_and_dates_descending():
+    app = object.__new__(mod.App)
+    app.fav = mod.Favorites('unused')
+    app.fav.items = [
+        row(record_id='m2-old', model='M2', data_date='2026-08-20', price='80'),
+        row(record_id='m1-old', model='M1', data_date='2026-08-20', price='70'),
+        row(record_id='m1-new', model='M1', data_date='2026-08-31', price='100'),
+        row(record_id='m2-new', model='M2', data_date='2026-08-31', price='110'),
+    ]
+    groups = app.favorite_groups()
+    assert [block[0]['model'] for _, blocks in groups for block in blocks] == ['M1','M1','M2','M2']
+    assert [[r['data_date'] for r in block] for _, blocks in groups for block in blocks] == [['2026-08-31'],['2026-08-20'],['2026-08-31'],['2026-08-20']]
