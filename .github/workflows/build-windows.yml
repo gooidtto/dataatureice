@@ -63,9 +63,11 @@ jobs:
         run: python -X utf8 tools/materialize_2026_07_manifest9.py
       - name: Merge final skipped-image manifest
         run: python -X utf8 tools/materialize_2026_07_manifest10.py
+      - name: Organize date database
+        run: python -X utf8 tools/organize_date_database.py
       - name: Validate source and callable data
         run: |
-          python -X utf8 -m py_compile phone_search.py ui_bootstrap.py data_validator.py tools/materialize_data.py tools/materialize_2026_07.py tools/materialize_2026_07_safe.py tools/materialize_2026_07_extra.py tools/materialize_2026_07_reviewed.py tools/materialize_2026_07_reviewed2.py tools/materialize_2026_07_reviewed3.py tools/materialize_2026_07_reviewed4.py tools/materialize_2026_07_reviewed5.py tools/materialize_2026_07_reviewed6.py tools/materialize_2026_07_reviewed7.py tools/materialize_2026_07_reviewed8.py tools/materialize_2026_07_reviewed9.py tools/materialize_2026_07_manifest.py tools/materialize_2026_07_manifest_extra.py tools/materialize_2026_07_manifest3.py tools/materialize_2026_07_manifest4.py tools/materialize_2026_07_manifest5.py tools/materialize_2026_07_manifest6.py tools/materialize_2026_07_manifest7.py tools/materialize_2026_07_manifest8.py tools/materialize_2026_07_manifest9.py tools/materialize_2026_07_manifest10.py
+          python -X utf8 -m py_compile phone_search.py ui_bootstrap.py data_validator.py tools/materialize_data.py tools/organize_date_database.py tools/materialize_2026_07.py tools/materialize_2026_07_safe.py tools/materialize_2026_07_extra.py tools/materialize_2026_07_reviewed.py tools/materialize_2026_07_reviewed2.py tools/materialize_2026_07_reviewed3.py tools/materialize_2026_07_reviewed4.py tools/materialize_2026_07_reviewed5.py tools/materialize_2026_07_reviewed6.py tools/materialize_2026_07_reviewed7.py tools/materialize_2026_07_reviewed8.py tools/materialize_2026_07_reviewed9.py tools/materialize_2026_07_manifest.py tools/materialize_2026_07_manifest_extra.py tools/materialize_2026_07_manifest3.py tools/materialize_2026_07_manifest4.py tools/materialize_2026_07_manifest5.py tools/materialize_2026_07_manifest6.py tools/materialize_2026_07_manifest7.py tools/materialize_2026_07_manifest8.py tools/materialize_2026_07_manifest9.py tools/materialize_2026_07_manifest10.py
           python -X utf8 data_validator.py data
           if ($LASTEXITCODE -ne 0) { throw "data validation failed" }
           python -X utf8 -m pytest -q
@@ -84,8 +86,11 @@ jobs:
           if (!(Test-Path "dist/数码回收价格秒查工具/数码回收价格秒查工具.exe")) { throw "EXE missing" }
           $parts = Get-ChildItem "dist/数码回收价格秒查工具/data/snapshots/2026-08-31" -Filter *.csv
           if ($parts.Count -lt 1) { throw "latest snapshot has no CSV shards" }
-          if (!(Test-Path "dist/数码回收价格秒查工具/data/2026-07-05.csv")) { throw "2026-07-05 data missing" }
-          if (!(Test-Path "dist/数码回收价格秒查工具/data/2026-07-10.csv")) { throw "2026-07-10 data missing" }
+          $dateDb = Get-ChildItem "dist/数码回收价格秒查工具/data/database" -Directory
+          if ($dateDb.Count -lt 1) { throw "date database is empty" }
+          foreach ($d in @('2026-07-05','2026-07-10')) {
+            if (!(Test-Path "dist/数码回收价格秒查工具/data/database/$d/price.csv")) { throw "date database missing: $d" }
+          }
       - name: Create ZIP package
         shell: pwsh
         run: Compress-Archive -Path "dist/数码回收价格秒查工具/*" -DestinationPath "数码回收价格秒查工具-Windows.zip" -Force
