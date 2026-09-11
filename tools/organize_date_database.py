@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-"""Normalize all generated date CSVs into data/database/YYYY-MM-DD/price.csv."""
+"""Validate the canonical data/database/YYYY-MM-DD/price.csv tree."""
 from pathlib import Path
 import csv
 import re
-import shutil
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data"
@@ -11,39 +10,33 @@ DATE_FILE = re.compile(r"^(\d{4}-\d{2}-\d{2})\.csv$")
 DATE_DIR = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 
-def csv_has_header(path: Path) -> bool:
-    with path.open("r", encoding="utf-8-sig", newline="") as f:
-        return next(csv.reader(f), None) is not None
-
-
 def main() -> int:
     db = DATA / "database"
     db.mkdir(parents=True, exist_ok=True)
-    moved = 0
-    for path in sorted(DATA.iterdir()):
-        if not path.is_file():
-            continue
-        match = DATE_FILE.fullmatch(path.name)
-        if not match or not csv_has_header(path):
-            continue
-        date = match.group(1)
-        target_dir = db / date
-        target_dir.mkdir(parents=True, exist_ok=True)
-        target = target_dir / "price.csv"
-        if target.exists():
-            target.unlink()
-        shutil.move(str(path), str(target))
-        moved += 1
-        print(f"DATABASE_DATE={date} FILE={target.as_posix()}")
-    folders = sorted(
-        p.name for p in db.iterdir()
-        if p.is_dir() and DATE_DIR.fullmatch(p.name)
-    )
-    print(f"DATABASE_DATE_FOLDERS={len(folders)} MOVED={moved}")
-    for date in folders:
-        print(f"DATABASE_DATE_FOLDER={date}")
-    return 0
+    errors=[]
+    root_dates=[]
+    for p in sorted(DATA.iterdir()):
+        if p.is_file() and DATE_FILE.fullmatch(p.name): root_dates.append(p.name)
+    if root_dates: errors.append(f"date CSVs remain in data root: {root_dates}")
+    folders=[]
+    for p in sorted(db.iterdir()):
+        if not p.is_dir() or not DATE_DIR.fullmatch(p.name): continue
+        folders.append(p.name)
+        price=p/'price.csv'
+        if not price.is_file():
+            errors.append(f"{p}: missing price.csv"); continue
+        try:
+            with price.open('r',encoding='utf-8-sig',newline='') as f:
+                reader=csv.DictReader(f)
+                for line,row in enumerate(reader,2):
+                    if row.get('data_date','').strip()!=p.name:
+                        errors.append(f"{price}:{line}: data_date mismatch")
+        except Exception as exc:
+            errors.append(f"{price}: CSV read failed: {exc}")
+    print(f"DATABASE_DATE_FOLDERS={folders}")
+    print(f"ROOT_DATE_CSVS={root_dates}")
+    print(f"ERRORS={len(errors)}")
+    for e in errors: print(f"ERROR: {e}")
+    return 1 if errors else 0
 
-
-if __name__ == "__main__":
-    raise SystemExit(main())
+if __name__ == '__main__': raise SystemExit(main())
