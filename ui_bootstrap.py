@@ -1,5 +1,6 @@
 """UI startup/child-window standard for the Windows release build."""
 import tkinter as tk
+from tkinter import ttk
 import phone_search
 from favorite_toggle import toggle_favorite
 
@@ -32,15 +33,14 @@ def _clear_results(self, target=True):
 
 def ui(self):
     _original_ui(self)
-    # The original UI builds the category selector from the legacy four
-    # consumer-device categories. Extend that selector without changing the
-    # source data values.
     for widget in self.root.winfo_children():
-        if isinstance(widget, ttk.Combobox):
-            values = list(widget.cget("values"))
-            if "手机配件" not in values:
-                widget.configure(values=values + ["手机配件"])
-            break
+        if isinstance(widget, ttk.Frame):
+            for child in widget.winfo_children():
+                if isinstance(child, ttk.Combobox):
+                    values = list(child.cget("values"))
+                    if "手机配件" not in values:
+                        child.configure(values=values + ["手机配件"])
+                    break
     self.empty_hint = tk.Label(
         self.tree.master,
         text=_EMPTY_HINT,
