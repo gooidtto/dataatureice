@@ -98,7 +98,13 @@ def _quote_text(row):
 
 
 def normalize_search_results(rows):
-    """Normalize raw rows into independent result blocks with independent columns."""
+    """Normalize raw rows into independent result blocks with independent columns.
+
+    Preserve the incoming result order. The search/store layer already defines
+    the ranking order (for example, newest date first), so a second alphabetical
+    sort here could move an older/lower-ranked result ahead of the result the
+    user actually searched for and make independent blocks appear mismatched.
+    """
     groups = {}
     for row in rows:
         category = clean(row.get("category", ""))
@@ -135,5 +141,4 @@ def normalize_search_results(rows):
             }
         )
 
-    result.sort(key=lambda row: (row["identity"], -int(row["data_date"].replace("-", "") or 0)))
     return result
