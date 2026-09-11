@@ -1,4 +1,4 @@
-from search_display import DISPLAY_COLUMNS
+from search_display import DISPLAY_COLUMNS, display_columns_for_rows
 from matrix_ui_actions import matrix_headers, matrix_values, raw_rows_for_payloads, visible_matrix_rows
 
 
@@ -21,8 +21,14 @@ def row(**kw):
     return base
 
 
-def test_matrix_headers_follow_new_display_contract():
+def test_matrix_headers_default_to_full_contract():
     assert matrix_headers() == [label for _field, label, _width in DISPLAY_COLUMNS]
+
+
+def test_matrix_headers_follow_dynamic_search_columns():
+    rows = [row(condition="开机靓好", price="700"), row(condition="废板·整机", price="240")]
+    expected = [label for _field, label, _width in display_columns_for_rows(rows)]
+    assert matrix_headers(rows) == expected
 
 
 def test_visible_matrix_row_keeps_full_condition_and_price_in_matching_buckets():
@@ -36,7 +42,7 @@ def test_visible_matrix_row_keeps_full_condition_and_price_in_matching_buckets()
     ]
     display = visible_matrix_rows(rows)
     assert len(display) == 1
-    assert matrix_values(display[0])[1] == "手机 华为 荣耀畅玩系列 畅玩7x (3+32) BND-AL00"
+    assert matrix_values(display[0], rows)[1] == "手机 华为 荣耀畅玩系列 畅玩7x (3+32) BND-AL00"
     assert display[0]["condition_grade"] == "开机靓好：700 CNY/台"
     assert display[0]["condition_screen"] == "开机好屏：500 CNY/台"
     assert display[0]["condition_good_broken"] == "开机好碎：450 CNY/台"
