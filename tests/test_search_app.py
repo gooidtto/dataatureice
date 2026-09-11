@@ -6,9 +6,11 @@ spec=importlib.util.spec_from_file_location('phone_search',HERE/'phone_search.py
 def row(**kw):
  r={k:'' for k in mod.FIELDS};r.update({'data_date':'2026-08-31','category':'手机','subtype':'device','brand':'A','series':'S','model':'M','condition':'好','price':'100','unit':'CNY/台','verified':'1','source_path':'x.csv','source_image':'x.jpg'});r.update(kw);return r
 def write_snapshot(root,r):
- p=root/'snapshots'/r['data_date']/'part.csv';p.parent.mkdir(parents=True,exist_ok=True)
- with p.open('w',encoding='utf-8-sig',newline='') as f:
-  w=csv.DictWriter(f,fieldnames=mod.FIELDS);w.writeheader();w.writerow(r)
+ p=root/'snapshots'/r['data_date']/'part.csv';p.parent.mkdir(parents=True,exist_ok=True);exists=p.exists()
+ with p.open('a',encoding='utf-8-sig',newline='') as f:
+  w=csv.DictWriter(f,fieldnames=mod.FIELDS)
+  if not exists:w.writeheader()
+  w.writerow(r)
 def test_category_canonical():
  assert mod.CAT['phone']=='手机';assert mod.CAT['电脑']=='电脑'
 def test_num_rejects_slash_value():
