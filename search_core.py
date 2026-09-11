@@ -137,7 +137,11 @@ def search_rows(rows, query, category="全部"):
         return []
     brand, remainder = detect_brand(q, rows)
     if brand:
-        terms = tokenize(remainder) or ([remainder] if remainder else [])
+        remainder_key = normalize(remainder)
+        # Preserve a compound network-model identifier after removing the
+        # brand, e.g. "华为 ATU-AL00" must stay one identifier.
+        terms = ([remainder_key] if _has_network_model_prefix(rows, remainder_key)
+                 else tokenize(remainder)) if remainder_key else []
     else:
         query_key = normalize(q)
         # Keep a compound network-model identifier such as ATU-AL00 intact.
