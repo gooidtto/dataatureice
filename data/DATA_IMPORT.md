@@ -17,6 +17,6 @@ The uploaded `0705` and `0710` image batches are materialized by:
 - `tools/materialize_2026_07_extra.py`
 - `tools/materialize_2026_07_manifest.py`
 
-Current verified subset: 109 rows for `2026-07-05` and 383 rows for `2026-07-10`. These rows come only from clearly readable/visually verified images. Images or entries that could not be reliably identified were skipped rather than guessed. Source-image paths, SHA-256 and verification metadata are merged into `source_image_manifest.csv` during CI.
+Current verified subset: 109 rows for `2026-07-05` and 407 rows for `2026-07-10` (516 rows total). These rows come only from clearly readable/visually verified images. Images or entries that could not be reliably identified were skipped rather than guessed. Source-image paths, SHA-256 and verification metadata are merged into `source_image_manifest.csv` during CI.
 
 GitHub Actions automatically materializes these dates before validation/build. The Windows package copies the materialized `data/` directory next to the EXE.
