@@ -49,8 +49,9 @@ def _condition_bucket(condition):
         return "condition_bad_parts"
     if compact == "开机好碎" or (compact.startswith("开机") and "好碎" in compact):
         return "condition_good_broken"
-    if compact in {"开机碎屏", "开机屏碎"} or "碎屏" in compact or "屏碎" in compact:
-        return "condition_cracked"
+    # Mixed wording such as “开机屏好外屏碎” is a screen-quality quote,
+    # not a standalone cracked-screen quote. Check screen markers first so
+    # the trailing “屏碎” fragment does not steal it into the cracked bucket.
     if (
         compact in {"开机好屏/内屏碎", "开机好屏/内屏", "内屏碎", "开机好屏"}
         or "屏好" in compact
@@ -58,6 +59,8 @@ def _condition_bucket(condition):
         or "内屏" in compact
     ):
         return "condition_screen"
+    if compact in {"开机碎屏", "开机屏碎"} or "碎屏" in compact or "屏碎" in compact:
+        return "condition_cracked"
     if compact in {"开机靓好", "开机靓机", "靓机", "开机好"}:
         return "condition_grade"
     return None
