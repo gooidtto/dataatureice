@@ -1,20 +1,11 @@
 name: Build Windows EXE
-
 on:
   workflow_dispatch:
   push:
-    branches:
-      - main
-      - release-image-first-windows
-    tags:
-      - 'v*'
-
-permissions:
-  contents: write
-
-env:
-  PYTHONUTF8: '1'
-
+    branches: [main, release-image-first-windows]
+    tags: ['v*']
+permissions: {contents: write}
+env: {PYTHONUTF8: '1'}
 jobs:
   build-windows:
     runs-on: windows-latest
@@ -23,10 +14,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Setup Python
         uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-          architecture: 'x64'
-          cache: pip
+        with: {python-version: '3.12', architecture: 'x64', cache: pip}
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -43,9 +31,11 @@ jobs:
         run: python -X utf8 tools/materialize_2026_07_reviewed2.py
       - name: Merge 2026-07 source manifest
         run: python -X utf8 tools/materialize_2026_07_manifest.py
+      - name: Merge extra 2026-07 source manifest
+        run: python -X utf8 tools/materialize_2026_07_manifest_extra.py
       - name: Validate source and callable data
         run: |
-          python -X utf8 -m py_compile phone_search.py ui_bootstrap.py data_validator.py tools/materialize_data.py tools/materialize_2026_07.py tools/materialize_2026_07_extra.py tools/materialize_2026_07_reviewed.py tools/materialize_2026_07_reviewed2.py tools/materialize_2026_07_manifest.py
+          python -X utf8 -m py_compile phone_search.py ui_bootstrap.py data_validator.py tools/materialize_data.py tools/materialize_2026_07.py tools/materialize_2026_07_extra.py tools/materialize_2026_07_reviewed.py tools/materialize_2026_07_reviewed2.py tools/materialize_2026_07_manifest.py tools/materialize_2026_07_manifest_extra.py
           python -X utf8 data_validator.py data
           python -X utf8 -m pytest -q
       - name: Build EXE
@@ -69,13 +59,8 @@ jobs:
         run: Compress-Archive -Path "dist/数码回收价格秒查工具/*" -DestinationPath "数码回收价格秒查工具-Windows.zip" -Force
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
-        with:
-          name: 数码回收价格秒查工具-Windows
-          path: 数码回收价格秒查工具-Windows.zip
-          if-no-files-found: error
+        with: {name: 数码回收价格秒查工具-Windows, path: 数码回收价格秒查工具-Windows.zip, if-no-files-found: error}
       - name: Publish GitHub Release
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
-        with:
-          files: 数码回收价格秒查工具-Windows.zip
-          generate_release_notes: true
+        with: {files: 数码回收价格秒查工具-Windows.zip, generate_release_notes: true}
