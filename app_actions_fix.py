@@ -4,6 +4,24 @@ from tkinter import ttk, messagebox
 import phone_search
 from search_core import search_rows
 
+# model_code is an authoritative 19-field fact and is also the user's
+# network-model identifier. Expose it in every data-facing UI built from COLS.
+DISPLAY_COLS = [
+    ("data_date", "数据日期", 105),
+    ("category", "分类", 70),
+    ("subtype", "子类型", 75),
+    ("brand", "品牌", 110),
+    ("series", "系列", 110),
+    ("model", "型号", 250),
+    ("model_code", "网络型号", 150),
+    ("condition", "价格条件", 175),
+    ("price", "价格", 85),
+    ("unit", "单位", 85),
+    ("note", "备注", 260),
+    ("source_image", "来源图片", 150),
+]
+phone_search.COLS = DISPLAY_COLS
+
 
 def _semantic_search(self, q='', cat='全部'):
     return search_rows(self.rows, q, cat)
