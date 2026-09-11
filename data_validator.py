@@ -4,7 +4,7 @@ from collections import Counter
 DATE_FILE=re.compile(r'^\d{4}-\d{2}-\d{2}\.csv$')
 DATE_DIR=re.compile(r'^\d{4}-\d{2}-\d{2}$')
 FIELDS=['record_id','data_date','category','subtype','brand','series','model','model_code','alias','condition','price','unit','note','origin','source_image','source_path','verified','confidence','verification']
-CATS={'手机','平板','电脑','其它'}
+CATS={'手机','手机配件','平板','电脑','其它'}
 TRUE={'1','true','yes','verified'}
 def clean(v): return str(v or '').replace('\ufeff','').replace('\u200b','').replace('\xa0',' ').strip()
 def read_csv(p):
