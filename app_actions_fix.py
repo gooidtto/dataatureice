@@ -4,8 +4,8 @@ from tkinter import ttk, messagebox
 import phone_search
 from search_core import search_rows
 
-# model_code is an authoritative 19-field fact and is also the user's
-# network-model identifier. Expose it in every data-facing UI built from COLS.
+# model_code is an authoritative 19-field fact and also the user's network-model
+# identifier. Keep this legacy/detail definition available to auxiliary views.
 DISPLAY_COLS = [
     ("data_date", "数据日期", 105),
     ("category", "分类", 70),
@@ -65,7 +65,78 @@ def show_favorites(self):
     ttk.Button(bar,text="移除选中",command=remove_selected).pack(side="left",padx=4);ttk.Button(bar,text="关闭",command=w.destroy).pack(side="right",padx=4);w.bind("<Escape>",lambda _e:w.destroy());w.transient(self.root);w.focus_set()
 
 
+# This is intentionally a separate pure helper so the matrix renderer stays
+# display-only while the detail view can recover the original flat records.
+def legacy_detail_rows(payload):
+    """Return the original raw price rows behind one matrix row in date/order form."""
+    rows=list((payload or {}).get("_rows", []))
+    return sorted(rows, key=lambda r: (
+        str(r.get("data_date", "")),
+        str(r.get("condition", "")),
+        str(r.get("price", "")),
+        str(r.get("record_id", "")),
+    ), reverse=True)
+
+
+LEGACY_DETAIL_COLS = (
+    ("data_date", "数据日期", 105),
+    ("category", "品类", 70),
+    ("brand", "品牌", 100),
+    ("series", "系列", 150),
+    ("model", "市场型号", 260),
+    ("model_code", "网络型号", 145),
+    ("condition", "成色等级标准项", 190),
+    ("price", "价格", 85),
+    ("unit", "单位", 85),
+    ("source_image", "来源图片", 145),
+    ("note", "备注", 220),
+)
+
+
+def detail(self, event=None):
+    """Show the legacy flat price records when a new matrix row is opened."""
+    iid=self.tree.identify_row(event.y) if event is not None else (self.tree.selection()[0] if self.tree.selection() else "")
+    payload=getattr(self, "_matrix_map", {}).get(iid) if iid else None
+    if not payload:
+        # Keep legacy detail behavior for non-matrix auxiliary views.
+        row=self.map.get(iid) if iid and hasattr(self, "map") else None
+        if not row:
+            return
+        payload={"_rows":[row]}
+    rows=legacy_detail_rows(payload)
+    w=tk.Toplevel(self.root); w.title("记录详情 · 原始价格明细"); w.geometry("1500x620"); w.minsize(1000,480)
+    ttk.Label(w,text="原始价格明细（新版横向展示的来源记录）",font=("微软雅黑",12,"bold")).pack(anchor="w",padx=12,pady=10)
+    f=ttk.Frame(w,padding=(12,0,12,8));f.pack(fill="both",expand=True)
+    cols=[c[0] for c in LEGACY_DETAIL_COLS]
+    tree=ttk.Treeview(f,columns=cols,show="headings",selectmode="extended")
+    for c,h,width in LEGACY_DETAIL_COLS:
+        tree.heading(c,text=h);tree.column(c,width=width,anchor="w")
+    y=ttk.Scrollbar(f,orient="vertical",command=tree.yview);x=ttk.Scrollbar(f,orient="horizontal",command=tree.xview)
+    tree.configure(yscrollcommand=y.set,xscrollcommand=x.set);tree.grid(row=0,column=0,sticky="nsew");y.grid(row=0,column=1,sticky="ns");x.grid(row=1,column=0,sticky="ew")
+    f.grid_rowconfigure(0,weight=1);f.grid_columnconfigure(0,weight=1)
+    for r in rows:
+        tree.insert("","end",values=[r.get(c,"") for c,_,_ in LEGACY_DETAIL_COLS])
+    bar=ttk.Frame(w,padding=8);bar.pack(fill="x")
+    ttk.Button(bar,text="关闭",command=w.destroy).pack(side="right",padx=4)
+    ttk.Button(bar,text="查看完整19字段",command=lambda:self._show_full_raw_record(rows,w)).pack(side="right",padx=4)
+    w.bind("<Escape>",lambda _e:w.destroy());w.transient(self.root);w.focus_set()
+
+
+def _show_full_raw_record(self, rows, parent=None):
+    w=tk.Toplevel(self.root);w.title("完整事实记录 · 19字段");w.geometry("900x640");w.minsize(700,480)
+    text=tk.Text(w,wrap="none",font=("微软雅黑",10));text.pack(fill="both",expand=True,padx=12,pady=12)
+    for idx,r in enumerate(rows,1):
+        text.insert("end",f"===== 原始记录 {idx} =====\n")
+        for field in phone_search.FIELDS:
+            text.insert("end",f"{field}: {r.get(field,'')}\n")
+        text.insert("end","\n")
+    text.configure(state="disabled")
+    ttk.Button(w,text="关闭",command=w.destroy).pack(pady=(0,8));w.bind("<Escape>",lambda _e:w.destroy());w.transient(parent or self.root);w.focus_set()
+
+
 def install_fix(App):
     phone_search.Store.search = _semantic_search
     App.compare=compare
     App.show_favorites=show_favorites
+    App.detail=detail
+    App._show_full_raw_record=_show_full_raw_record
