@@ -1,9 +1,8 @@
 """Search-result presentation normalization.
 
-This module changes presentation only. Canonical 19-field database rows are
-never modified or collapsed on disk. Search rows are grouped by date +
-brand + series + model + network model, then condition prices are pivoted into
-stable columns for fast quote lookup.
+Presentation only: canonical 19-field database rows are never modified or
+collapsed on disk. Search rows are grouped by the fields that actually exist
+in the source rows, then condition prices are pivoted into stable columns.
 """
 import re
 import unicodedata
@@ -22,6 +21,7 @@ DISPLAY_COLUMNS = (
     *tuple((key, label, 145) for key, label in PRICE_COLUMNS),
     ("source_image", "来源图片", 150),
 )
+IDENTITY_FIELDS = ("category", "brand", "series", "model", "model_code")
 
 
 def clean(value):
@@ -46,30 +46,24 @@ def _condition_bucket(condition):
     return None
 
 
-def _identity(row):
-    parts = [
-        clean(row.get("category", "")),
-        clean(row.get("brand", "")),
-        clean(row.get("series", "")),
-        clean(row.get("model", "")),
-        clean(row.get("model_code", "")),
-    ]
-    return " ".join(part for part in parts if part)
+def build_identity(row):
+    """Build the compact identity from fields that actually exist in the row."""
+    return " ".join(clean(row.get(field, "")) for field in IDENTITY_FIELDS if clean(row.get(field, "")))
 
 
 def normalize_search_results(rows):
-    """Return display-only model/date rows, newest date first within each model."""
+    """Return display-only model/date rows, omitting unavailable identity fields."""
     groups = {}
     for row in rows:
-        key = (
-            clean(row.get("category", "")),
-            clean(row.get("brand", "")),
-            clean(row.get("series", "")),
-            clean(row.get("model", "")),
-            clean(row.get("model_code", "")),
-            clean(row.get("data_date", "")),
-        )
-        group = groups.setdefault(key, {"source_image": "", "prices": {}, "rows": []})
+        category = clean(row.get("category", ""))
+        brand = clean(row.get("brand", ""))
+        series = clean(row.get("series", ""))
+        model = clean(row.get("model", ""))
+        model_code = clean(row.get("model_code", ""))
+        date = clean(row.get("data_date", ""))
+        identity = build_identity(row)
+        key = (category, brand, series, model, model_code, date)
+        group = groups.setdefault(key, {"identity": identity, "source_image": "", "prices": {}, "rows": []})
         group["rows"].append(row)
         source = clean(row.get("source_image", ""))
         if source and not group["source_image"]:
@@ -80,10 +74,10 @@ def normalize_search_results(rows):
 
     result = []
     for key, group in groups.items():
-        category, brand, series, model, model_code, date = key
+        _category, _brand, _series, _model, _model_code, date = key
         out = {
             "data_date": date,
-            "identity": " ".join(x for x in (category, brand, series, model, model_code) if x),
+            "identity": group["identity"],
             "source_image": group["source_image"],
             "_rows": list(group["rows"]),
         }
