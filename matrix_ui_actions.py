@@ -1,8 +1,4 @@
-"""Primary actions for the new horizontal search-result matrix.
-
-The matrix is presentation-only. Canonical 19-field rows remain unchanged and
-are retained behind each matrix row for the dedicated raw-price detail view.
-"""
+"""Primary actions for the horizontal search-result matrix."""
 import csv
 import tkinter as tk
 from tkinter import filedialog
@@ -10,24 +6,26 @@ from openpyxl import Workbook
 from openpyxl.styles import Font
 
 import phone_search
-from search_display import DISPLAY_COLUMNS, normalize_search_results
+from search_display import DISPLAY_COLUMNS, display_columns_for_rows, normalize_search_results
 
 
 def visible_matrix_rows(rows):
-    """Return display rows in the same order shown by the matrix UI."""
     return [row for row in normalize_search_results(rows) if not row.get("_separator")]
 
 
-def matrix_headers():
-    return [label for _field, label, _width in DISPLAY_COLUMNS]
+def matrix_columns(rows=None):
+    return display_columns_for_rows(rows or []) if rows is not None else DISPLAY_COLUMNS
 
 
-def matrix_values(display_row):
-    return [display_row.get(field, "") for field, _label, _width in DISPLAY_COLUMNS]
+def matrix_headers(rows=None):
+    return [label for _field, label, _width in matrix_columns(rows)]
+
+
+def matrix_values(display_row, rows=None):
+    return [display_row.get(field, "") for field, _label, _width in matrix_columns(rows)]
 
 
 def raw_rows_for_payloads(payloads):
-    """Flatten the source rows behind matrix payloads without content duplication."""
     out = []
     seen = set()
     for payload in payloads:
@@ -57,14 +55,15 @@ def _payloads_or_all(app):
     return visible_matrix_rows(app.rows)
 
 
-def _matrix_text(payloads):
-    lines = ["\t".join(matrix_headers())]
+def _matrix_text(payloads, columns=None):
+    columns = columns or DISPLAY_COLUMNS
+    lines = ["\t".join(label for _field, label, _width in columns)]
     last_identity = None
     for payload in payloads:
         identity = payload.get("identity", "")
         if last_identity is not None and identity != last_identity:
-            lines.append("\t" * (len(DISPLAY_COLUMNS) - 1))
-        lines.append("\t".join(str(v) for v in matrix_values(payload)))
+            lines.append("\t" * (len(columns) - 1))
+        lines.append("\t".join(str(payload.get(field, "")) for field, _label, _width in columns))
         last_identity = identity
     return "\r\n".join(lines)
 
@@ -82,8 +81,9 @@ def copy_selected(app, event=None):
     if not payloads:
         app.toast("请先选择搜索结果")
         return "break" if event else None
+    columns = getattr(app, "_matrix_columns", matrix_columns(app.rows))
     app.root.clipboard_clear()
-    app.root.clipboard_append(_matrix_text(payloads))
+    app.root.clipboard_append(_matrix_text(payloads, columns))
     app.root.update()
     app.status.config(text=f"已复制搜索结果 {len(payloads)} 行")
     return "break" if event else None
@@ -93,30 +93,33 @@ def copy_all(app):
     payloads = visible_matrix_rows(app.rows)
     if not payloads:
         return app.toast("当前没有搜索结果")
+    columns = getattr(app, "_matrix_columns", matrix_columns(app.rows))
     app.root.clipboard_clear()
-    app.root.clipboard_append(_matrix_text(payloads))
+    app.root.clipboard_append(_matrix_text(payloads, columns))
     app.root.update()
     app.status.config(text=f"已复制搜索结果 {len(payloads)} 行")
 
 
-def _export_csv(app, payloads, path):
+def _export_csv(app, payloads, path, columns=None):
+    columns = columns or DISPLAY_COLUMNS
     with open(path, "w", encoding="utf-8-sig", newline="") as f:
         writer = csv.writer(f)
-        writer.writerow(matrix_headers())
+        writer.writerow([label for _field, label, _width in columns])
         last_identity = None
         for payload in payloads:
             identity = payload.get("identity", "")
             if last_identity is not None and identity != last_identity:
-                writer.writerow([""] * len(DISPLAY_COLUMNS))
-            writer.writerow(matrix_values(payload))
+                writer.writerow([""] * len(columns))
+            writer.writerow([payload.get(field, "") for field, _label, _width in columns])
             last_identity = identity
 
 
-def _export_xlsx(app, payloads, path):
+def _export_xlsx(app, payloads, path, columns=None):
+    columns = columns or DISPLAY_COLUMNS
     wb = Workbook()
     ws = wb.active
     ws.title = "搜索结果"
-    headers = matrix_headers()
+    headers = [label for _field, label, _width in columns]
     for col, label in enumerate(headers, 1):
         cell = ws.cell(1, col, label)
         cell.font = Font(bold=True)
@@ -126,8 +129,8 @@ def _export_xlsx(app, payloads, path):
         identity = payload.get("identity", "")
         if last_identity is not None and identity != last_identity:
             row_index += 1
-        for col, value in enumerate(matrix_values(payload), 1):
-            ws.cell(row_index, col, value)
+        for col, (field, _label, _width) in enumerate(columns, 1):
+            ws.cell(row_index, col, payload.get(field, ""))
         row_index += 1
         last_identity = identity
     ws.freeze_panes = "A2"
@@ -141,16 +144,11 @@ def export_csv(app):
     payloads = _payloads_or_all(app)
     if not payloads:
         return app.toast("当前没有搜索结果")
-    path = filedialog.asksaveasfilename(
-        parent=app.root,
-        title="导出搜索结果 CSV",
-        defaultextension=".csv",
-        filetypes=[("CSV 文件", "*.csv")],
-        initialfile="数码价格搜索结果.csv",
-    )
+    columns = getattr(app, "_matrix_columns", matrix_columns(app.rows))
+    path = filedialog.asksaveasfilename(parent=app.root, title="导出搜索结果 CSV", defaultextension=".csv", filetypes=[("CSV 文件", "*.csv")], initialfile="数码价格搜索结果.csv")
     if not path:
         return
-    _export_csv(app, payloads, path)
+    _export_csv(app, payloads, path, columns)
     app.status.config(text=f"已导出搜索结果 {len(payloads)} 行")
 
 
@@ -158,21 +156,15 @@ def export_xlsx(app):
     payloads = _payloads_or_all(app)
     if not payloads:
         return app.toast("当前没有搜索结果")
-    path = filedialog.asksaveasfilename(
-        parent=app.root,
-        title="导出搜索结果 Excel",
-        defaultextension=".xlsx",
-        filetypes=[("Excel 文件", "*.xlsx")],
-        initialfile="数码价格搜索结果.xlsx",
-    )
+    columns = getattr(app, "_matrix_columns", matrix_columns(app.rows))
+    path = filedialog.asksaveasfilename(parent=app.root, title="导出搜索结果 Excel", defaultextension=".xlsx", filetypes=[("Excel 文件", "*.xlsx")], initialfile="数码价格搜索结果.xlsx")
     if not path:
         return
-    _export_xlsx(app, payloads, path)
+    _export_xlsx(app, payloads, path, columns)
     app.status.config(text=f"已导出搜索结果 {len(payloads)} 行")
 
 
 def _add_raw_button(app):
-    """Add one dedicated legacy/raw-price button to the existing action bar."""
     for widget in app.root.winfo_children():
         if not isinstance(widget, tk.Frame) and not isinstance(widget, __import__("tkinter").ttk.Frame):
             continue
@@ -197,6 +189,7 @@ def install(App):
 
     def init_with_matrix_actions(self, root):
         original_init(self, root)
+        self._matrix_columns = DISPLAY_COLUMNS
         _add_raw_button(self)
 
     App.__init__ = init_with_matrix_actions
