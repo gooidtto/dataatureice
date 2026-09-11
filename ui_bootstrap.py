@@ -7,11 +7,9 @@ import phone_search
 from favorite_toggle import toggle_favorite
 from app_actions import install as install_app_actions
 from app_actions_fix import install_fix as install_app_action_fixes
-from search_display import DISPLAY_COLUMNS, normalize_search_results
+from search_display import DISPLAY_COLUMNS, display_columns_for_rows, normalize_search_results
 
 phone_search.CAT["手机配件"]="手机配件"
-# The new result table is the canonical visible table for the release build.
-# Keep the source database unchanged; only the presentation columns change.
 phone_search.COLS = DISPLAY_COLUMNS
 _EMPTY_HINT="输入品牌 / 系列 / 型号开始查询\n\n数据来自已验证的图片事实价格库"
 _original_ui=phone_search.App.ui
@@ -60,7 +58,7 @@ def _canonical_store_load(self):
 
 
 def clear_search(self):
-    self.q.set("");self.hide_suggestions();self.rows=[];self.map={};self._matrix_map={};self.tree.delete(*self.tree.get_children());self.target.config(text="输入品牌 / 系列 / 型号开始查询")
+    self.q.set("");self.hide_suggestions();self.rows=[];self.map={};self._matrix_map={};self._matrix_columns=DISPLAY_COLUMNS;self.tree.delete(*self.tree.get_children());self.target.config(text="输入品牌 / 系列 / 型号开始查询")
     if hasattr(self,"empty_hint"):self.empty_hint.place(relx=0.5,rely=0.5,anchor="center")
     self.status.config(text="请输入品牌、系列、型号或别名");self.entry.focus_set()
 
@@ -77,6 +75,7 @@ def ui(self):
     self.empty_hint=tk.Label(self.tree.master,text=_EMPTY_HINT,font=("微软雅黑",15),justify="center",fg="#666666",bg="#ffffff",padx=28,pady=22)
     self.empty_hint.place(relx=0.5,rely=0.5,anchor="center")
     self._matrix_map={}
+    self._matrix_columns=DISPLAY_COLUMNS
 
 
 def _render_search_matrix(self,result):
@@ -84,11 +83,13 @@ def _render_search_matrix(self,result):
     self.rows=result
     self.map={}
     self._matrix_map={}
+    self._matrix_columns=display_columns_for_rows(result)
+    columns=self._matrix_columns
     self.tree.delete(*self.tree.get_children())
-    tree_columns=[c[0] for c in DISPLAY_COLUMNS]+["favorite"]
+    tree_columns=[c[0] for c in columns]+["favorite"]
     self.tree.configure(columns=tree_columns)
-    for c,h,width in DISPLAY_COLUMNS:
-        self.tree.heading(c,text=h);self.tree.column(c,width=width,anchor="w")
+    for c,h,width in columns:
+        self.tree.heading(c,text=h);self.tree.column(c,width=width,anchor="center" if c.startswith("condition_") else "w")
     self.tree.heading("favorite",text="收藏");self.tree.column("favorite",width=110,anchor="center")
     row_index=0
     for display in display_rows:
@@ -102,7 +103,7 @@ def _render_search_matrix(self,result):
         self.map[iid]=representative
         self._matrix_map[iid]=display
         all_favorite=bool(raw_rows) and all(self.fav.has(r) for r in raw_rows)
-        values=[display.get(c,"") for c,_,_ in DISPLAY_COLUMNS]+["★ 已收藏" if all_favorite else "☆ 一键收藏"]
+        values=[display.get(c,"") for c,_,_ in columns]+["★ 已收藏" if all_favorite else "☆ 一键收藏"]
         self.tree.insert("","end",iid=iid,values=values)
     try:self.tree.tag_configure("matrix_separator",height=10)
     except tk.TclError:pass
@@ -112,7 +113,7 @@ def _render_search_matrix(self,result):
 def search(self,record_history=True):
     q=phone_search.clean(self.q.get())
     if not q:
-        self.hide_suggestions();self.rows=[];self.map={};self._matrix_map={};self.tree.delete(*self.tree.get_children());self.target.config(text="输入品牌 / 系列 / 型号开始查询")
+        self.hide_suggestions();self.rows=[];self.map={};self._matrix_map={};self._matrix_columns=DISPLAY_COLUMNS;self.tree.delete(*self.tree.get_children());self.target.config(text="输入品牌 / 系列 / 型号开始查询")
         if hasattr(self,"empty_hint"):self.empty_hint.place(relx=0.5,rely=0.5,anchor="center")
         self.status.config(text="请输入品牌、系列、型号或别名");return []
     if record_history:self.h.add(q)
@@ -131,7 +132,7 @@ def load(self):
     q=phone_search.clean(self.q.get())
     if q:self.search(False)
     else:
-        self.rows=[];self.map={};self._matrix_map={};self.tree.delete(*self.tree.get_children());self.target.config(text="输入品牌 / 系列 / 型号开始查询")
+        self.rows=[];self.map={};self._matrix_map={};self._matrix_columns=DISPLAY_COLUMNS;self.tree.delete(*self.tree.get_children());self.target.config(text="输入品牌 / 系列 / 型号开始查询")
         if hasattr(self,"empty_hint"):self.empty_hint.place(relx=0.5,rely=0.5,anchor="center")
         self.status.config(text="数据已就绪，请输入查询条件")
     self.root.after_idle(self.entry.focus_set);self.root.after_idle(self.show_suggestions)
@@ -149,7 +150,7 @@ def _toggle_matrix_favorite(self,iid,payload):
 
 
 def on_tree_click(self,event):
-    region=self.tree.identify("region",event.x,event.y);column=self.tree.identify_column(event.x);iid=self.tree.identify_row(event.y);favorite_column=f"#{len(DISPLAY_COLUMNS)+1}"
+    region=self.tree.identify("region",event.x,event.y);column=self.tree.identify_column(event.x);iid=self.tree.identify_row(event.y);favorite_column=f"#{len(getattr(self,'_matrix_columns',DISPLAY_COLUMNS))+1}"
     payload=self._matrix_map.get(iid) if iid else None
     if region=="cell" and column==favorite_column and payload:
         self.tree.selection_set(iid);_toggle_matrix_favorite(self,iid,payload);return "break"
@@ -180,8 +181,6 @@ def standardized_toplevel(*args,**kwargs):
     w=_real_toplevel(*args,**kwargs);w.after_idle(lambda:_standardize_window(w));return w
 
 install_app_actions(phone_search.App);install_app_action_fixes(phone_search.App)
-# Re-assert the matrix contract after all action installers, because the legacy
-# action module changes phone_search.COLS for its auxiliary windows.
 phone_search.COLS=DISPLAY_COLUMNS
 phone_search.Store.load=_canonical_store_load
 phone_search.App.ui=ui;phone_search.App.search=search;phone_search.App.render=_render_search_matrix;phone_search.App.load=load;phone_search.App.clear_search=clear_search;phone_search.App.on_tree_click=on_tree_click;phone_search.App.favorite_groups=favorite_groups;phone_search.tk.Toplevel=standardized_toplevel
