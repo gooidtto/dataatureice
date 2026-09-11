@@ -1,26 +1,25 @@
 """Search-result presentation normalization.
 
 Presentation only: canonical 19-field database rows are never modified or
-collapsed on disk. Search rows are grouped by the fields that actually exist
-in the source rows, while every source price condition remains recoverable in
-the horizontal result view and in the raw-price detail view.
+collapsed on disk. Search rows are grouped by identity/date, while every
+source price condition is rendered in its corresponding horizontal bucket
+with the original condition text and price preserved.
 """
 import re
 import unicodedata
 
 PRICE_COLUMNS = (
-    ("condition_grade", "开机靓机/靓机/开机好屏"),
-    ("condition_screen", "开机好屏/内屏碎"),
+    ("condition_grade", "开机靓机/靓机"),
+    ("condition_screen", "开机好屏/内屏"),
     ("condition_good_broken", "开机好碎"),
     ("condition_cracked", "开机碎屏"),
-    ("condition_bad_parts", "不开机/开机坏配件"),
+    ("condition_bad_parts", "不开机/坏配件"),
     ("condition_waste", "废板·整机"),
 )
 DISPLAY_COLUMNS = (
     ("data_date", "数据日期", 105),
     ("identity", "手机/品牌/系列/型号/网络型号", 420),
-    *tuple((key, label, 145) for key, label in PRICE_COLUMNS),
-    ("quote_detail", "全部报价（原始条件/价格）", 460),
+    *tuple((key, label, 175) for key, label in PRICE_COLUMNS),
     ("source_image", "来源图片", 150),
 )
 IDENTITY_FIELDS = ("category", "brand", "series", "model", "model_code")
@@ -31,20 +30,26 @@ def clean(value):
 
 
 def _condition_bucket(condition):
-    """Map only established condition names; never invent a price state."""
+    """Place the original source condition into its display bucket only.
+
+    The bucket is presentation-only. The original condition text remains
+    visible in the cell, and the canonical source row remains unchanged.
+    """
     value = clean(condition)
     compact = value.replace(" ", "")
-    if compact == "废板·整机":
+    if not compact:
+        return None
+    if "废板" in compact or compact == "整机":
         return "condition_waste"
-    if compact in {"不开机", "开机坏配件"}:
+    if "不开机" in compact or "坏配件" in compact:
         return "condition_bad_parts"
-    if compact == "开机好碎":
+    if compact == "开机好碎" or ("好碎" in compact and "屏" not in compact):
         return "condition_good_broken"
-    if compact in {"开机碎屏", "开机屏碎"}:
-        return "condition_cracked"
-    if compact in {"开机好屏/内屏碎", "内屏碎"}:
+    if "好屏" in compact or "内屏" in compact or "屏好" in compact:
         return "condition_screen"
-    if compact in {"开机靓好", "开机靓机", "靓机", "开机好屏", "开机好"}:
+    if "碎屏" in compact or compact == "开机屏碎":
+        return "condition_cracked"
+    if "靓机" in compact or "靓好" in compact or compact in {"靓机", "靓好", "开机好"}:
         return "condition_grade"
     return None
 
@@ -65,7 +70,7 @@ def _quote_text(row):
 
 
 def normalize_search_results(rows):
-    """Return display-only model/date rows while retaining every source quote."""
+    """Return display-only model/date rows with every quote in its bucket."""
     groups = {}
     for row in rows:
         category = clean(row.get("category", ""))
@@ -78,7 +83,7 @@ def normalize_search_results(rows):
         key = (category, brand, series, model, model_code, date)
         group = groups.setdefault(
             key,
-            {"identity": identity, "source_images": [], "prices": {}, "quote_rows": [], "rows": []},
+            {"identity": identity, "source_images": [], "prices": {}, "rows": []},
         )
         group["rows"].append(row)
 
@@ -86,14 +91,10 @@ def normalize_search_results(rows):
         if source and source not in group["source_images"]:
             group["source_images"].append(source)
 
-        quote = _quote_text(row)
-        if quote:
-            group["quote_rows"].append(quote)
-
         bucket = _condition_bucket(row.get("condition", ""))
-        price = clean(row.get("price", ""))
-        if bucket and price:
-            group["prices"].setdefault(bucket, []).append(price)
+        quote = _quote_text(row)
+        if bucket and quote:
+            group["prices"].setdefault(bucket, []).append(quote)
 
     result = []
     for key, group in groups.items():
@@ -101,14 +102,11 @@ def normalize_search_results(rows):
         out = {
             "data_date": date,
             "identity": group["identity"],
-            "quote_detail": "；".join(group["quote_rows"]),
             "source_image": "；".join(group["source_images"]),
             "_rows": list(group["rows"]),
         }
         for bucket, _label in PRICE_COLUMNS:
-            # Never discard repeated source values. The detail view retains the
-            # underlying rows; the matrix cell simply renders all values.
-            out[bucket] = " / ".join(group["prices"].get(bucket, []))
+            out[bucket] = "\n".join(group["prices"].get(bucket, []))
         result.append(out)
 
     result.sort(key=lambda row: (
