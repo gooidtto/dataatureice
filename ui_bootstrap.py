@@ -17,7 +17,7 @@ _real_toplevel=phone_search.tk.Toplevel
 def _canonical_store_load(self):
     """Read callable facts from date database; use snapshots only as legacy fallback."""
     self.rows=[];self.snapshots={};self.manifest=[];self.errors=[]
-    db=os.path.join(self.d,"database")
+    db=os.path.join(self.d,'database')
     loaded_dates=set()
 
     def load_paths(date,paths):
@@ -53,13 +53,27 @@ def _canonical_store_load(self):
             if date in loaded_dates or not re.fullmatch(r'\d{4}-\d{2}-\d{2}',date):continue
             folder=os.path.join(sd,date)
             if not os.path.isdir(folder):continue
-            paths=[os.path.join(folder,n) for n in sorted(os.listdir(folder)) if n.lower().endswith('.csv') and os.path.isfile(os.path.join(folder,n))]
+            paths=[os.path.join(folder,n) for n in sorted(os.listdir(folder)) if n.lower().endswith('.csv')]
             if paths:load_paths(date,paths)
 
     mp=os.path.join(self.d,'source_image_manifest.csv')
     if os.path.isfile(mp):
         try:self.manifest=phone_search.read_csv(mp)
         except Exception as e:self.errors.append(f'来源清单: {e}')
+
+
+def clear_search(self):
+    """Clear the active query without touching search history or favorites."""
+    self.q.set("")
+    self.hide_suggestions()
+    self.rows=[]
+    self.map={}
+    self.tree.delete(*self.tree.get_children())
+    self.target.config(text="输入品牌 / 系列 / 型号开始查询")
+    if hasattr(self,"empty_hint"):
+        self.empty_hint.place(relx=0.5,rely=0.5,anchor="center")
+    self.status.config(text="请输入品牌、系列、型号或别名")
+    self.entry.focus_set()
 
 
 def ui(self):
@@ -133,7 +147,7 @@ def standardized_toplevel(*args,**kwargs):
     w=_real_toplevel(*args,**kwargs);w.after_idle(lambda:_standardize_window(w));return w
 
 phone_search.Store.load=_canonical_store_load
-phone_search.App.ui=ui;phone_search.App.search=search;phone_search.App.load=load;phone_search.App.on_tree_click=on_tree_click;phone_search.App.favorite_groups=favorite_groups;phone_search.tk.Toplevel=standardized_toplevel
+phone_search.App.ui=ui;phone_search.App.search=search;phone_search.App.load=load;phone_search.App.clear_search=clear_search;phone_search.App.on_tree_click=on_tree_click;phone_search.App.favorite_groups=favorite_groups;phone_search.tk.Toplevel=standardized_toplevel
 
 
 def main():
