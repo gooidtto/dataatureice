@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Canonicalize date CSVs into data/database/YYYY-MM-DD/price.csv."""
+"""Build the canonical date database without dropping callable rows."""
 from pathlib import Path
 import csv
 import re
@@ -10,7 +10,9 @@ DATABASE = DATA / "database"
 DATE_FILE = re.compile(r"^(\d{4}-\d{2}-\d{2})\.csv$")
 DATE_DIR = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 FIELDS = ["data_date", "category", "subtype", "brand", "series", "model", "condition", "price", "unit", "note", "source_image"]
-EXPECTED_DATES = ["2026-07-05", "2026-07-10", "2026-08-25", "2026-08-31"]
+FULL_FIELDS = ["record_id", "data_date", "category", "subtype", "brand", "series", "model", "model_code", "alias", "condition", "price", "unit", "note", "origin", "source_image", "source_path", "verified", "confidence", "verification"]
+EXPECTED_COUNTS = {"2026-07-05": 503, "2026-07-10": 1128, "2026-08-25": 15400, "2026-08-31": 14415}
+EXPECTED_DATES = list(EXPECTED_COUNTS)
 
 
 def read_rows(path: Path):
@@ -27,6 +29,20 @@ def write_rows(path: Path, rows):
             writer.writerow({field: row.get(field, "") for field in FIELDS})
 
 
+def canonical_rows(rows):
+    return [{field: row.get(field, "") for field in FIELDS} for row in rows]
+
+
+def snapshot_rows(date: str):
+    folder = DATA / "snapshots" / date
+    if not folder.is_dir():
+        return []
+    rows = []
+    for path in sorted(folder.glob("*.csv")):
+        rows.extend(read_rows(path))
+    return rows
+
+
 def canonicalize_root_files():
     moved = []
     for src in sorted(DATA.iterdir()):
@@ -39,6 +55,20 @@ def canonicalize_root_files():
         src.unlink()
         moved.append((date, len(rows)))
     return moved
+
+
+def restore_from_snapshots():
+    restored = []
+    for date in EXPECTED_DATES:
+        rows = snapshot_rows(date)
+        if not rows:
+            continue
+        target = DATABASE / date / "price.csv"
+        # The 08-25/08-31 snapshots are the authoritative full callable snapshots.
+        # Copy every row; never filter or deduplicate here.
+        write_rows(target, canonical_rows(rows))
+        restored.append((date, len(rows)))
+    return restored
 
 
 def ensure_expected_folders():
@@ -56,20 +86,43 @@ def validate():
     folders = []
     if not DATABASE.exists():
         return ["database directory missing"], folders
-    for p in sorted(DATABASE.iterdir()):
-        if not p.is_dir() or not DATE_DIR.fullmatch(p.name):
+    for date, expected in EXPECTED_COUNTS.items():
+        folder = DATABASE / date
+        price = folder / "price.csv"
+        if not folder.is_dir():
+            errors.append(f"missing date folder: {date}")
             continue
-        folders.append(p.name)
-        price = p / "price.csv"
+        folders.append(date)
         if not price.is_file():
-            errors.append(f"{p}: missing price.csv")
+            errors.append(f"{folder}: missing price.csv")
             continue
         try:
-            for line, row in enumerate(read_rows(price), 2):
-                if row.get("data_date", "").strip() != p.name:
+            rows = read_rows(price)
+            if len(rows) != expected:
+                errors.append(f"{price}: expected {expected} rows, got {len(rows)}")
+            ids = [r.get("record_id", "") for r in rows if r.get("record_id", "")]
+            if len(ids) != len(set(ids)):
+                errors.append(f"{price}: duplicate record_id")
+            for line, row in enumerate(rows, 2):
+                if row.get("data_date", "").strip() != date:
                     errors.append(f"{price}:{line}: data_date mismatch")
+                for field in ("category", "subtype", "model", "condition", "price", "unit"):
+                    if not row.get(field, "").strip():
+                        errors.append(f"{price}:{line}: missing {field}")
+                        break
         except Exception as exc:
             errors.append(f"{price}: CSV read failed: {exc}")
+
+        snap = snapshot_rows(date)
+        if snap:
+            db_rows = read_rows(price)
+            db_ids = {r.get("record_id", "") for r in db_rows}
+            snap_ids = {r.get("record_id", "") for r in snap}
+            if len(snap) != expected:
+                errors.append(f"{date}: snapshot expected {expected} rows, got {len(snap)}")
+            if db_ids != snap_ids:
+                errors.append(f"{date}: database record set differs from snapshot")
+
     for p in sorted(DATA.iterdir()):
         if p.is_file() and DATE_FILE.fullmatch(p.name):
             errors.append(f"date CSV remains in data root: {p.name}")
@@ -79,11 +132,14 @@ def validate():
 def main() -> int:
     DATABASE.mkdir(parents=True, exist_ok=True)
     moved = canonicalize_root_files()
+    restored = restore_from_snapshots()
     ensured = ensure_expected_folders()
     errors, folders = validate()
     print(f"MOVED_DATE_CSVS={moved}")
+    print(f"RESTORED_FROM_SNAPSHOTS={restored}")
     print(f"ENSURED_DATE_FOLDERS={ensured}")
     print(f"DATABASE_DATE_FOLDERS={folders}")
+    print(f"EXPECTED_TOTAL_ROWS={sum(EXPECTED_COUNTS.values())}")
     print(f"ERRORS={len(errors)}")
     for error in errors:
         print(f"ERROR: {error}")
