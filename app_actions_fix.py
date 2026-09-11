@@ -98,10 +98,8 @@ def detail(self, event=None):
     iid=self.tree.identify_row(event.y) if event is not None else (self.tree.selection()[0] if self.tree.selection() else "")
     payload=getattr(self, "_matrix_map", {}).get(iid) if iid else None
     if not payload:
-        # Keep legacy detail behavior for non-matrix auxiliary views.
         row=self.map.get(iid) if iid and hasattr(self, "map") else None
-        if not row:
-            return
+        if not row:return
         payload={"_rows":[row]}
     rows=legacy_detail_rows(payload)
     w=tk.Toplevel(self.root); w.title("记录详情 · 原始价格明细"); w.geometry("1500x620"); w.minsize(1000,480)
@@ -109,16 +107,11 @@ def detail(self, event=None):
     f=ttk.Frame(w,padding=(12,0,12,8));f.pack(fill="both",expand=True)
     cols=[c[0] for c in LEGACY_DETAIL_COLS]
     tree=ttk.Treeview(f,columns=cols,show="headings",selectmode="extended")
-    for c,h,width in LEGACY_DETAIL_COLS:
-        tree.heading(c,text=h);tree.column(c,width=width,anchor="w")
-    y=ttk.Scrollbar(f,orient="vertical",command=tree.yview);x=ttk.Scrollbar(f,orient="horizontal",command=tree.xview)
-    tree.configure(yscrollcommand=y.set,xscrollcommand=x.set);tree.grid(row=0,column=0,sticky="nsew");y.grid(row=0,column=1,sticky="ns");x.grid(row=1,column=0,sticky="ew")
-    f.grid_rowconfigure(0,weight=1);f.grid_columnconfigure(0,weight=1)
-    for r in rows:
-        tree.insert("","end",values=[r.get(c,"") for c,_,_ in LEGACY_DETAIL_COLS])
+    for c,h,width in LEGACY_DETAIL_COLS:tree.heading(c,text=h);tree.column(c,width=width,anchor="w")
+    y=ttk.Scrollbar(f,orient="vertical",command=tree.yview);x=ttk.Scrollbar(f,orient="horizontal",command=tree.xview);tree.configure(yscrollcommand=y.set,xscrollcommand=x.set);tree.grid(row=0,column=0,sticky="nsew");y.grid(row=0,column=1,sticky="ns");x.grid(row=1,column=0,sticky="ew");f.grid_rowconfigure(0,weight=1);f.grid_columnconfigure(0,weight=1)
+    for r in rows:tree.insert("","end",values=[r.get(c,"") for c,_,_ in LEGACY_DETAIL_COLS])
     bar=ttk.Frame(w,padding=8);bar.pack(fill="x")
-    ttk.Button(bar,text="关闭",command=w.destroy).pack(side="right",padx=4)
-    ttk.Button(bar,text="查看完整19字段",command=lambda:self._show_full_raw_record(rows,w)).pack(side="right",padx=4)
+    ttk.Button(bar,text="关闭",command=w.destroy).pack(side="right",padx=4);ttk.Button(bar,text="查看完整19字段",command=lambda:self._show_full_raw_record(rows,w)).pack(side="right",padx=4)
     w.bind("<Escape>",lambda _e:w.destroy());w.transient(self.root);w.focus_set()
 
 
@@ -127,11 +120,66 @@ def _show_full_raw_record(self, rows, parent=None):
     text=tk.Text(w,wrap="none",font=("微软雅黑",10));text.pack(fill="both",expand=True,padx=12,pady=12)
     for idx,r in enumerate(rows,1):
         text.insert("end",f"===== 原始记录 {idx} =====\n")
-        for field in phone_search.FIELDS:
-            text.insert("end",f"{field}: {r.get(field,'')}\n")
+        for field in phone_search.FIELDS:text.insert("end",f"{field}: {r.get(field,'')}\n")
         text.insert("end","\n")
     text.configure(state="disabled")
     ttk.Button(w,text="关闭",command=w.destroy).pack(pady=(0,8));w.bind("<Escape>",lambda _e:w.destroy());w.transient(parent or self.root);w.focus_set()
+
+
+def _matrix_widget_hit(self,event):
+    x,y=event.x_root,event.y_root
+    for iid,widgets in getattr(self,"_matrix_widgets",{}).items():
+        block=widgets[-1]
+        try:
+            bx,by=block.winfo_rootx(),block.winfo_rooty()
+            if bx<=x<=bx+block.winfo_width() and by<=y<=by+block.winfo_height():return iid
+        except tk.TclError:
+            continue
+    return None
+
+
+def _apply_matrix_selection(self,iids):
+    ids=[iid for iid in iids if iid in getattr(self,"_matrix_map",{}) and self._matrix_map.get(iid)]
+    self._matrix_selected_iids=set(ids)
+    if ids:
+        self.tree.selection_set(tuple(ids));self.tree.focus(ids[-1]);self._selected_matrix_iid=ids[-1]
+    else:self.tree.selection_remove(self.tree.selection());self._selected_matrix_iid=None
+    for key,widgets in getattr(self,"_matrix_widgets",{}).items():
+        selected=key in self._matrix_selected_iids
+        for widget in widgets:
+            try:widget.configure(bg="#eef4ff" if selected else "white")
+            except tk.TclError:pass
+    if ids:
+        self.status.config(text=f"已框选 {len(ids)} 个结果")
+
+
+def _matrix_mouse_press(self,event):
+    iid=_matrix_widget_hit(self,event)
+    if iid is None:return
+    self._matrix_drag_anchor=iid;self._matrix_dragging=True
+    _apply_matrix_selection(self,[iid])
+
+
+def _matrix_mouse_motion(self,event):
+    if not getattr(self,"_matrix_dragging",False):return
+    iid=_matrix_widget_hit(self,event)
+    if iid is None:return
+    keys=[k for k,v in getattr(self,"_matrix_map",{}).items() if v]
+    if not keys or iid not in keys or self._matrix_drag_anchor not in keys:return
+    a,b=keys.index(self._matrix_drag_anchor),keys.index(iid)
+    lo,hi=sorted((a,b));_apply_matrix_selection(self,keys[lo:hi+1])
+
+
+def _matrix_mouse_release(self,event):
+    if getattr(self,"_matrix_dragging",False):
+        self._matrix_dragging=False
+
+
+def _install_matrix_mouse_selection(self):
+    self._matrix_selected_iids=set();self._matrix_drag_anchor=None;self._matrix_dragging=False
+    self.root.bind_all("<Button-1>",lambda e:_matrix_mouse_press(self,e),add="+")
+    self.root.bind_all("<B1-Motion>",lambda e:_matrix_mouse_motion(self,e),add="+")
+    self.root.bind_all("<ButtonRelease-1>",lambda e:_matrix_mouse_release(self,e),add="+")
 
 
 def install_fix(App):
@@ -140,3 +188,8 @@ def install_fix(App):
     App.show_favorites=show_favorites
     App.detail=detail
     App._show_full_raw_record=_show_full_raw_record
+    original_init=App.__init__
+    def init_with_matrix_mouse_selection(self,root):
+        original_init(self,root)
+        _install_matrix_mouse_selection(self)
+    App.__init__=init_with_matrix_mouse_selection
