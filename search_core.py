@@ -5,12 +5,14 @@ Rules:
 - Multiple query terms are AND conditions.
 - A model term expands only from model/series prefixes, so "OPPO A5"
   returns A5-family variants without leaking unrelated OPPO models.
-- Model-code matching is supported for code-like terms.
+- Network-model (model_code) matching is a first-class identifier and ranks
+  exact matches above broad model-family matches.
 """
 import re
 import unicodedata
 
 MODEL_FIELDS = ("model", "series")
+NETWORK_MODEL_FIELD = "model_code"
 SEPARATORS = re.compile(r"[\s_\-—–·•/\\（）()【】\[\],，.;；:：|、]+")
 
 
@@ -47,10 +49,6 @@ def detect_brand(query, rows):
     return "", q_key
 
 
-def _looks_like_code(term):
-    return len(term) >= 3 and any(ch.isdigit() for ch in term)
-
-
 def _field_prefix_match(value, term):
     value_key = normalize(value)
     term_key = normalize(term)
@@ -58,14 +56,16 @@ def _field_prefix_match(value, term):
 
 
 def _term_matches(row, term):
-    """Match a model-family term without broad alias/source-image leakage."""
+    """Match model family or network-model identifier without alias leakage."""
     term = normalize(term)
     if not term:
         return False
     if any(_field_prefix_match(row.get(field, ""), term) for field in MODEL_FIELDS):
         return True
-    if _looks_like_code(term):
-        code = normalize(row.get("model_code", ""))
+    # A network-model identifier is meaningful once it has at least three
+    # normalized characters; this avoids making single-letter queries broad.
+    if len(term) >= 3:
+        code = normalize(row.get(NETWORK_MODEL_FIELD, ""))
         if code == term or code.startswith(term):
             return True
     return False
@@ -79,6 +79,11 @@ def _score(row, brand, terms, query_key):
         score += 1000
     model_key = normalize(row.get("model", ""))
     series_key = normalize(row.get("series", ""))
+    network_key = normalize(row.get(NETWORK_MODEL_FIELD, ""))
+    if query_key and network_key == query_key:
+        score += 700
+    elif query_key and network_key.startswith(query_key):
+        score += 360
     if query_key and model_key == query_key:
         score += 600
     elif query_key and model_key.startswith(query_key):
@@ -87,7 +92,11 @@ def _score(row, brand, terms, query_key):
         score += 280
     for term in terms:
         tk = normalize(term)
-        if tk == model_key:
+        if tk == network_key:
+            score += 420
+        elif tk and network_key.startswith(tk):
+            score += 220
+        elif tk == model_key:
             score += 240
         elif model_key.startswith(tk):
             score += 180
@@ -95,8 +104,6 @@ def _score(row, brand, terms, query_key):
             score += 150
         elif series_key.startswith(tk):
             score += 120
-        elif tk and (normalize(row.get("model_code", "")) == tk or normalize(row.get("model_code", "")).startswith(tk)):
-            score += 100
     return score
 
 
@@ -107,8 +114,6 @@ def search_rows(rows, query, category="全部"):
         return []
     brand, remainder = detect_brand(q, rows)
     if brand:
-        # Always derive model terms from the text remaining after the brand.
-        # This also handles compact forms such as "oppon1" correctly.
         terms = tokenize(remainder) or ([remainder] if remainder else [])
     else:
         terms = tokenize(q)
