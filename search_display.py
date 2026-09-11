@@ -1,22 +1,22 @@
-"""Search-result presentation normalization and per-result matrix helpers."""
+"""Search-result presentation normalization.
+
+Two identity columns are always fixed. Quote columns are generated from the
+actual raw ``condition`` names present in the current search result. Each row
+fills only the conditions it owns. Quote columns are ordered by their highest
+numeric price, high to low, and source image is always the final column.
+"""
 import re
 import unicodedata
 
-PRICE_COLUMNS = (
-    ("condition_grade", "开机靓机/靓机"),
-    ("condition_screen", "开机好屏/内屏"),
-    ("condition_good_broken", "开机好碎"),
-    ("condition_cracked", "开机碎屏"),
-    ("condition_bad_parts", "不开机/坏配件"),
-    ("condition_waste", "废板·整机"),
-)
 DATA_DATE_WIDTH = 115
 IDENTITY_WIDTH = 380
 QUOTE_WIDTH = 150
 SOURCE_WIDTH = 140
 FIXED_DISPLAY_COLUMNS = (("data_date", "数据日期", DATA_DATE_WIDTH),("identity", "手机/品牌/系列/型号/网络型号", IDENTITY_WIDTH))
-DISPLAY_COLUMNS = (*FIXED_DISPLAY_COLUMNS,*tuple((key,label,QUOTE_WIDTH) for key,label in PRICE_COLUMNS),("source_image","来源图片",SOURCE_WIDTH))
+DISPLAY_COLUMNS = (*FIXED_DISPLAY_COLUMNS,("source_image","来源图片",SOURCE_WIDTH))
 IDENTITY_FIELDS=("category","brand","series","model","model_code")
+# Kept as a compatibility constant for callers that still import it.
+PRICE_COLUMNS=()
 
 def clean(value):
     return re.sub(r"\s+", " ", unicodedata.normalize("NFKC", "" if value is None else str(value))).strip()
@@ -29,45 +29,28 @@ def _price_number(value):
     except Exception:return None
 
 def dynamic_quote_columns(rows):
-    """Return this result's own raw condition names, highest price first."""
+    """Distinct raw conditions across the search result, ordered by max price."""
     grouped={}
     for order,row in enumerate(rows or []):
         condition=clean(row.get("condition",""));price=clean(row.get("price",""))
         if not condition or not price:continue
-        meta=grouped.setdefault(condition,{"max":None,"order":order,"prices":[]})
-        meta["prices"].append(price)
+        meta=grouped.setdefault(condition,{"max":None,"order":order})
         number=_price_number(price)
         if number is not None and (meta["max"] is None or number>meta["max"]):meta["max"]=number
     ordered=sorted(grouped.items(),key=lambda item:(-(item[1]["max"] if item[1]["max"] is not None else float("-inf")),item[1]["order"],item[0]))
     return tuple(condition for condition,_meta in ordered)
 
 def dynamic_quote_values(rows):
-    """Return price-only values for each condition, high-to-low."""
+    """Price-only values for a result, preserving high-to-low order."""
     result={}
     for condition in dynamic_quote_columns(rows):
-        values=[clean(r.get("price","")) for r in rows if clean(r.get("condition",""))==condition and clean(r.get("price",""))]
-        values.sort(key=lambda v:(-(_price_number(v) if _price_number(v) is not None else float("-inf"))))
+        values=[]
+        for row in rows or []:
+            if clean(row.get("condition",""))==condition and clean(row.get("price","")):
+                values.append(clean(row.get("price","")))
+        values.sort(key=lambda value: -(_price_number(value) if _price_number(value) is not None else float("-inf")))
         result[condition]="\n".join(values)
     return result
-
-def dynamic_result_columns(rows):
-    """Fixed identity columns + this result's own conditions + source image last."""
-    columns=list(FIXED_DISPLAY_COLUMNS)
-    columns.extend((condition,condition,QUOTE_WIDTH) for condition in dynamic_quote_columns(rows))
-    columns.append(("source_image","来源图片",SOURCE_WIDTH))
-    return tuple(columns)
-
-def _condition_bucket(condition):
-    """Legacy bucket mapping retained for compatibility."""
-    value=clean(condition);compact=value.replace(" ","")
-    if not compact:return None
-    if compact=="废板·整机" or "废板" in compact:return "condition_waste"
-    if compact in {"不开机","开机坏配件"} or "坏配件" in compact:return "condition_bad_parts"
-    if compact=="开机好碎" or (compact.startswith("开机") and "好碎" in compact):return "condition_good_broken"
-    if compact in {"开机好屏/内屏碎","开机好屏/内屏","内屏碎","开机好屏"} or "屏好" in compact or "好屏" in compact or "内屏" in compact:return "condition_screen"
-    if compact in {"开机碎屏","开机屏碎"} or "碎屏" in compact or "屏碎" in compact:return "condition_cracked"
-    if compact in {"开机靓好","开机靓机","靓机","开机好"}:return "condition_grade"
-    return None
 
 def build_identity(row):
     return " ".join(clean(row.get(field,"")) for field in IDENTITY_FIELDS if clean(row.get(field,"")))
@@ -79,36 +62,24 @@ def _quote_text(row):
     return f"{condition}：{price}{suffix}" if condition else f"{price}{suffix}"
 
 def display_columns_for_rows(rows):
-    """Legacy aggregate columns retained for compatibility outside the new renderer."""
-    present_buckets=set();has_source=False
-    for row in rows:
-        if clean(row.get("source_image","")):has_source=True
-        if clean(row.get("price","")):
-            bucket=_condition_bucket(row.get("condition",""))
-            if bucket:present_buckets.add(bucket)
-    columns=list(FIXED_DISPLAY_COLUMNS)
-    columns.extend((key,label,QUOTE_WIDTH) for key,label in PRICE_COLUMNS if key in present_buckets)
-    if has_source:columns.append(("source_image","来源图片",SOURCE_WIDTH))
-    return tuple(columns)
+    """Fixed identity columns + all raw conditions present in this search + source image last."""
+    return tuple([*FIXED_DISPLAY_COLUMNS,*[(condition,condition,QUOTE_WIDTH) for condition in dynamic_quote_columns(rows)],("source_image","来源图片",SOURCE_WIDTH)])
 
 def normalize_search_results(rows):
     groups={}
     for row in rows:
         category=clean(row.get("category",""));brand=clean(row.get("brand",""));series=clean(row.get("series",""));model=clean(row.get("model",""));model_code=clean(row.get("model_code",""));date=clean(row.get("data_date",""));identity=build_identity(row)
         key=(category,brand,series,model,model_code,date)
-        group=groups.setdefault(key,{"identity":identity,"source_images":[],"prices":{},"quote_rows":[],"rows":[]})
-        group["rows"].append(row);source=clean(row.get("source_image",""))
+        group=groups.setdefault(key,{"identity":identity,"source_images":[],"quote_rows":[],"rows":[]})
+        group["rows"].append(row)
+        source=clean(row.get("source_image",""))
         if source and source not in group["source_images"]:group["source_images"].append(source)
         quote=_quote_text(row)
         if quote:group["quote_rows"].append(quote)
-        bucket=_condition_bucket(row.get("condition",""));price=clean(row.get("price",""))
-        if bucket and price:group["prices"].setdefault(bucket,[]).append(price)
     result=[]
     for key,group in groups.items():
         _category,_brand,_series,_model,_model_code,date=key
-        out={"data_date":date,"identity":group["identity"],"quote_detail":"；".join(group["quote_rows"]),"source_image":"；".join(group["source_images"]),"_rows":list(group["rows"])}
-        for bucket,_label in PRICE_COLUMNS:out[bucket]="\n".join(group["prices"].get(bucket,[]))
-        result.append(out)
+        result.append({"data_date":date,"identity":group["identity"],"source_image":"；".join(group["source_images"]),"quote_detail":"；".join(group["quote_rows"]),"_rows":list(group["rows"]),**dynamic_quote_values(group["rows"])})
     result.sort(key=lambda row:(row["identity"],-int(row["data_date"].replace("-","") or 0)))
     ordered=[];last_identity=None
     for row in result:
