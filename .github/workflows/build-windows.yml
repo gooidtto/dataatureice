@@ -2,7 +2,7 @@ name: Build Windows EXE
 on:
   workflow_dispatch:
   push:
-    branches: [main, release-image-first-windows]
+    branches: [main, release-image-first-windows, data-database-structure]
     tags: ['v*']
 permissions: {contents: write}
 env: {PYTHONUTF8: '1'}
@@ -74,7 +74,7 @@ jobs:
           python -X utf8 -m pytest -q
           if ($LASTEXITCODE -ne 0) { throw "pytest failed" }
       - name: Persist canonical date database
-        if: github.event_name == 'push' && github.ref == 'refs/heads/release-image-first-windows'
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/release-image-first-windows' || github.ref == 'refs/heads/data-database-structure')
         shell: pwsh
         run: |
           git config user.name "github-actions[bot]"
