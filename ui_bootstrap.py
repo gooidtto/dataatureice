@@ -7,8 +7,6 @@ import phone_search
 from favorite_toggle import toggle_favorite
 
 # July image-derived data contains the source-faithful category "手机配件".
-# Keep that value intact instead of coercing it into another category, while
-# making the Store and the category filter accept/query it normally.
 phone_search.CAT["手机配件"] = "手机配件"
 
 _EMPTY_HINT = "输入品牌 / 系列 / 型号开始查询\n\n数据来自已验证的图片事实价格库"
@@ -17,65 +15,7 @@ _original_ui = phone_search.App.ui
 _original_load = phone_search.App.load
 _original_search = phone_search.App.search
 _original_tree_click = phone_search.App.on_tree_click
-_original_store_load = phone_search.Store.load
 _real_toplevel = phone_search.tk.Toplevel
-
-
-def _load_date_database(self):
-    """Load the normalized data/database/YYYY-MM-DD/price.csv tree."""
-    root = os.path.join(self.d, "database")
-    if not os.path.isdir(root):
-        return
-    for date in sorted(os.listdir(root), reverse=False):
-        if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", date):
-            continue
-        folder = os.path.join(root, date)
-        if not os.path.isdir(folder):
-            continue
-        paths = [
-            os.path.join(folder, name)
-            for name in sorted(os.listdir(folder))
-            if name.lower().endswith(".csv") and os.path.isfile(os.path.join(folder, name))
-        ]
-        if not paths:
-            continue
-        data = self.snapshots.setdefault(date, [])
-        seen = {r.get("record_id") for r in data if r.get("record_id")}
-        for path in paths:
-            try:
-                rows = phone_search.read_csv(path)
-            except Exception as exc:
-                self.errors.append(f"{date}: {exc}")
-                continue
-            for raw in rows:
-                r = {k: phone_search.clean(raw.get(k, "")) for k in phone_search.FIELDS}
-                r["category"] = phone_search.CAT.get(r["category"], r["category"])
-                if r["data_date"] != date:
-                    self.errors.append(f"{date}: data_date不一致")
-                if r["category"] not in phone_search.CAT.values():
-                    self.errors.append(f"{date}: 非标准分类 {r['category']}")
-                if not phone_search.valid(r):
-                    continue
-                if r["record_id"] in seen:
-                    self.errors.append(f"{date}: 重复 record_id {r['record_id']}")
-                    continue
-                seen.add(r["record_id"])
-                data.append(r)
-        self.snapshots[date] = data
-    self.rows = [r for date in sorted(self.snapshots) for r in self.snapshots[date]]
-
-
-def _clear_results(self, target=True):
-    self.rows = []
-    self.map = {}
-    if hasattr(self, "tree"):
-        self.tree.delete(*self.tree.get_children())
-    if target and hasattr(self, "target"):
-        self.target.config(text="输入品牌 / 系列 / 型号开始查询")
-    if hasattr(self, "meta") and hasattr(self, "s"):
-        self.meta.config(text=f"最新：{self.s.latest or '无'} · 快照 {len(self.s.dates)} · 已验证价格行 {len(self.s.rows)}")
-    if hasattr(self, "empty_hint"):
-        self.empty_hint.place(relx=0.5, rely=0.5, anchor="center")
 
 
 def ui(self):
@@ -105,9 +45,13 @@ def search(self, record_history=True):
     q = phone_search.clean(self.q.get())
     if not q:
         self.hide_suggestions()
-        _clear_results(self)
-        if hasattr(self, "status"):
-            self.status.config(text="请输入品牌、系列、型号或别名")
+        self.rows = []
+        self.map = {}
+        self.tree.delete(*self.tree.get_children())
+        self.target.config(text="输入品牌 / 系列 / 型号开始查询")
+        if hasattr(self, "empty_hint"):
+            self.empty_hint.place(relx=0.5, rely=0.5, anchor="center")
+        self.status.config(text="请输入品牌、系列、型号或别名")
         return []
     result = _original_search(self, record_history)
     if hasattr(self, "empty_hint"):
@@ -117,13 +61,19 @@ def search(self, record_history=True):
 
 def load(self):
     _original_load(self)
-    _load_date_database(self.s)
+    # Store.load() is the single source of truth and now reads only the
+    # canonical data/database/YYYY-MM-DD/price.csv tree plus snapshots.
     self.meta.config(text=f"最新：{self.s.latest or '无'} · 快照 {len(self.s.dates)} · 已验证价格行 {len(self.s.rows)}")
     if phone_search.clean(self.q.get()):
         if hasattr(self, "empty_hint"):
             self.empty_hint.place_forget()
     else:
-        _clear_results(self)
+        self.rows = []
+        self.map = {}
+        self.tree.delete(*self.tree.get_children())
+        self.target.config(text="输入品牌 / 系列 / 型号开始查询")
+        if hasattr(self, "empty_hint"):
+            self.empty_hint.place(relx=0.5, rely=0.5, anchor="center")
         self.status.config(text="数据已就绪，请输入查询条件")
     self.root.after_idle(self.entry.focus_set)
     self.root.after_idle(self.show_suggestions)
