@@ -96,14 +96,17 @@ jobs:
         shell: pwsh
         run: |
           if (!(Test-Path "dist/数码回收价格秒查工具/数码回收价格秒查工具.exe")) { throw "EXE missing" }
-          $parts = Get-ChildItem "dist/数码回收价格秒查工具/data/snapshots/2026-08-31" -Filter *.csv
-          if ($parts.Count -lt 1) { throw "latest snapshot has no CSV shards" }
-          $expectedDates = @('2026-07-05','2026-07-10','2026-08-25','2026-08-31')
-          foreach ($d in $expectedDates) {
+          $expected = @{'2026-07-05'=503;'2026-07-10'=1128;'2026-08-25'=15400;'2026-08-31'=14415}
+          foreach ($d in $expected.Keys) {
             $dbFile = "dist/数码回收价格秒查工具/data/database/$d/price.csv"
             if (!(Test-Path $dbFile)) { throw "date database missing: $d" }
-            if ((Get-Content $dbFile).Count -lt 1) { throw "empty database file: $d" }
+            $lines = Get-Content $dbFile
+            if ($lines.Count -ne ($expected[$d] + 1)) { throw "database row count mismatch: $d expected $($expected[$d]) got $($lines.Count - 1)" }
+            $header = $lines[0]
+            if ($header -ne 'record_id,data_date,category,subtype,brand,series,model,model_code,alias,condition,price,unit,note,origin,source_image,source_path,verified,confidence,verification') { throw "database schema mismatch: $d" }
           }
+          $parts = Get-ChildItem "dist/数码回收价格秒查工具/data/snapshots/2026-08-31" -Filter *.csv
+          if ($parts.Count -lt 1) { throw "latest snapshot has no CSV shards" }
           $rootDateFiles = Get-ChildItem "dist/数码回收价格秒查工具/data" -File -Filter "????-??-??.csv"
           if ($rootDateFiles.Count -gt 0) { throw "date csv remains in data root" }
       - name: Create ZIP package
