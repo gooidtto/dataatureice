@@ -88,8 +88,17 @@ jobs:
           if ($parts.Count -lt 1) { throw "latest snapshot has no CSV shards" }
           $dateDb = Get-ChildItem "dist/数码回收价格秒查工具/data/database" -Directory
           if ($dateDb.Count -lt 1) { throw "date database is empty" }
-          foreach ($d in @('2026-07-05','2026-07-10')) {
-            if (!(Test-Path "dist/数码回收价格秒查工具/data/database/$d/price.csv")) { throw "date database missing: $d" }
+          $expectedDates = @('2026-07-05','2026-07-10','2026-08-25','2026-08-31')
+          foreach ($d in $expectedDates) {
+            $dbFile = "dist/数码回收价格秒查工具/data/database/$d/price.csv"
+            if (!(Test-Path $dbFile)) { throw "date database missing: $d" }
+          }
+          $rootDateFiles = Get-ChildItem "dist/数码回收价格秒查工具/data" -File -Filter "????-??-??.csv"
+          if ($rootDateFiles.Count -gt 0) { throw "date csv remains in data root" }
+          foreach ($d in $expectedDates) {
+            $p = "dist/数码回收价格秒查工具/data/database/$d/price.csv"
+            $lines = Get-Content $p
+            if ($lines.Count -lt 1) { throw "empty database file: $d" }
           }
       - name: Create ZIP package
         shell: pwsh
