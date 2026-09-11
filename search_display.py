@@ -16,14 +16,19 @@ PRICE_COLUMNS = (
     ("condition_bad_parts", "不开机/坏配件"),
     ("condition_waste", "废板·整机"),
 )
+# Standard visual spacing for the horizontal result matrix.
+DATA_DATE_WIDTH = 115
+IDENTITY_WIDTH = 380
+QUOTE_WIDTH = 150
+SOURCE_WIDTH = 140
 FIXED_DISPLAY_COLUMNS = (
-    ("data_date", "数据日期", 105),
-    ("identity", "手机/品牌/系列/型号/网络型号", 420),
+    ("data_date", "数据日期", DATA_DATE_WIDTH),
+    ("identity", "手机/品牌/系列/型号/网络型号", IDENTITY_WIDTH),
 )
 DISPLAY_COLUMNS = (
     *FIXED_DISPLAY_COLUMNS,
-    *tuple((key, label, 145) for key, label in PRICE_COLUMNS),
-    ("source_image", "来源图片", 150),
+    *tuple((key, label, QUOTE_WIDTH) for key, label in PRICE_COLUMNS),
+    ("source_image", "来源图片", SOURCE_WIDTH),
 )
 IDENTITY_FIELDS = ("category", "brand", "series", "model", "model_code")
 
@@ -84,9 +89,9 @@ def display_columns_for_rows(rows):
             if bucket:
                 present_buckets.add(bucket)
     columns = list(FIXED_DISPLAY_COLUMNS)
-    columns.extend((key, label, 145) for key, label in PRICE_COLUMNS if key in present_buckets)
+    columns.extend((key, label, QUOTE_WIDTH) for key, label in PRICE_COLUMNS if key in present_buckets)
     if has_source:
-        columns.append(("source_image", "来源图片", 150))
+        columns.append(("source_image", "来源图片", SOURCE_WIDTH))
     return tuple(columns)
 
 
