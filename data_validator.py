@@ -4,6 +4,7 @@ from collections import Counter
 DATE_FILE=re.compile(r'^\d{4}-\d{2}-\d{2}\.csv$')
 DATE_DIR=re.compile(r'^\d{4}-\d{2}-\d{2}$')
 FIELDS=['record_id','data_date','category','subtype','brand','series','model','model_code','alias','condition','price','unit','note','origin','source_image','source_path','verified','confidence','verification']
+PRICE_FIELDS=['data_date','category','subtype','brand','series','model','condition','price','unit','note','source_image']
 CATS={'手机','手机配件','平板','电脑','其它'}
 TRUE={'1','true','yes','verified'}
 def clean(v): return str(v or '').replace('\ufeff','').replace('\u200b','').replace('\xa0',' ').strip()
@@ -38,19 +39,24 @@ def validate(data_dir):
     for date,paths in sorted(by_date.items()):
         ids=Counter()
         for path in paths:
+            is_database=os.path.normpath(path).split(os.sep).count('database') > 0
             try: rows=read_csv(path)
             except Exception as e: errors.append(f'{path}: CSV读取失败: {e}'); continue
             if not rows: warnings.append(f'{path}: 空快照分片'); continue
-            missing=[f for f in FIELDS if f not in rows[0]]
+            schema=PRICE_FIELDS if is_database else FIELDS
+            missing=[f for f in schema if f not in rows[0]]
             if missing: errors.append(f'{path}: 缺少字段 {missing}'); continue
             for line,r0 in enumerate(rows,2):
-                r={k:clean(r0.get(k,'')) for k in FIELDS};all_rows.append(r)
+                r={k:clean(r0.get(k,'')) for k in schema}
                 if r['data_date']!=date: errors.append(f'{path}:{line}: data_date={r["data_date"]!r} 与快照 {date} 不一致')
                 if r['category'] not in CATS: errors.append(f'{path}:{line}: 非标准分类 {r["category"]!r}')
-                for f in ('record_id','model','condition','price','unit','source_image','source_path'):
+                required=['data_date','category','model','condition','price','unit','source_image']
+                if not is_database: required += ['record_id','source_path']
+                for f in required:
                     if not r[f]: errors.append(f'{path}:{line}: {f}为空')
-                if r['verified'].lower() not in TRUE: errors.append(f'{path}:{line}: verified={r["verified"]!r}')
-                if r['record_id']: ids[r['record_id']]+=1
+                if not is_database and r['verified'].lower() not in TRUE: errors.append(f'{path}:{line}: verified={r["verified"]!r}')
+                if not is_database and r['record_id']: ids[r['record_id']]+=1
+                all_rows.append(r)
         dups={k:v for k,v in ids.items() if v>1}
         if dups: errors.append(f'{date}: record_id重复 {sum(v-1 for v in dups.values())} 行 / {len(dups)} 个ID（跨分片合并检查）')
     mp=os.path.join(data_dir,'source_image_manifest.csv')
