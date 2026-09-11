@@ -29,13 +29,17 @@ jobs:
         run: python -X utf8 tools/materialize_2026_07_reviewed.py
       - name: Materialize reviewed 2026-07 image facts 2
         run: python -X utf8 tools/materialize_2026_07_reviewed2.py
+      - name: Materialize reviewed 2026-07 image facts 3
+        run: python -X utf8 tools/materialize_2026_07_reviewed3.py
       - name: Merge 2026-07 source manifest
         run: python -X utf8 tools/materialize_2026_07_manifest.py
       - name: Merge extra 2026-07 source manifest
         run: python -X utf8 tools/materialize_2026_07_manifest_extra.py
+      - name: Merge third-pass 2026-07 source manifest
+        run: python -X utf8 tools/materialize_2026_07_manifest3.py
       - name: Validate source and callable data
         run: |
-          python -X utf8 -m py_compile phone_search.py ui_bootstrap.py data_validator.py tools/materialize_data.py tools/materialize_2026_07.py tools/materialize_2026_07_safe.py tools/materialize_2026_07_extra.py tools/materialize_2026_07_reviewed.py tools/materialize_2026_07_reviewed2.py tools/materialize_2026_07_manifest.py tools/materialize_2026_07_manifest_extra.py
+          python -X utf8 -m py_compile phone_search.py ui_bootstrap.py data_validator.py tools/materialize_data.py tools/materialize_2026_07.py tools/materialize_2026_07_safe.py tools/materialize_2026_07_extra.py tools/materialize_2026_07_reviewed.py tools/materialize_2026_07_reviewed2.py tools/materialize_2026_07_reviewed3.py tools/materialize_2026_07_manifest.py tools/materialize_2026_07_manifest_extra.py tools/materialize_2026_07_manifest3.py
           python -X utf8 data_validator.py data
           python -X utf8 -m pytest -q
       - name: Build EXE
