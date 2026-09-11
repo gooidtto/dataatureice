@@ -1,18 +1,12 @@
 #!/usr/bin/env python3
 """Normalize generated date CSVs into data/database/YYYY-MM-DD/price.csv."""
 from pathlib import Path
-import csv
 import re
 import shutil
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data"
 DATE_FILE = re.compile(r"^(\d{4}-\d{2}-\d{2})\.csv$")
-
-
-def has_rows(path: Path) -> bool:
-    with path.open("r", encoding="utf-8-sig", newline="") as f:
-        return next(csv.reader(f), None) is not None and any(csv.reader(f))
 
 
 def main() -> int:
@@ -23,7 +17,7 @@ def main() -> int:
         if not path.is_file():
             continue
         m = DATE_FILE.fullmatch(path.name)
-        if not m or not has_rows(path):
+        if not m:
             continue
         date = m.group(1)
         target_dir = db / date
@@ -34,7 +28,10 @@ def main() -> int:
         shutil.move(str(path), str(target))
         moved += 1
         print(f"DATABASE_DATE={date} FILE={target.as_posix()}")
-    print(f"DATABASE_DATE_FOLDERS={len([p for p in db.iterdir() if p.is_dir()])} MOVED={moved}")
+    folders = sorted(p.name for p in db.iterdir() if p.is_dir())
+    print(f"DATABASE_DATE_FOLDERS={len(folders)} MOVED={moved}")
+    for date in folders:
+        print(f"DATABASE_DATE_FOLDER={date}")
     return 0
 
 
