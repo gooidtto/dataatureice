@@ -20,14 +20,15 @@ def discover(data_dir):
     for n in sorted(os.listdir(data_dir)):
         p=os.path.join(data_dir,n)
         if DATE_FILE.fullmatch(n) and os.path.isfile(p): out.append((n[:10],p))
-    root=os.path.join(data_dir,'snapshots')
-    if os.path.isdir(root):
-        for date in sorted(os.listdir(root)):
-            dp=os.path.join(root,date)
-            if DATE_DIR.fullmatch(date) and os.path.isdir(dp):
-                for n in sorted(os.listdir(dp)):
-                    p=os.path.join(dp,n)
-                    if n.lower().endswith('.csv') and os.path.isfile(p): out.append((date,p))
+    for root_name in ('snapshots','database'):
+        root=os.path.join(data_dir,root_name)
+        if os.path.isdir(root):
+            for date in sorted(os.listdir(root)):
+                dp=os.path.join(root,date)
+                if DATE_DIR.fullmatch(date) and os.path.isdir(dp):
+                    for n in sorted(os.listdir(dp)):
+                        p=os.path.join(dp,n)
+                        if n.lower().endswith('.csv') and os.path.isfile(p): out.append((date,p))
     return out
 def validate(data_dir):
     errors=[];warnings=[];all_rows=[];files=discover(data_dir)
