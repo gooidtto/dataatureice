@@ -22,10 +22,13 @@ def read_rows(path: Path):
 def write_rows(path: Path, rows):
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8-sig", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=FIELDS, extrasaction="ignore")
+        writer = csv.DictWriter(f, fieldnames=FIELDS)
         writer.writeheader()
         for row in rows:
-            writer.writerow({field: row.get(field, "") for field in FIELDS})
+            actual = list(row.keys())
+            if actual != FIELDS:
+                raise ValueError(f"input schema must be exactly 19 fields: {actual}")
+            writer.writerow(row)
 
 
 def snapshot_rows(date: str):
@@ -34,7 +37,10 @@ def snapshot_rows(date: str):
         return []
     rows = []
     for path in sorted(folder.glob("*.csv")):
-        rows.extend(read_rows(path))
+        part = read_rows(path)
+        if part and list(part[0].keys()) != FIELDS:
+            raise ValueError(f"{path}: schema must be exactly 19 fields")
+        rows.extend(part)
     return rows
 
 
@@ -44,8 +50,8 @@ def canonicalize_root_files():
         if not src.is_file() or not DATE_FILE.fullmatch(src.name):
             continue
         date = src.stem
-        target = DATABASE / date / "price.csv"
         rows = read_rows(src)
+        target = DATABASE / date / "price.csv"
         write_rows(target, rows)
         src.unlink()
         moved.append((date, len(rows)))
@@ -59,8 +65,6 @@ def restore_from_snapshots():
         if not rows:
             continue
         target = DATABASE / date / "price.csv"
-        # The 08-25/08-31 snapshots are authoritative full callable snapshots.
-        # Copy every field and every row; do not filter, deduplicate, or collapse values.
         write_rows(target, rows)
         restored.append((date, len(rows)))
     return restored
@@ -74,6 +78,10 @@ def ensure_expected_folders():
             write_rows(target, [])
             ensured.append(date)
     return ensured
+
+
+def row_tuple(row):
+    return tuple(row.get(field, "") for field in FIELDS)
 
 
 def validate():
@@ -93,32 +101,36 @@ def validate():
             continue
         try:
             rows = read_rows(price)
+            if list(rows[0].keys()) if rows else FIELDS != FIELDS:
+                pass
+            if rows and list(rows[0].keys()) != FIELDS:
+                errors.append(f"{price}: database schema mismatch")
             if len(rows) != expected:
                 errors.append(f"{price}: expected {expected} rows, got {len(rows)}")
-            if list(rows[0].keys()) != FIELDS if rows else False:
-                errors.append(f"{price}: database schema mismatch")
-            ids = [r.get("record_id", "") for r in rows if r.get("record_id", "")]
-            if len(ids) != len(set(ids)):
-                errors.append(f"{price}: duplicate record_id")
+            ids = [r.get("record_id", "") for r in rows]
+            if len(ids) != len(set(ids)) or any(not x for x in ids):
+                errors.append(f"{price}: record_id missing or duplicate")
             for line, row in enumerate(rows, 2):
                 if row.get("data_date", "").strip() != date:
                     errors.append(f"{price}:{line}: data_date mismatch")
-                for field in ("record_id", "category", "subtype", "model", "condition", "price", "unit", "source_image", "verified"):
+                for field in ("record_id", "category", "subtype", "model", "condition", "price", "unit", "source_image", "source_path", "verified"):
                     if not row.get(field, "").strip():
                         errors.append(f"{price}:{line}: missing {field}")
                         break
         except Exception as exc:
             errors.append(f"{price}: CSV read failed: {exc}")
 
-        snap = snapshot_rows(date)
+        try:
+            snap = snapshot_rows(date)
+        except Exception as exc:
+            errors.append(f"{date}: snapshot validation failed: {exc}")
+            continue
         if snap:
             db_rows = read_rows(price)
-            db_keys = {(r.get("record_id", ""), r.get("data_date", ""), r.get("model", ""), r.get("condition", ""), r.get("price", ""), r.get("unit", "")) for r in db_rows}
-            snap_keys = {(r.get("record_id", ""), r.get("data_date", ""), r.get("model", ""), r.get("condition", ""), r.get("price", ""), r.get("unit", "")) for r in snap}
             if len(snap) != expected:
                 errors.append(f"{date}: snapshot expected {expected} rows, got {len(snap)}")
-            if db_keys != snap_keys or len(db_rows) != len(snap):
-                errors.append(f"{date}: database record set differs from snapshot")
+            if len(db_rows) != len(snap) or sorted(map(row_tuple, db_rows)) != sorted(map(row_tuple, snap)):
+                errors.append(f"{date}: database record set/fields differ from snapshot")
 
     for p in sorted(DATA.iterdir()):
         if p.is_file() and DATE_FILE.fullmatch(p.name):
