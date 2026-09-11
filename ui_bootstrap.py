@@ -6,6 +6,7 @@ from tkinter import ttk
 import phone_search
 from favorite_toggle import toggle_favorite
 from app_actions import install as install_app_actions
+from app_actions_fix import install_fix as install_app_action_fixes
 
 phone_search.CAT["手机配件"]="手机配件"
 _EMPTY_HINT="输入品牌 / 系列 / 型号开始查询\n\n数据来自已验证的图片事实价格库"
@@ -20,13 +21,11 @@ def _canonical_store_load(self):
     self.rows=[];self.snapshots={};self.manifest=[];self.errors=[]
     db=os.path.join(self.d,'database')
     loaded_dates=set()
-
     def load_paths(date,paths):
         data=[];seen=set()
         for p in paths:
-            try: rows=phone_search.read_csv(p)
-            except Exception as e:
-                self.errors.append(f'{date}: {e}');continue
+            try:rows=phone_search.read_csv(p)
+            except Exception as e:self.errors.append(f'{date}: {e}');continue
             for raw in rows:
                 r={k:phone_search.clean(raw.get(k,'')) for k in phone_search.FIELDS}
                 r['category']=phone_search.CAT.get(r['category'],r['category'])
@@ -37,17 +36,13 @@ def _canonical_store_load(self):
                 if rid in seen:self.errors.append(f'{date}: 重复 record_id {rid}');continue
                 seen.add(rid);data.append(r)
         self.snapshots[date]=data;self.rows.extend(data)
-
     if os.path.isdir(db):
         for date in sorted(os.listdir(db)):
             if not re.fullmatch(r'\d{4}-\d{2}-\d{2}',date):continue
             folder=os.path.join(db,date)
             if not os.path.isdir(folder):continue
             paths=[os.path.join(folder,n) for n in sorted(os.listdir(folder)) if n.lower().endswith('.csv') and os.path.isfile(os.path.join(folder,n))]
-            if paths:
-                load_paths(date,paths);loaded_dates.add(date)
-
-    # Backward compatibility for older development/test packages only.
+            if paths:load_paths(date,paths);loaded_dates.add(date)
     sd=os.path.join(self.d,'snapshots')
     if os.path.isdir(sd):
         for date in sorted(os.listdir(sd)):
@@ -56,7 +51,6 @@ def _canonical_store_load(self):
             if not os.path.isdir(folder):continue
             paths=[os.path.join(folder,n) for n in sorted(os.listdir(folder)) if n.lower().endswith('.csv')]
             if paths:load_paths(date,paths)
-
     mp=os.path.join(self.d,'source_image_manifest.csv')
     if os.path.isfile(mp):
         try:self.manifest=phone_search.read_csv(mp)
@@ -64,14 +58,9 @@ def _canonical_store_load(self):
 
 
 def clear_search(self):
-    self.q.set("")
-    self.hide_suggestions()
-    self.rows=[];self.map={}
-    self.tree.delete(*self.tree.get_children())
-    self.target.config(text="输入品牌 / 系列 / 型号开始查询")
+    self.q.set("");self.hide_suggestions();self.rows=[];self.map={};self.tree.delete(*self.tree.get_children());self.target.config(text="输入品牌 / 系列 / 型号开始查询")
     if hasattr(self,"empty_hint"):self.empty_hint.place(relx=0.5,rely=0.5,anchor="center")
-    self.status.config(text="请输入品牌、系列、型号或别名")
-    self.entry.focus_set()
+    self.status.config(text="请输入品牌、系列、型号或别名");self.entry.focus_set()
 
 
 def ui(self):
@@ -117,8 +106,7 @@ def load(self):
 
 def on_tree_click(self,event):
     region=self.tree.identify("region",event.x,event.y);column=self.tree.identify_column(event.x);iid=self.tree.identify_row(event.y);favorite_column=f"#{len(phone_search.COLS)+1}";row=self.map.get(iid) if iid else None
-    if region=="cell" and column==favorite_column and row:
-        self.tree.selection_set(iid);toggle_favorite(self,row);return "break"
+    if region=="cell" and column==favorite_column and row:self.tree.selection_set(iid);toggle_favorite(self,row);return "break"
     if callable(_original_tree_click):return _original_tree_click(self,event)
     return None
 
@@ -145,10 +133,9 @@ def _standardize_window(w):
 def standardized_toplevel(*args,**kwargs):
     w=_real_toplevel(*args,**kwargs);w.after_idle(lambda:_standardize_window(w));return w
 
-install_app_actions(phone_search.App)
+install_app_actions(phone_search.App);install_app_action_fixes(phone_search.App)
 phone_search.Store.load=_canonical_store_load
 phone_search.App.ui=ui;phone_search.App.search=search;phone_search.App.load=load;phone_search.App.clear_search=clear_search;phone_search.App.on_tree_click=on_tree_click;phone_search.App.favorite_groups=favorite_groups;phone_search.tk.Toplevel=standardized_toplevel
-
 
 def main():
     root=tk.Tk();phone_search.App(root);root.mainloop()
