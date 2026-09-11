@@ -48,11 +48,11 @@ def test_visible_matrix_row_keeps_horizontal_price_columns_and_raw_rows():
     assert "废板·整机：240 CNY/台" in display[0]["quote_detail"]
 
 
-def test_unusual_source_condition_is_not_lost_from_matrix():
+def test_unusual_source_condition_is_not_invented_as_another_bucket():
     rows = [row(record_id="a", condition="开机屏好外屏碎", price="60")]
     display = visible_matrix_rows(rows)
     assert len(display) == 1
-    assert display[0]["condition_good_broken"] == "60"
+    assert all(not display[0][field] for field, _label, _width in DISPLAY_COLUMNS if field.startswith("condition_"))
     assert "开机屏好外屏碎：60 CNY/台" in display[0]["quote_detail"]
 
 
