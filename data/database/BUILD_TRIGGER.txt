@@ -1,0 +1,1 @@
+Canonical database rebuild trigger. Source of truth: snapshots. Build must pass exact row-count, 19-field schema, record-set, EXE and ZIP smoke tests before delivery.
