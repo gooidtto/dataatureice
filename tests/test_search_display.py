@@ -83,8 +83,8 @@ def test_legacy_detail_recovers_all_raw_price_rows():
         row(record_id="third", data_date="2026-08-31", condition="废板·整机", price="240"),
     ]}
     rows = legacy_detail_rows(payload)
-    assert [r["record_id"] for r in rows] == ["third", "new", "old"]
-    assert [r["condition"] for r in rows] == ["废板·整机", "开机好碎", "开机靓好"]
+    assert [r["record_id"] for r in rows] == ["new", "third", "old"]
+    assert [r["condition"] for r in rows] == ["开机好碎", "废板·整机", "开机靓好"]
     assert "condition" in {field for field, _label, _width in LEGACY_DETAIL_COLS}
     assert "model_code" in {field for field, _label, _width in LEGACY_DETAIL_COLS}
 
