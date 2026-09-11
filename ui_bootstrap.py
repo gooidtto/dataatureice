@@ -3,6 +3,10 @@ import tkinter as tk
 import phone_search
 from favorite_toggle import toggle_favorite
 
+# July image-derived data contains the source-faithful category "手机配件".
+# Keep that value intact instead of coercing it into another category, while
+# making the Store and the category filter accept/query it normally.
+phone_search.CAT["手机配件"] = "手机配件"
 
 _EMPTY_HINT = "输入品牌 / 系列 / 型号开始查询\n\n数据来自已验证的图片事实价格库"
 
@@ -28,6 +32,15 @@ def _clear_results(self, target=True):
 
 def ui(self):
     _original_ui(self)
+    # The original UI builds the category selector from the legacy four
+    # consumer-device categories. Extend that selector without changing the
+    # source data values.
+    for widget in self.root.winfo_children():
+        if isinstance(widget, ttk.Combobox):
+            values = list(widget.cget("values"))
+            if "手机配件" not in values:
+                widget.configure(values=values + ["手机配件"])
+            break
     self.empty_hint = tk.Label(
         self.tree.master,
         text=_EMPTY_HINT,
