@@ -106,18 +106,19 @@ def search_rows(rows, query, category="全部"):
     if not q:
         return []
     brand, remainder = detect_brand(q, rows)
-    raw_terms = tokenize(q)
-    brand_key = normalize(brand)
-    terms = [t for t in raw_terms if normalize(t) != brand_key]
-    if brand and not terms and remainder:
-        terms = [remainder]
+    if brand:
+        # Always derive model terms from the text remaining after the brand.
+        # This also handles compact forms such as "oppon1" correctly.
+        terms = tokenize(remainder) or ([remainder] if remainder else [])
+    else:
+        terms = tokenize(q)
     query_key = normalize(remainder if brand else q)
 
     candidates = []
     for row in rows:
         if category != "全部" and row.get("category") != category:
             continue
-        if brand and normalize(row.get("brand", "")) != brand_key:
+        if brand and normalize(row.get("brand", "")) != normalize(brand):
             continue
         if terms and not all(_term_matches(row, term) for term in terms):
             continue
