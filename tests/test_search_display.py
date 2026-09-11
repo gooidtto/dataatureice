@@ -1,4 +1,5 @@
 from search_display import DISPLAY_COLUMNS, build_identity, normalize_search_results
+from app_actions_fix import LEGACY_DETAIL_COLS, legacy_detail_rows
 
 
 def row(**kw):
@@ -73,6 +74,19 @@ def test_search_display_keeps_models_separate_and_inserts_spacing():
         "手机 华为 荣耀畅玩系列 畅玩7x (3+32) BND-AL00",
         "手机 华为 荣耀畅玩系列 畅玩8x (3+32) BNK-AL00",
     ]
+
+
+def test_legacy_detail_recovers_all_raw_price_rows():
+    payload = {"_rows": [
+        row(record_id="old", data_date="2026-08-25", condition="开机靓好", price="700"),
+        row(record_id="new", data_date="2026-08-31", condition="开机好碎", price="500"),
+        row(record_id="third", data_date="2026-08-31", condition="废板·整机", price="240"),
+    ]}
+    rows = legacy_detail_rows(payload)
+    assert [r["record_id"] for r in rows] == ["third", "new", "old"]
+    assert [r["condition"] for r in rows] == ["废板·整机", "开机好碎", "开机靓好"]
+    assert "condition" in {field for field, _label, _width in LEGACY_DETAIL_COLS}
+    assert "model_code" in {field for field, _label, _width in LEGACY_DETAIL_COLS}
 
 
 def test_display_columns_match_new_contract():
