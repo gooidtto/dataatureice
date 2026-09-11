@@ -40,12 +40,15 @@ jobs:
       - name: Materialize 2026-07 image facts
         run: python -X utf8 tools/materialize_2026_07.py
 
+      - name: Materialize extra 2026-07 image facts
+        run: python -X utf8 tools/materialize_2026_07_extra.py
+
       - name: Merge 2026-07 source manifest
         run: python -X utf8 tools/materialize_2026_07_manifest.py
 
       - name: Validate source and callable data
         run: |
-          python -X utf8 -m py_compile phone_search.py ui_bootstrap.py data_validator.py tools/materialize_data.py tools/materialize_2026_07.py tools/materialize_2026_07_manifest.py
+          python -X utf8 -m py_compile phone_search.py ui_bootstrap.py data_validator.py tools/materialize_data.py tools/materialize_2026_07.py tools/materialize_2026_07_extra.py tools/materialize_2026_07_manifest.py
           python -X utf8 data_validator.py data
           python -X utf8 -m pytest -q
 
