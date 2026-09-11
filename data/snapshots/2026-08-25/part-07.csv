@@ -1,0 +1,901 @@
+﻿record_id,data_date,category,subtype,brand,series,model,model_code,alias,condition,price,unit,note,origin,source_image,source_path,verified,confidence,verification
+20260825-8b6f4752f4e2a3a591de-01,2026-08-25,手机,device,华为,3,G730,G730,G730,开机碎屏,9,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-6bde3c7dc87d835c2cdd-01,2026-08-25,手机,device,华为,3,G730,G730,G730,开机坏配件,9,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-9936d4a9110d828667ff-01,2026-08-25,手机,device,华为,3,G730,G730,G730,不开机,9,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-231f38c56b852772cebf-01,2026-08-25,手机,device,华为,3,G730,G730,G730,废板·整机,9,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-5a229f9d7b80c3195dbc-01,2026-08-25,手机,device,华为,3,G730,G730,G730,统货,/,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-883de73f73fff138afeb-01,2026-08-25,手机,device,华为,4,G7p,RIO-TL00,G7p,开机靓好,25,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-9babfb972055ecf402c1-01,2026-08-25,手机,device,华为,4,G7p,RIO-TL00,G7p,开机好碎,25,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-91bcb2ed144e43c4c45d-01,2026-08-25,手机,device,华为,4,G7p,RIO-TL00,G7p,开机碎屏,25,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-7782aee9b78d0c29172b-01,2026-08-25,手机,device,华为,4,G7p,RIO-TL00,G7p,开机坏配件,25,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-4ea138e6253f25531017-01,2026-08-25,手机,device,华为,4,G7p,RIO-TL00,G7p,不开机,25,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-9d2b23d150bf641bb1e3-01,2026-08-25,手机,device,华为,4,G7p,RIO-TL00,G7p,废板·整机,25,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-5d885ee2d435796eca20-01,2026-08-25,手机,device,华为,4,G7p,RIO-TL00,G7p,统货,/,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-a580bd59de92c7467825-01,2026-08-25,手机,device,华为,5,荣耀7i金色,ATH,荣耀7i金色,开机靓好,40,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-5c7cbc4f039109690aad-01,2026-08-25,手机,device,华为,5,荣耀7i金色,ATH,荣耀7i金色,开机好碎,40,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-4db9810127979f506b90-01,2026-08-25,手机,device,华为,5,荣耀7i金色,ATH,荣耀7i金色,开机碎屏,40,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-af23a7d00692382d53f0-01,2026-08-25,手机,device,华为,5,荣耀7i金色,ATH,荣耀7i金色,开机坏配件,40,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-522d4387efbed83fd57a-01,2026-08-25,手机,device,华为,5,荣耀7i金色,ATH,荣耀7i金色,不开机,40,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-3abc7897c85c5e1062a1-01,2026-08-25,手机,device,华为,5,荣耀7i金色,ATH,荣耀7i金色,废板·整机,40,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-b26c62c0bfcacd87ae95-01,2026-08-25,手机,device,华为,5,荣耀7i金色,ATH,荣耀7i金色,统货,/,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-119033d865d249af0d28-01,2026-08-25,手机,device,华为,6,荣耀7i白色,ATH,荣耀7i白色,开机靓好,25,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-7ef1562b37e2deb9d5b4-01,2026-08-25,手机,device,华为,6,荣耀7i白色,ATH,荣耀7i白色,开机好碎,25,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-78bea29b695758e1a152-01,2026-08-25,手机,device,华为,6,荣耀7i白色,ATH,荣耀7i白色,开机碎屏,25,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-150e392e663dc1a75726-01,2026-08-25,手机,device,华为,6,荣耀7i白色,ATH,荣耀7i白色,开机坏配件,25,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-f22ad477f2dc8eb0bc07-01,2026-08-25,手机,device,华为,6,荣耀7i白色,ATH,荣耀7i白色,不开机,25,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-5caa9492ad8e6792ab9b-01,2026-08-25,手机,device,华为,6,荣耀7i白色,ATH,荣耀7i白色,废板·整机,25,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-b5b193fd062a2e1e5431-01,2026-08-25,手机,device,华为,6,荣耀7i白色,ATH,荣耀7i白色,统货,/,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-4523f393a60082602d7f-01,2026-08-25,手机,device,华为,1,畅玩7,DUA,畅玩7,开机靓好,45,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-06e7d4ddb260d2112fc9-01,2026-08-25,手机,device,华为,1,畅玩7,DUA,畅玩7,开机好碎,45,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-d99ef9f5db597d7bc5b5-01,2026-08-25,手机,device,华为,1,畅玩7,DUA,畅玩7,开机碎屏,45,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-f28898bc2e30dd3eb69a-01,2026-08-25,手机,device,华为,1,畅玩7,DUA,畅玩7,开机坏配件,45,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-06de8df7dc505d1cb3af-01,2026-08-25,手机,device,华为,1,畅玩7,DUA,畅玩7,不开机,45,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-0422281bbe4eb5e269b3-01,2026-08-25,手机,device,华为,1,畅玩7,DUA,畅玩7,废板·整机,45,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-f4088ce6cb92b2e77007-01,2026-08-25,手机,device,华为,1,畅玩7,DUA,畅玩7,统货,/,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-c970cbd234590ea1367e-01,2026-08-25,手机,device,华为,2,G629,G629,G629,开机靓好,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-ee2e071bf5ff285b5d97-01,2026-08-25,手机,device,华为,2,G629,G629,G629,开机好碎,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-146ae54e3ab9b267cfb4-01,2026-08-25,手机,device,华为,2,G629,G629,G629,开机碎屏,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-51ed54722e2e283feea5-01,2026-08-25,手机,device,华为,2,G629,G629,G629,开机坏配件,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-97d5e9bca5781e477708-01,2026-08-25,手机,device,华为,2,G629,G629,G629,不开机,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-6dd779657a60f34d6e24-01,2026-08-25,手机,device,华为,2,G629,G629,G629,废板·整机,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-403a65906c62dee57e8b-01,2026-08-25,手机,device,华为,2,G629,G629,G629,统货,/,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-a96d8009db09f19a1373-01,2026-08-25,手机,device,华为,3,畅享7,SLA,畅享7,开机靓好,50,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-b5c917bc066c5df3ef9d-01,2026-08-25,手机,device,华为,3,畅享7,SLA,畅享7,开机好碎,50,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-5c91df8da1bef031865c-01,2026-08-25,手机,device,华为,3,畅享7,SLA,畅享7,开机碎屏,50,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-ee52cb69ee8f651109e1-01,2026-08-25,手机,device,华为,3,畅享7,SLA,畅享7,开机坏配件,50,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-913e6933b206c6239cb0-01,2026-08-25,手机,device,华为,3,畅享7,SLA,畅享7,不开机,50,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-d123b58027036ce62bb7-01,2026-08-25,手机,device,华为,3,畅享7,SLA,畅享7,废板·整机,50,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-b7ffe02e191d33768251-01,2026-08-25,手机,device,华为,3,畅享7,SLA,畅享7,统货,/,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-60a6922bde9c9ce8b8ba-01,2026-08-25,手机,device,华为,4,荣耀7,PLK,荣耀7,开机靓好,30,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-e918a815d31b7018e022-01,2026-08-25,手机,device,华为,4,荣耀7,PLK,荣耀7,开机好碎,30,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-c694aabdf9da7bdcfd60-01,2026-08-25,手机,device,华为,4,荣耀7,PLK,荣耀7,开机碎屏,30,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-5692cca9d820b07c33db-01,2026-08-25,手机,device,华为,4,荣耀7,PLK,荣耀7,开机坏配件,30,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-7360dc877e0d41d7e010-01,2026-08-25,手机,device,华为,4,荣耀7,PLK,荣耀7,不开机,30,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-12715b0198e796ec1288-01,2026-08-25,手机,device,华为,4,荣耀7,PLK,荣耀7,废板·整机,30,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-a5f16364dd5fdffd4519-01,2026-08-25,手机,device,华为,4,荣耀7,PLK,荣耀7,统货,/,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-4602796b735432a2e192-01,2026-08-25,手机,device,华为,5,荣耀7电信,PLK,荣耀7电信,开机靓好,30,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-45456391466763b28504-01,2026-08-25,手机,device,华为,5,荣耀7电信,PLK,荣耀7电信,开机好碎,30,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-2ba5c18d75b00af17dca-01,2026-08-25,手机,device,华为,5,荣耀7电信,PLK,荣耀7电信,开机碎屏,30,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-a4303fb035367b91c786-01,2026-08-25,手机,device,华为,5,荣耀7电信,PLK,荣耀7电信,开机坏配件,30,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-79dad9554cbced30e9be-01,2026-08-25,手机,device,华为,5,荣耀7电信,PLK,荣耀7电信,不开机,30,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-d817cc6b349f29f721b0-01,2026-08-25,手机,device,华为,5,荣耀7电信,PLK,荣耀7电信,废板·整机,30,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-aba30a7f9e59833bd276-01,2026-08-25,手机,device,华为,5,荣耀7电信,PLK,荣耀7电信,统货,/,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-b6b8127fd958d103918e-01,2026-08-25,手机,device,华为,6,P7,P7,P7,开机靓好,22,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-558da678658643966d7b-01,2026-08-25,手机,device,华为,6,P7,P7,P7,开机好碎,22,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-0164da095b5ac6bd2469-01,2026-08-25,手机,device,华为,6,P7,P7,P7,开机碎屏,22,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-2729b334e05928a0d6c2-01,2026-08-25,手机,device,华为,6,P7,P7,P7,开机坏配件,22,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-ca6468ae145c579acaa8-01,2026-08-25,手机,device,华为,6,P7,P7,P7,不开机,22,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-5b90fa9843fac0e2073d-01,2026-08-25,手机,device,华为,6,P7,P7,P7,废板·整机,22,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-41e298289eb075e110bc-01,2026-08-25,手机,device,华为,6,P7,P7,P7,统货,/,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-e2886bc7d5d3b4c0077a-01,2026-08-25,手机,device,华为,1,G628,G628,G628,开机靓好,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-1b400d6bdc02a79a9440-01,2026-08-25,手机,device,华为,1,G628,G628,G628,开机好碎,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-305c285c64a16e67f209-01,2026-08-25,手机,device,华为,1,G628,G628,G628,开机碎屏,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-272a427089b76f6fb8b8-01,2026-08-25,手机,device,华为,1,G628,G628,G628,开机坏配件,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-9ef8b1e951f9bccad96c-01,2026-08-25,手机,device,华为,1,G628,G628,G628,不开机,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-6394be57a453fe61a961-01,2026-08-25,手机,device,华为,1,G628,G628,G628,废板·整机,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-aed54d237f1f170bf6c3-01,2026-08-25,手机,device,华为,1,G628,G628,G628,统货,/,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-f5b9d9f8fe1d010a248d-01,2026-08-25,手机,device,华为,2,Mate7电信,MT7,Mate7电信,开机靓好,22,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-f16844e817727073aabb-01,2026-08-25,手机,device,华为,2,Mate7电信,MT7,Mate7电信,开机好碎,22,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-3420b98944f964bdd07e-01,2026-08-25,手机,device,华为,2,Mate7电信,MT7,Mate7电信,开机碎屏,22,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-93911686b6fdd3196e9c-01,2026-08-25,手机,device,华为,2,Mate7电信,MT7,Mate7电信,开机坏配件,22,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-3bf5335554625f659589-01,2026-08-25,手机,device,华为,2,Mate7电信,MT7,Mate7电信,不开机,22,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-b6a9fac684c6861cef7b-01,2026-08-25,手机,device,华为,2,Mate7电信,MT7,Mate7电信,废板·整机,22,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-3fff1197499f08052f9d-01,2026-08-25,手机,device,华为,2,Mate7电信,MT7,Mate7电信,统货,/,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-ce3950143f07207198b1-01,2026-08-25,手机,device,华为,3,Mate7,MT7,Mate7,开机靓好,22,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-7288582ae375c5cccc7c-01,2026-08-25,手机,device,华为,3,Mate7,MT7,Mate7,开机好碎,22,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-28a321e71e96b6891805-01,2026-08-25,手机,device,华为,3,Mate7,MT7,Mate7,开机碎屏,22,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-f10ec993a4daf5d40b48-01,2026-08-25,手机,device,华为,3,Mate7,MT7,Mate7,开机坏配件,22,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-962101b4da7f45fbe3af-01,2026-08-25,手机,device,华为,3,Mate7,MT7,Mate7,不开机,22,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-1b89aeb65172a398054b-01,2026-08-25,手机,device,华为,3,Mate7,MT7,Mate7,废板·整机,22,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-eb37498abeec9f345e39-01,2026-08-25,手机,device,华为,3,Mate7,MT7,Mate7,统货,/,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-94608f450e536323ab5e-01,2026-08-25,手机,device,华为,4,G7,RIO-UL00,G7,开机靓好,23,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-c29540b93d231143cc8f-01,2026-08-25,手机,device,华为,4,G7,RIO-UL00,G7,开机好碎,23,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-0fce5ff1153d7a4dae38-01,2026-08-25,手机,device,华为,4,G7,RIO-UL00,G7,开机碎屏,23,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-54f35ece1de5789b2359-01,2026-08-25,手机,device,华为,4,G7,RIO-UL00,G7,开机坏配件,23,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-1b3f8ca95a3b27a44dde-01,2026-08-25,手机,device,华为,4,G7,RIO-UL00,G7,不开机,23,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-71464f795e6780dc1699-01,2026-08-25,手机,device,华为,4,G7,RIO-UL00,G7,废板·整机,23,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-8fa7307f0e81989288c1-01,2026-08-25,手机,device,华为,4,G7,RIO-UL00,G7,统货,/,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-a6d471d341bac163a7f6-01,2026-08-25,手机,device,华为,5,G621双卡,G621,G621双卡,开机靓好,12,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-60546563aac858abea76-01,2026-08-25,手机,device,华为,5,G621双卡,G621,G621双卡,开机好碎,12,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-9f3cd80163d55262100a-01,2026-08-25,手机,device,华为,5,G621双卡,G621,G621双卡,开机碎屏,12,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-141b3ee83b684bd02221-01,2026-08-25,手机,device,华为,5,G621双卡,G621,G621双卡,开机坏配件,12,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-b190def1e7c3d969af61-01,2026-08-25,手机,device,华为,5,G621双卡,G621,G621双卡,不开机,12,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-ea825134338f7d2f3074-01,2026-08-25,手机,device,华为,5,G621双卡,G621,G621双卡,废板·整机,12,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-9c0a53a149ed02c54bf5-01,2026-08-25,手机,device,华为,5,G621双卡,G621,G621双卡,统货,/,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-5517d8afd98b45367151-01,2026-08-25,手机,device,华为,6,G621单卡,G621,G621单卡,开机靓好,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-d2b6f76e2dc248349cc1-01,2026-08-25,手机,device,华为,6,G621单卡,G621,G621单卡,开机好碎,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-5d778425f6a69263f562-01,2026-08-25,手机,device,华为,6,G621单卡,G621,G621单卡,开机碎屏,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-75046c471e7da04c3bbf-01,2026-08-25,手机,device,华为,6,G621单卡,G621,G621单卡,开机坏配件,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-9aa0044554c8a9329350-01,2026-08-25,手机,device,华为,6,G621单卡,G621,G621单卡,不开机,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-5157a105f533a048cf78-01,2026-08-25,手机,device,华为,6,G621单卡,G621,G621单卡,废板·整机,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-0906b53132f4851ee7f6-01,2026-08-25,手机,device,华为,6,G621单卡,G621,G621单卡,统货,/,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-2c35b2a3f05440e8e5ab-01,2026-08-25,手机,device,华为,1,G620双卡,G620,G620双卡,开机靓好,12,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-e6cb7089ed19ba2c099e-01,2026-08-25,手机,device,华为,1,G620双卡,G620,G620双卡,开机好碎,12,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-7741ad5b02ef0e45d2bd-01,2026-08-25,手机,device,华为,1,G620双卡,G620,G620双卡,开机碎屏,12,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-46040ba974880111abd1-01,2026-08-25,手机,device,华为,1,G620双卡,G620,G620双卡,开机坏配件,12,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-a6b8f9a0dec5aa53d0b7-01,2026-08-25,手机,device,华为,1,G620双卡,G620,G620双卡,不开机,12,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-8736c9045b83d4f1e964-01,2026-08-25,手机,device,华为,1,G620双卡,G620,G620双卡,废板·整机,12,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-eae3bb1f12dcd1e69069-01,2026-08-25,手机,device,华为,1,G620双卡,G620,G620双卡,统货,/,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-f6285d8f2f4cb3b408f3-01,2026-08-25,手机,device,华为,2,G620单卡,G620,G620单卡,开机靓好,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-3008765cdb4f26c3d9b2-01,2026-08-25,手机,device,华为,2,G620单卡,G620,G620单卡,开机好碎,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-16e62e784e60f1094032-01,2026-08-25,手机,device,华为,2,G620单卡,G620,G620单卡,开机碎屏,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-b096115f3e1a51c67321-01,2026-08-25,手机,device,华为,2,G620单卡,G620,G620单卡,开机坏配件,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-758063d55c422f1b3a5c-01,2026-08-25,手机,device,华为,2,G620单卡,G620,G620单卡,不开机,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-dc1a857e9c802146b412-01,2026-08-25,手机,device,华为,2,G620单卡,G620,G620单卡,废板·整机,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-a3dcc27e5420b109849a-01,2026-08-25,手机,device,华为,2,G620单卡,G620,G620单卡,统货,/,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-bca2f267ecdca4b36ea3-01,2026-08-25,手机,device,华为,3,G620s,G620s,G620s,开机靓好,12,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-7c16d3bb80c289a9c2e8-01,2026-08-25,手机,device,华为,3,G620s,G620s,G620s,开机好碎,12,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-b6b5b291bd59d0fba97f-01,2026-08-25,手机,device,华为,3,G620s,G620s,G620s,开机碎屏,12,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-f631fce908c0576f2d3e-01,2026-08-25,手机,device,华为,3,G620s,G620s,G620s,开机坏配件,12,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-961726cf9c5cd9b92826-01,2026-08-25,手机,device,华为,3,G620s,G620s,G620s,不开机,12,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-49c85db10789d3939347-01,2026-08-25,手机,device,华为,3,G620s,G620s,G620s,废板·整机,12,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-ca5180c424d173e2ec2c-01,2026-08-25,手机,device,华为,3,G620s,G620s,G620s,统货,/,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-2ca6d3ceed0125182150-01,2026-08-25,手机,device,华为,4,G610,G610,G610,开机靓好,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-77f17a86753bbab50f5b-01,2026-08-25,手机,device,华为,4,G610,G610,G610,开机好碎,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-7c3210e8e9ed5b99e9f8-01,2026-08-25,手机,device,华为,4,G610,G610,G610,开机碎屏,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-954b66e25f42b282df78-01,2026-08-25,手机,device,华为,4,G610,G610,G610,开机坏配件,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-2e4033226e7cf8387864-01,2026-08-25,手机,device,华为,4,G610,G610,G610,不开机,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-bb4cbca4b057cedf7948-01,2026-08-25,手机,device,华为,4,G610,G610,G610,废板·整机,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-b6a110b43e47275f287b-01,2026-08-25,手机,device,华为,4,G610,G610,G610,统货,/,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-593236e2c46c4691442e-01,2026-08-25,手机,device,华为,5,6a,DLI,6a,开机靓好,55,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-4e34f0dbaf040d491b78-01,2026-08-25,手机,device,华为,5,6a,DLI,6a,开机好碎,55,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-c8fa9ea046731f32bec4-01,2026-08-25,手机,device,华为,5,6a,DLI,6a,开机碎屏,55,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-92dd6d443be2cc740b55-01,2026-08-25,手机,device,华为,5,6a,DLI,6a,开机坏配件,55,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-1d90877668c5d8d0b1ac-01,2026-08-25,手机,device,华为,5,6a,DLI,6a,不开机,55,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-753bbdfd0b14a8d6f2e7-01,2026-08-25,手机,device,华为,5,6a,DLI,6a,废板·整机,55,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-d2c670a94f74befa881b-01,2026-08-25,手机,device,华为,5,6a,DLI,6a,统货,/,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-a85cbfa1326232f2977a-01,2026-08-25,手机,device,华为,6,荣耀6p,PE,荣耀6p,开机靓好,22,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-8c4db58fb873242ee942-01,2026-08-25,手机,device,华为,6,荣耀6p,PE,荣耀6p,开机好碎,22,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-dfbcc1fd927d556fb894-01,2026-08-25,手机,device,华为,6,荣耀6p,PE,荣耀6p,开机碎屏,22,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-8bd07c1d90c3a5552dfc-01,2026-08-25,手机,device,华为,6,荣耀6p,PE,荣耀6p,开机坏配件,22,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-75a3962f2196f17ac38c-01,2026-08-25,手机,device,华为,6,荣耀6p,PE,荣耀6p,不开机,22,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-8af9ea5ef09fb3c7838c-01,2026-08-25,手机,device,华为,6,荣耀6p,PE,荣耀6p,废板·整机,22,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-27166d314929ca6fe648-01,2026-08-25,手机,device,华为,6,荣耀6p,PE,荣耀6p,统货,/,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-dc4b10377a430dc5d761-01,2026-08-25,手机,device,华为,1,荣耀6,H60,荣耀6,开机靓好,22,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-1eaa728d8e980f2c79bf-01,2026-08-25,手机,device,华为,1,荣耀6,H60,荣耀6,开机好碎,22,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-5508d3741580096ac05e-01,2026-08-25,手机,device,华为,1,荣耀6,H60,荣耀6,开机碎屏,22,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-b6e9f483019ecf7dfe62-01,2026-08-25,手机,device,华为,1,荣耀6,H60,荣耀6,开机坏配件,22,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-5ce47c4a71d1d8648e17-01,2026-08-25,手机,device,华为,1,荣耀6,H60,荣耀6,不开机,22,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-a7bd105660e58fdacd85-01,2026-08-25,手机,device,华为,1,荣耀6,H60,荣耀6,废板·整机,22,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-cd3c78d1c1797dd4abaf-01,2026-08-25,手机,device,华为,1,荣耀6,H60,荣耀6,统货,/,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-6d0ec4653f01d59ee492-01,2026-08-25,手机,device,华为,2,畅玩6,MYA,畅玩6,开机靓好,26,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-b782b7fb144a16f59b4d-01,2026-08-25,手机,device,华为,2,畅玩6,MYA,畅玩6,开机好碎,26,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-24996538aaefc08fd020-01,2026-08-25,手机,device,华为,2,畅玩6,MYA,畅玩6,开机碎屏,26,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-5bd904461a773afc37b9-01,2026-08-25,手机,device,华为,2,畅玩6,MYA,畅玩6,开机坏配件,26,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-ac441b23e862f1670849-01,2026-08-25,手机,device,华为,2,畅玩6,MYA,畅玩6,不开机,26,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-f658b6f0ec4b5ffb8e56-01,2026-08-25,手机,device,华为,2,畅玩6,MYA,畅玩6,废板·整机,26,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-fc260b0b22aa692cb133-01,2026-08-25,手机,device,华为,2,畅玩6,MYA,畅玩6,统货,/,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-829e3126f3a08ffff076-01,2026-08-25,手机,device,华为,3,畅享6S,DIG,畅享6S,开机靓好,55,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-2443c5492d2435bcb514-01,2026-08-25,手机,device,华为,3,畅享6S,DIG,畅享6S,开机好碎,55,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-22dd2406f5bfaba887d5-01,2026-08-25,手机,device,华为,3,畅享6S,DIG,畅享6S,开机碎屏,55,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-d0696b943e899517c579-01,2026-08-25,手机,device,华为,3,畅享6S,DIG,畅享6S,开机坏配件,55,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-396c9c31eb03e9cf0f02-01,2026-08-25,手机,device,华为,3,畅享6S,DIG,畅享6S,不开机,55,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-73c6c369cf7a0390e0db-01,2026-08-25,手机,device,华为,3,畅享6S,DIG,畅享6S,废板·整机,55,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-21f873967a28e7474047-01,2026-08-25,手机,device,华为,3,畅享6S,DIG,畅享6S,统货,/,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-9db18a6482afc0fb8db4-01,2026-08-25,手机,device,华为,4,G6,G6,G6,开机靓好,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-ee3fcf1f461e72e71e7f-01,2026-08-25,手机,device,华为,4,G6,G6,G6,开机好碎,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-fbc12c9efb591dc09854-01,2026-08-25,手机,device,华为,4,G6,G6,G6,开机碎屏,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-1ab08fbef26f2fe8ecd8-01,2026-08-25,手机,device,华为,4,G6,G6,G6,开机坏配件,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-cf2dce208288de54757c-01,2026-08-25,手机,device,华为,4,G6,G6,G6,不开机,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-c5b3743163f9c168eac1-01,2026-08-25,手机,device,华为,4,G6,G6,G6,废板·整机,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-2b4bfcf40830a1d33cfc-01,2026-08-25,手机,device,华为,4,G6,G6,G6,统货,/,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-74abe4e67ffbe4cceac0-01,2026-08-25,手机,device,华为,5,P6,P6,P6,开机靓好,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-cb527997147c39f86031-01,2026-08-25,手机,device,华为,5,P6,P6,P6,开机好碎,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-75884170bc55910a5892-01,2026-08-25,手机,device,华为,5,P6,P6,P6,开机碎屏,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-426176e4b0643e376681-01,2026-08-25,手机,device,华为,5,P6,P6,P6,开机坏配件,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-c8a2b1ad64049a4f1c28-01,2026-08-25,手机,device,华为,5,P6,P6,P6,不开机,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-c6c03c6a905878be04b0-01,2026-08-25,手机,device,华为,5,P6,P6,P6,废板·整机,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-9c25b2f0e60624a7fa9a-01,2026-08-25,手机,device,华为,5,P6,P6,P6,统货,/,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-a5ee659d9277ce276477-01,2026-08-25,手机,device,华为,6,畅享5 海外版,TIT,畅享5 海外版,开机靓好,20,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-482160686da17fd9204c-01,2026-08-25,手机,device,华为,6,畅享5 海外版,TIT,畅享5 海外版,开机好碎,20,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-f18840fd51a4e27d4f1f-01,2026-08-25,手机,device,华为,6,畅享5 海外版,TIT,畅享5 海外版,开机碎屏,20,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-4d702f7ee93c481b2991-01,2026-08-25,手机,device,华为,6,畅享5 海外版,TIT,畅享5 海外版,开机坏配件,20,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-beec5a318963678628cb-01,2026-08-25,手机,device,华为,6,畅享5 海外版,TIT,畅享5 海外版,不开机,20,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-cbafce040493678f278f-01,2026-08-25,手机,device,华为,6,畅享5 海外版,TIT,畅享5 海外版,废板·整机,20,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-391c98a1168aaba9b92c-01,2026-08-25,手机,device,华为,6,畅享5 海外版,TIT,畅享5 海外版,统货,/,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-e31a76bcfff59cfc257c-01,2026-08-25,手机,device,华为,1,畅享5,TIT,畅享5,开机靓好,26,CNY/台,屏好中框磕碰 花 电信版本,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-e7d68af22d608e21485a-01,2026-08-25,手机,device,华为,1,畅享5,TIT,畅享5,开机好碎,26,CNY/台,屏好中框磕碰 花 电信版本,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-4c57b4c0aaa5ea3b5ec9-01,2026-08-25,手机,device,华为,1,畅享5,TIT,畅享5,开机碎屏,26,CNY/台,屏好中框磕碰 花 电信版本,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-807459aa53884d21f5ea-01,2026-08-25,手机,device,华为,1,畅享5,TIT,畅享5,开机坏配件,26,CNY/台,屏好中框磕碰 花 电信版本,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-9b94dad5a3d5907b203a-01,2026-08-25,手机,device,华为,1,畅享5,TIT,畅享5,不开机,26,CNY/台,屏好中框磕碰 花 电信版本,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-ccf39fec542e304bc569-01,2026-08-25,手机,device,华为,1,畅享5,TIT,畅享5,废板·整机,26,CNY/台,屏好中框磕碰 花 电信版本,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-a528ec8551f28030d552-01,2026-08-25,手机,device,华为,1,畅享5,TIT,畅享5,统货,/,CNY/台,屏好中框磕碰 花 电信版本,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-29905bd8e130b72e6a37-01,2026-08-25,手机,device,华为,2,5x移动,KIW-TL00,5x移动,开机靓好,33,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-8bd11f4d3480ffda5071-01,2026-08-25,手机,device,华为,2,5x移动,KIW-TL00,5x移动,开机好碎,33,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-f43c69e3847e5a610019-01,2026-08-25,手机,device,华为,2,5x移动,KIW-TL00,5x移动,开机碎屏,33,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-c87f1c78f16bf1973745-01,2026-08-25,手机,device,华为,2,5x移动,KIW-TL00,5x移动,开机坏配件,33,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-f969b0936b24a74e5185-01,2026-08-25,手机,device,华为,2,5x移动,KIW-TL00,5x移动,不开机,33,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-02d376e87f02cd99cb77-01,2026-08-25,手机,device,华为,2,5x移动,KIW-TL00,5x移动,废板·整机,33,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-5aff09b5834a846372db-01,2026-08-25,手机,device,华为,2,5x移动,KIW-TL00,5x移动,统货,/,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-06c9296ca97168417fd9-01,2026-08-25,手机,device,华为,3,5x全网,KIW-AL00,5x全网,开机靓好,33,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-5dadd8ea73b71a6e509b-01,2026-08-25,手机,device,华为,3,5x全网,KIW-AL00,5x全网,开机好碎,33,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-c53e06dabf11338da97f-01,2026-08-25,手机,device,华为,3,5x全网,KIW-AL00,5x全网,开机碎屏,33,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-3b21942aa36387c74851-01,2026-08-25,手机,device,华为,3,5x全网,KIW-AL00,5x全网,开机坏配件,33,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-e16413b745974585522c-01,2026-08-25,手机,device,华为,3,5x全网,KIW-AL00,5x全网,不开机,33,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-c4c33fd2132516404665-01,2026-08-25,手机,device,华为,3,5x全网,KIW-AL00,5x全网,废板·整机,33,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-a209a1137a5a021a68f1-01,2026-08-25,手机,device,华为,3,5x全网,KIW-AL00,5x全网,统货,/,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-fc1ecc2f6978985554e2-01,2026-08-25,手机,device,华为,4,5x电信,KIW-CL00,5x电信,开机靓好,33,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-71aeea76e53c529062b7-01,2026-08-25,手机,device,华为,4,5x电信,KIW-CL00,5x电信,开机好碎,33,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-37f82336ec259241197f-01,2026-08-25,手机,device,华为,4,5x电信,KIW-CL00,5x电信,开机碎屏,33,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-d3300cad75e740d0ac4c-01,2026-08-25,手机,device,华为,4,5x电信,KIW-CL00,5x电信,开机坏配件,33,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-24bdfe3c6883f28f2e9c-01,2026-08-25,手机,device,华为,4,5x电信,KIW-CL00,5x电信,不开机,33,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-54938e2b913890514eeb-01,2026-08-25,手机,device,华为,4,5x电信,KIW-CL00,5x电信,废板·整机,33,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-986637e127a261e79e1d-01,2026-08-25,手机,device,华为,4,5x电信,KIW-CL00,5x电信,统货,/,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-03c38c9e20b684130041-01,2026-08-25,手机,device,华为,5,5a移动,CAM-AL00,5a移动,开机靓好,25,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-83a2e11fd9dbc64d54ca-01,2026-08-25,手机,device,华为,5,5a移动,CAM-AL00,5a移动,开机好碎,25,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-58f46962c37b6e3fd4a0-01,2026-08-25,手机,device,华为,5,5a移动,CAM-AL00,5a移动,开机碎屏,25,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-7019c584425c13b34e42-01,2026-08-25,手机,device,华为,5,5a移动,CAM-AL00,5a移动,开机坏配件,25,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-66bcbc70c9412fbeb17f-01,2026-08-25,手机,device,华为,5,5a移动,CAM-AL00,5a移动,不开机,25,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-860a26dbec9438b4c90d-01,2026-08-25,手机,device,华为,5,5a移动,CAM-AL00,5a移动,废板·整机,25,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-49425afa903d707fa76f-01,2026-08-25,手机,device,华为,5,5a移动,CAM-AL00,5a移动,统货,/,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-1a3f17aa71a25fd47e5b-01,2026-08-25,手机,device,华为,6,5a全网,CAM-AL00,5a全网,开机靓好,25,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-a3b652b069b8288d8b42-01,2026-08-25,手机,device,华为,6,5a全网,CAM-AL00,5a全网,开机好碎,25,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-33b4b33dd9d1354c56fb-01,2026-08-25,手机,device,华为,6,5a全网,CAM-AL00,5a全网,开机碎屏,25,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-d2a72f144d96794b771b-01,2026-08-25,手机,device,华为,6,5a全网,CAM-AL00,5a全网,开机坏配件,25,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-cf35fc7e461560533e0c-01,2026-08-25,手机,device,华为,6,5a全网,CAM-AL00,5a全网,不开机,25,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-aaa839136aa08d40ee7b-01,2026-08-25,手机,device,华为,6,5a全网,CAM-AL00,5a全网,废板·整机,25,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-e48b0b8640bb8c1c60c9-01,2026-08-25,手机,device,华为,6,5a全网,CAM-AL00,5a全网,统货,/,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-6869b6f2bc64b6a6364c-01,2026-08-25,手机,device,华为,1,畅玩5,CUN,畅玩5,开机靓好,22,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-663a4c4d5538e665c25c-01,2026-08-25,手机,device,华为,1,畅玩5,CUN,畅玩5,开机好碎,22,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-a8520b3f4387db12f8f8-01,2026-08-25,手机,device,华为,1,畅玩5,CUN,畅玩5,开机碎屏,22,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-6dfe88c654da74e8c32f-01,2026-08-25,手机,device,华为,1,畅玩5,CUN,畅玩5,开机坏配件,22,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-cfe5e6f987a4dc1e905f-01,2026-08-25,手机,device,华为,1,畅玩5,CUN,畅玩5,不开机,22,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-e9f726b54bf907cfd8e2-01,2026-08-25,手机,device,华为,1,畅玩5,CUN,畅玩5,废板·整机,22,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-dd1e3f48261fcd92eef0-01,2026-08-25,手机,device,华为,1,畅玩5,CUN,畅玩5,统货,/,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-6b7da79a79a90f4d0e42-01,2026-08-25,手机,device,华为,2,5x联通,KIW-UL00,5x联通,开机靓好,33,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-cfb82417439fb137f27f-01,2026-08-25,手机,device,华为,2,5x联通,KIW-UL00,5x联通,开机好碎,33,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-cf59380e3108cc6d5c73-01,2026-08-25,手机,device,华为,2,5x联通,KIW-UL00,5x联通,开机碎屏,33,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-524c6ab44bebac120cbb-01,2026-08-25,手机,device,华为,2,5x联通,KIW-UL00,5x联通,开机坏配件,33,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-ffa75ff440233fae5787-01,2026-08-25,手机,device,华为,2,5x联通,KIW-UL00,5x联通,不开机,33,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-7e63ed72343132033524-01,2026-08-25,手机,device,华为,2,5x联通,KIW-UL00,5x联通,废板·整机,33,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-ccef1f7bf3c84c49556a-01,2026-08-25,手机,device,华为,2,5x联通,KIW-UL00,5x联通,统货,/,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-8b0238e6222ffbf4611c-01,2026-08-25,手机,device,华为,3,5s,TAG-AL00,5s,开机靓好,30,CNY/台,开机屏好触摸好机外屏坏 屏算屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-00e467daa6e7683cc45a-01,2026-08-25,手机,device,华为,3,5s,TAG-AL00,5s,开机好碎,30,CNY/台,开机屏好触摸好机外屏坏 屏算屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-5256a3dc4950e2310cea-01,2026-08-25,手机,device,华为,3,5s,TAG-AL00,5s,开机碎屏,30,CNY/台,开机屏好触摸好机外屏坏 屏算屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-4ec554d229e7de022581-01,2026-08-25,手机,device,华为,3,5s,TAG-AL00,5s,开机坏配件,30,CNY/台,开机屏好触摸好机外屏坏 屏算屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-fd5e0d8c04487e9d3c53-01,2026-08-25,手机,device,华为,3,5s,TAG-AL00,5s,不开机,30,CNY/台,开机屏好触摸好机外屏坏 屏算屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-9da60de8eda6145ae823-01,2026-08-25,手机,device,华为,3,5s,TAG-AL00,5s,废板·整机,30,CNY/台,开机屏好触摸好机外屏坏 屏算屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-78018b1a4c4fdbe96272-01,2026-08-25,手机,device,华为,3,5s,TAG-AL00,5s,统货,/,CNY/台,开机屏好触摸好机外屏坏 屏算屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-8d0684eb987ce95812ee-01,2026-08-25,手机,device,华为,4,5c,NEM,5c,开机靓好,40,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-2425492e98b286c282f3-01,2026-08-25,手机,device,华为,4,5c,NEM,5c,开机好碎,40,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-4ff4da1393c8a9bf79c2-01,2026-08-25,手机,device,华为,4,5c,NEM,5c,开机碎屏,40,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-c6d116e877bb03d5a4c6-01,2026-08-25,手机,device,华为,4,5c,NEM,5c,开机坏配件,40,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-ab26f4d4845a1df0f907-01,2026-08-25,手机,device,华为,4,5c,NEM,5c,不开机,40,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-96ea9c800d18b910bfde-01,2026-08-25,手机,device,华为,4,5c,NEM,5c,废板·整机,40,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-239b89707cb071b6896c-01,2026-08-25,手机,device,华为,4,5c,NEM,5c,统货,/,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-db2109dacc08d9645fe6-01,2026-08-25,手机,device,华为,5,麦芒4电信,RIO,麦芒4电信,开机靓好,20,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-aaa45c6799d57abc394c-01,2026-08-25,手机,device,华为,5,麦芒4电信,RIO,麦芒4电信,开机好碎,20,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-e0e4b231e851b14b46e3-01,2026-08-25,手机,device,华为,5,麦芒4电信,RIO,麦芒4电信,开机碎屏,20,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-99ff6e81e14012b6978c-01,2026-08-25,手机,device,华为,5,麦芒4电信,RIO,麦芒4电信,开机坏配件,20,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-ee5106730c64a2a9493e-01,2026-08-25,手机,device,华为,5,麦芒4电信,RIO,麦芒4电信,不开机,20,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-7c58f40990f1b404699c-01,2026-08-25,手机,device,华为,5,麦芒4电信,RIO,麦芒4电信,废板·整机,20,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-51c8db696bc7e1afb4e0-01,2026-08-25,手机,device,华为,5,麦芒4电信,RIO,麦芒4电信,统货,/,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-685332a2a4fa6bb05dba-01,2026-08-25,手机,device,华为,6,麦芒4,RIO,麦芒4,开机靓好,50,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-53e008c2d1ecae3ac4b6-01,2026-08-25,手机,device,华为,6,麦芒4,RIO,麦芒4,开机好碎,50,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-7a84a664123da712a4dc-01,2026-08-25,手机,device,华为,6,麦芒4,RIO,麦芒4,开机碎屏,50,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-110f80fa1a78d9c08047-01,2026-08-25,手机,device,华为,6,麦芒4,RIO,麦芒4,开机坏配件,50,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-32e8c3bd33ef3728b4a7-01,2026-08-25,手机,device,华为,6,麦芒4,RIO,麦芒4,不开机,50,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-abf8bdcd093ebf2d374d-01,2026-08-25,手机,device,华为,6,麦芒4,RIO,麦芒4,废板·整机,50,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-5e4a78d3dbb4a82998e1-01,2026-08-25,手机,device,华为,6,麦芒4,RIO,麦芒4,统货,/,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-5fe32abc99c1fcf77d28-01,2026-08-25,手机,device,华为,1,4a全网电信,SCL-AL00,4a全网电信,开机靓好,18,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-4e652f794ca68936dc61-01,2026-08-25,手机,device,华为,1,4a全网电信,SCL-AL00,4a全网电信,开机好碎,18,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-5bf865f877efa748261e-01,2026-08-25,手机,device,华为,1,4a全网电信,SCL-AL00,4a全网电信,开机碎屏,18,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-4a114245e425697c936d-01,2026-08-25,手机,device,华为,1,4a全网电信,SCL-AL00,4a全网电信,开机坏配件,18,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-a4b9452bea0c93676a8a-01,2026-08-25,手机,device,华为,1,4a全网电信,SCL-AL00,4a全网电信,不开机,18,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-64612fb2ae1533ef106d-01,2026-08-25,手机,device,华为,1,4a全网电信,SCL-AL00,4a全网电信,废板·整机,18,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-3dcd520aa905755ac2bb-01,2026-08-25,手机,device,华为,1,4a全网电信,SCL-AL00,4a全网电信,统货,/,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-3a5490682651d7700fcc-01,2026-08-25,手机,device,华为,2,4c电信,CHM-CL00,4c电信,开机靓好,25,CNY/台,详见备注,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-89a6216ea8a30a16bd11-01,2026-08-25,手机,device,华为,2,4c电信,CHM-CL00,4c电信,开机好碎,25,CNY/台,详见备注,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-accef77592afce98ae51-01,2026-08-25,手机,device,华为,2,4c电信,CHM-CL00,4c电信,开机碎屏,25,CNY/台,详见备注,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-86c6de819a5452fd3c3d-01,2026-08-25,手机,device,华为,2,4c电信,CHM-CL00,4c电信,开机坏配件,25,CNY/台,详见备注,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-1d573719ba35663b631a-01,2026-08-25,手机,device,华为,2,4c电信,CHM-CL00,4c电信,不开机,25,CNY/台,详见备注,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-1e9f1e23ba42a58cbd95-01,2026-08-25,手机,device,华为,2,4c电信,CHM-CL00,4c电信,废板·整机,25,CNY/台,详见备注,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-f2e37958c49e6cfe9bb5-01,2026-08-25,手机,device,华为,2,4c电信,CHM-CL00,4c电信,统货,/,CNY/台,详见备注,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-c3dcd0d43d587192f6e3-01,2026-08-25,手机,device,华为,3,4x (2g),Che2,4x (2g),开机靓好,25,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-1aa3656c8478cc23eaaa-01,2026-08-25,手机,device,华为,3,4x (2g),Che2,4x (2g),开机好碎,25,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-a416764fabc34b811c1b-01,2026-08-25,手机,device,华为,3,4x (2g),Che2,4x (2g),开机碎屏,25,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-d648ef9ccb0d4b29e62c-01,2026-08-25,手机,device,华为,3,4x (2g),Che2,4x (2g),开机坏配件,25,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-47c960dc4f508b87d21e-01,2026-08-25,手机,device,华为,3,4x (2g),Che2,4x (2g),不开机,25,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-902cde1c73872013e876-01,2026-08-25,手机,device,华为,3,4x (2g),Che2,4x (2g),废板·整机,25,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-b4a0509c7e72d285e136-01,2026-08-25,手机,device,华为,3,4x (2g),Che2,4x (2g),统货,/,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-4eaa5b2e90225c46207c-01,2026-08-25,手机,device,华为,4,4x (che1全网),Che1,4x (che1全网),开机靓好,25,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-fa5d4c080c0d713d580e-01,2026-08-25,手机,device,华为,4,4x (che1全网),Che1,4x (che1全网),开机好碎,25,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-f420d02e3bcafd755d7c-01,2026-08-25,手机,device,华为,4,4x (che1全网),Che1,4x (che1全网),开机碎屏,25,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-d7821a9a66905a55e973-01,2026-08-25,手机,device,华为,4,4x (che1全网),Che1,4x (che1全网),开机坏配件,25,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-1b061e83209ffada5d03-01,2026-08-25,手机,device,华为,4,4x (che1全网),Che1,4x (che1全网),不开机,25,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-93bdf157f1e6e07229ca-01,2026-08-25,手机,device,华为,4,4x (che1全网),Che1,4x (che1全网),废板·整机,25,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-403cdc05704776daf46a-01,2026-08-25,手机,device,华为,4,4x (che1全网),Che1,4x (che1全网),统货,/,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-c94445dc31f96059e65b-01,2026-08-25,手机,device,华为,5,4x (1g),Che1,4x (1g),开机靓好,25,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-553ff7ee4c1bb361cfad-01,2026-08-25,手机,device,华为,5,4x (1g),Che1,4x (1g),开机好碎,25,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-0e8464f7b4b1f9d0d17b-01,2026-08-25,手机,device,华为,5,4x (1g),Che1,4x (1g),开机碎屏,25,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-a39a9511b52e9b9369ce-01,2026-08-25,手机,device,华为,5,4x (1g),Che1,4x (1g),开机坏配件,25,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-27f5dc7cc2cd2c497a7c-01,2026-08-25,手机,device,华为,5,4x (1g),Che1,4x (1g),不开机,25,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-f18f56c451689103fa8f-01,2026-08-25,手机,device,华为,5,4x (1g),Che1,4x (1g),废板·整机,25,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-13d038dcd232afd864fd-01,2026-08-25,手机,device,华为,5,4x (1g),Che1,4x (1g),统货,/,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-1489bfc11a52fa8f06ab-01,2026-08-25,手机,device,华为,6,4c,CHM-AL00,4c,开机靓好,25,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-003f5d953a2a595f30d6-01,2026-08-25,手机,device,华为,6,4c,CHM-AL00,4c,开机好碎,25,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-590d910517d4f9b42638-01,2026-08-25,手机,device,华为,6,4c,CHM-AL00,4c,开机碎屏,25,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-159078e44cbf945a668d-01,2026-08-25,手机,device,华为,6,4c,CHM-AL00,4c,开机坏配件,25,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-6ff7f0acc616dcbfcd8e-01,2026-08-25,手机,device,华为,6,4c,CHM-AL00,4c,不开机,25,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-8e4e856be60f9a261156-01,2026-08-25,手机,device,华为,6,4c,CHM-AL00,4c,废板·整机,25,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-daa23ac03f11a58c65b2-01,2026-08-25,手机,device,华为,6,4c,CHM-AL00,4c,统货,/,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-b923713e1e6318b45773-01,2026-08-25,手机,device,华为,1,4a移动,SCL-TL00,4a移动,开机靓好,18,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-a3e0f8936be24d17b6f8-01,2026-08-25,手机,device,华为,1,4a移动,SCL-TL00,4a移动,开机好碎,18,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-63275b7d6fb25c1cf822-01,2026-08-25,手机,device,华为,1,4a移动,SCL-TL00,4a移动,开机碎屏,18,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-bc86b1d6aac40ad78dde-01,2026-08-25,手机,device,华为,1,4a移动,SCL-TL00,4a移动,开机坏配件,18,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-50697036a6c27450f089-01,2026-08-25,手机,device,华为,1,4a移动,SCL-TL00,4a移动,不开机,18,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-f45777fc5be89f648bbd-01,2026-08-25,手机,device,华为,1,4a移动,SCL-TL00,4a移动,废板·整机,18,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-19c6dedc712aaa8a9bae-01,2026-08-25,手机,device,华为,1,4a移动,SCL-TL00,4a移动,统货,/,CNY/台,开机屏好触摸好机外屏坏,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-c41d81bcbfa83a50ba0a-01,2026-08-25,手机,device,华为,2,H30-u10,H30-t10,H30-u10,开机靓好,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-c4e70cf0548dbd3b9a66-01,2026-08-25,手机,device,华为,2,H30-u10,H30-t10,H30-u10,开机好碎,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-5237ff4ea16f16b89415-01,2026-08-25,手机,device,华为,2,H30-u10,H30-t10,H30-u10,开机碎屏,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-a8ddeef117bfcabc34f4-01,2026-08-25,手机,device,华为,2,H30-u10,H30-t10,H30-u10,开机坏配件,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-09ba2f91b898be06a377-01,2026-08-25,手机,device,华为,2,H30-u10,H30-t10,H30-u10,不开机,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-6fa77d93586f54b77a6b-01,2026-08-25,手机,device,华为,2,H30-u10,H30-t10,H30-u10,废板·整机,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-1bf63cf5b17a2445bb81-01,2026-08-25,手机,device,华为,2,H30-u10,H30-t10,H30-u10,统货,/,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-1d7aff11d914c64d8811-01,2026-08-25,手机,device,华为,3,H30-t00,H30-t00,H30-t00,开机靓好,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-2db62f907c587cc4fe9d-01,2026-08-25,手机,device,华为,3,H30-t00,H30-t00,H30-t00,开机好碎,/,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-bc466382c996bd669b9e-01,2026-08-25,手机,device,华为,3,H30-t00,H30-t00,H30-t00,开机碎屏,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-36a9dd3441b54d11f4bf-01,2026-08-25,手机,device,华为,3,H30-t00,H30-t00,H30-t00,开机坏配件,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-80b7802a00f4313270c4-01,2026-08-25,手机,device,华为,3,H30-t00,H30-t00,H30-t00,不开机,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-23eb4ede355bf5bc3e69-01,2026-08-25,手机,device,华为,3,H30-t00,H30-t00,H30-t00,废板·整机,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-bbf91ff482d612b5ceb3-01,2026-08-25,手机,device,华为,3,H30-t00,H30-t00,H30-t00,统货,/,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-4963fa3697aaa5cbbcb4-01,2026-08-25,手机,device,华为,4,H30-t10,H30-u10,H30-t10,开机靓好,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-0ebc4f948d1760f5a0c9-01,2026-08-25,手机,device,华为,4,H30-t10,H30-u10,H30-t10,开机好碎,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-28f003340521177da522-01,2026-08-25,手机,device,华为,4,H30-t10,H30-u10,H30-t10,开机碎屏,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-ddf887ed250e0c612103-01,2026-08-25,手机,device,华为,4,H30-t10,H30-u10,H30-t10,开机坏配件,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-2996e7ffb4bbb8bfdfe2-01,2026-08-25,手机,device,华为,4,H30-t10,H30-u10,H30-t10,不开机,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-1099a0ebda62e38e4698-01,2026-08-25,手机,device,华为,4,H30-t10,H30-u10,H30-t10,废板·整机,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-d6a38df42adf992eea37-01,2026-08-25,手机,device,华为,4,H30-t10,H30-u10,H30-t10,统货,/,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-6ae404c584f53ee04e1a-01,2026-08-25,手机,device,华为,5,H30,H30单卡,H30,开机靓好,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-a17bcdec1ff3a4a65497-01,2026-08-25,手机,device,华为,5,H30,H30单卡,H30,开机好碎,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-d571353a9f21e5c6a50c-01,2026-08-25,手机,device,华为,5,H30,H30单卡,H30,开机碎屏,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-17d1b028f01db9c6e2c1-01,2026-08-25,手机,device,华为,5,H30,H30单卡,H30,开机坏配件,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-db3ece33003a9620e68d-01,2026-08-25,手机,device,华为,5,H30,H30单卡,H30,不开机,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-2caa03c7793978fd9fa8-01,2026-08-25,手机,device,华为,5,H30,H30单卡,H30,废板·整机,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-7cd65a7f07ed9ed23309-01,2026-08-25,手机,device,华为,5,H30,H30单卡,H30,统货,/,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-c2b909d8df8ae2fc2801-01,2026-08-25,手机,device,华为,6,Mate2,MT2,Mate2,开机靓好,12,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-42279cd3847d9fc63317-01,2026-08-25,手机,device,华为,6,Mate2,MT2,Mate2,开机好碎,12,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-b40a34146b0f522206d3-01,2026-08-25,手机,device,华为,6,Mate2,MT2,Mate2,开机碎屏,12,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-67b757f153c9cfd367b0-01,2026-08-25,手机,device,华为,6,Mate2,MT2,Mate2,开机坏配件,12,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-d0578b8dc042611909a7-01,2026-08-25,手机,device,华为,6,Mate2,MT2,Mate2,不开机,12,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-48ee44e4d176fa5ed40d-01,2026-08-25,手机,device,华为,6,Mate2,MT2,Mate2,废板·整机,12,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-0f0117622ef61201de77-01,2026-08-25,手机,device,华为,6,Mate2,MT2,Mate2,统货,/,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-c707a8773b101b96278d-01,2026-08-25,手机,device,华为,1,Mate1,MT1,Mate1,开机靓好,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-863f098a1844722ad368-01,2026-08-25,手机,device,华为,1,Mate1,MT1,Mate1,开机好碎,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-0e94dfb75b2e8b342409-01,2026-08-25,手机,device,华为,1,Mate1,MT1,Mate1,开机碎屏,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-40392642bd14fbae4e6a-01,2026-08-25,手机,device,华为,1,Mate1,MT1,Mate1,开机坏配件,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-6eac0e9a312eb8754f78-01,2026-08-25,手机,device,华为,1,Mate1,MT1,Mate1,不开机,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-88ad2281ddb577e4cb7d-01,2026-08-25,手机,device,华为,1,Mate1,MT1,Mate1,废板·整机,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-12216fed59c45b289036-01,2026-08-25,手机,device,华为,1,Mate1,MT1,Mate1,统货,/,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-9885332d3db6c4ba9d83-01,2026-08-25,手机,device,华为,2,A199,A199,A199,开机靓好,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-6f7801f004487a6a4668-01,2026-08-25,手机,device,华为,2,A199,A199,A199,开机好碎,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-9577c660d060dd50fd7d-01,2026-08-25,手机,device,华为,2,A199,A199,A199,开机碎屏,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-81ba5b0cd6d375002c9f-01,2026-08-25,手机,device,华为,2,A199,A199,A199,开机坏配件,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-51fd932947e5710623d8-01,2026-08-25,手机,device,华为,2,A199,A199,A199,不开机,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-d2bd635adfdd55ea9fd3-01,2026-08-25,手机,device,华为,2,A199,A199,A199,废板·整机,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-c3282d7fe82dee4fa5bf-01,2026-08-25,手机,device,华为,2,A199,A199,A199,统货,/,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-a802d226c64b7bb41f0a-01,2026-08-25,手机,device,华为,3,B199,B199,B199,开机靓好,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-9076474b2ed8ccc5817e-01,2026-08-25,手机,device,华为,3,B199,B199,B199,开机好碎,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-d2abb6aefc8d36746098-01,2026-08-25,手机,device,华为,3,B199,B199,B199,开机碎屏,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-eb95f3e34aad69b46b47-01,2026-08-25,手机,device,华为,3,B199,B199,B199,开机坏配件,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-d5efe645b49bf313273b-01,2026-08-25,手机,device,华为,3,B199,B199,B199,不开机,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-d4f3e1209a379f9d5d52-01,2026-08-25,手机,device,华为,3,B199,B199,B199,废板·整机,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-e0becfb18ab3e95381e6-01,2026-08-25,手机,device,华为,3,B199,B199,B199,统货,/,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-ba1b60253e9e1f66b1f0-01,2026-08-25,手机,device,华为,4,C199,C199,C199,开机靓好,20,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-216d7f6832157657921c-01,2026-08-25,手机,device,华为,4,C199,C199,C199,开机好碎,20,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-0a1f24ffa679b1ee25da-01,2026-08-25,手机,device,华为,4,C199,C199,C199,开机碎屏,20,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-8b0241cb6490b6f3fbdb-01,2026-08-25,手机,device,华为,4,C199,C199,C199,开机坏配件,20,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-db59681caf4da9dff3c6-01,2026-08-25,手机,device,华为,4,C199,C199,C199,不开机,20,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-a9e8f0fbb4486ffe7a2e-01,2026-08-25,手机,device,华为,4,C199,C199,C199,废板·整机,20,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-4e3817ab74b1b14813ea-01,2026-08-25,手机,device,华为,4,C199,C199,C199,统货,/,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-c8919019eb81227f242c-01,2026-08-25,手机,device,华为,5,Gx1金色,SC,Gx1金色,开机靓好,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-ae7811dac0171d72d62e-01,2026-08-25,手机,device,华为,5,Gx1金色,SC,Gx1金色,开机好碎,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-afb81e4ab77f4339cf2b-01,2026-08-25,手机,device,华为,5,Gx1金色,SC,Gx1金色,开机碎屏,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-f6b87003ae37c25ed33d-01,2026-08-25,手机,device,华为,5,Gx1金色,SC,Gx1金色,开机坏配件,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-3a80d6ba3ee242ffedf8-01,2026-08-25,手机,device,华为,5,Gx1金色,SC,Gx1金色,不开机,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-fa2629dbf8359e4d594c-01,2026-08-25,手机,device,华为,5,Gx1金色,SC,Gx1金色,废板·整机,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-025ca083194199913f37-01,2026-08-25,手机,device,华为,5,Gx1金色,SC,Gx1金色,统货,/,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-d1832c715afa898cda48-01,2026-08-25,手机,device,华为,6,Gx1白色,SC,Gx1白色,开机靓好,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-99d821ddba520c1f010c-01,2026-08-25,手机,device,华为,6,Gx1白色,SC,Gx1白色,开机好碎,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-98b078450e0048fecf0d-01,2026-08-25,手机,device,华为,6,Gx1白色,SC,Gx1白色,开机碎屏,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-15b48900fce77fc56371-01,2026-08-25,手机,device,华为,6,Gx1白色,SC,Gx1白色,开机坏配件,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-8e06be7612e287cf1663-01,2026-08-25,手机,device,华为,6,Gx1白色,SC,Gx1白色,不开机,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-6476410a742ac3ae59d9-01,2026-08-25,手机,device,华为,6,Gx1白色,SC,Gx1白色,废板·整机,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-f95d0f941efe03dd5e63-01,2026-08-25,手机,device,华为,6,Gx1白色,SC,Gx1白色,统货,/,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-fa1ccdd91a7cde2b238d-01,2026-08-25,手机,device,华为,7,HOL,HOL,HOL,开机靓好,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-3b53c0d1c3f42db1b11a-01,2026-08-25,手机,device,华为,7,HOL,HOL,HOL,开机好碎,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-754ede1f78ff285ca4d0-01,2026-08-25,手机,device,华为,7,HOL,HOL,HOL,开机碎屏,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-70f0d173bc57c4fde55e-01,2026-08-25,手机,device,华为,7,HOL,HOL,HOL,开机坏配件,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-64758a8538bc8bfddcea-01,2026-08-25,手机,device,华为,7,HOL,HOL,HOL,不开机,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-58916d6d4d676d00c3a4-01,2026-08-25,手机,device,华为,7,HOL,HOL,HOL,废板·整机,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-cdddd5e6eb802160c571-01,2026-08-25,手机,device,华为,7,HOL,HOL,HOL,统货,/,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-0b9d48b89af388f83ccb-01,2026-08-25,手机,device,华为,8,C8812/C8813,C8812/C8813,C8812/C8813,开机靓好,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-ef6347af3ae7e841f1fa-01,2026-08-25,手机,device,华为,8,C8812/C8813,C8812/C8813,C8812/C8813,开机好碎,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-370938f942454e61a9bb-01,2026-08-25,手机,device,华为,8,C8812/C8813,C8812/C8813,C8812/C8813,开机碎屏,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-dfe4a0bc026a7196ecf4-01,2026-08-25,手机,device,华为,8,C8812/C8813,C8812/C8813,C8812/C8813,开机坏配件,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-c6c5ab76d87c4d4462db-01,2026-08-25,手机,device,华为,8,C8812/C8813,C8812/C8813,C8812/C8813,不开机,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-b45cc2ea9fa2013a03db-01,2026-08-25,手机,device,华为,8,C8812/C8813,C8812/C8813,C8812/C8813,废板·整机,10,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-40979275947f0d9ae854-01,2026-08-25,手机,device,华为,8,C8812/C8813,C8812/C8813,C8812/C8813,统货,/,CNY/台,/,image,华为2.jpg,数码网报价单-0825更新/手机相关/华为2.jpg,1,1.0,visual_0825_source_crosschecked
+20260825-c0016dda3a510d4761b7-01,2026-08-25,平板,device,OPPO,平板,OPPO Pad2,,,开机屏好,350,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-943eb470ff5d86527617-01,2026-08-25,平板,device,OPPO,平板,OPPO Pad2,,,开机屏坏,300,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-346ad1124335d8f09292-01,2026-08-25,平板,device,OPPO,平板,OPPO Pad2,,,不开机,90,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-6109f1e3ddc8c1800f26-01,2026-08-25,平板,device,OPPO,平板,OPPO Pad2,,,废板-整机,90,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-409821cf51a45e13d7ff-01,2026-08-25,平板,device,OPPO,平板,OPPO Pad,,,开机屏好,240,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-e64a6aa21eeaeb2b4ba1-01,2026-08-25,平板,device,OPPO,平板,OPPO Pad,,,开机屏坏,180,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-9df9927e105f25cee3d2-01,2026-08-25,平板,device,OPPO,平板,OPPO Pad,,,不开机,90,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-46ea37fb21b96ebec1ae-01,2026-08-25,平板,device,OPPO,平板,OPPO Pad,,,废板-整机,90,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-f78907a932a591a12df2-01,2026-08-25,平板,device,OPPO,平板,oppo pad air2,,,开机屏好,260,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-323cb2bc8cb33f58700f-01,2026-08-25,平板,device,OPPO,平板,oppo pad air2,,,开机屏坏,180,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-ac3c55229a74a304540b-01,2026-08-25,平板,device,OPPO,平板,oppo pad air2,,,不开机,90,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-2c7b6e318c4793072989-01,2026-08-25,平板,device,OPPO,平板,oppo pad air2,,,废板-整机,90,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-12922641cc07775dc119-01,2026-08-25,平板,device,OPPO,平板,OPPO Pad Air,,,开机屏好,90,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-89918fd870c0189fea54-01,2026-08-25,平板,device,OPPO,平板,OPPO Pad Air,,,开机屏坏,90,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-8ac73cb6cc7c620fedd4-01,2026-08-25,平板,device,OPPO,平板,OPPO Pad Air,,,不开机,90,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-e6318eec8172a693801c-01,2026-08-25,平板,device,OPPO,平板,OPPO Pad Air,,,废板-整机,90,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-65a481866a3f2d11cbb2-01,2026-08-25,平板,device,vivo,平板,VIVO Pad2,,,开机屏好,280,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-f6acfac75fad216f1082-01,2026-08-25,平板,device,vivo,平板,VIVO Pad2,,,开机屏坏,220,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-4c4ab1191b4093bbc197-01,2026-08-25,平板,device,vivo,平板,VIVO Pad2,,,不开机,90,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-49d130eaae254f33245c-01,2026-08-25,平板,device,vivo,平板,VIVO Pad2,,,废板-整机,90,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-1fc313de45bf300f3485-01,2026-08-25,平板,device,vivo,平板,VIVO Pad3 Pro,,,开机屏好,400,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-93f27d6bfef7553b045d-01,2026-08-25,平板,device,vivo,平板,VIVO Pad3 Pro,,,开机屏坏,350,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-4dcda401b513b347dc8b-01,2026-08-25,平板,device,vivo,平板,VIVO Pad3 Pro,,,不开机,90,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-c8eba9d1f66b5911835e-01,2026-08-25,平板,device,vivo,平板,VIVO Pad3 Pro,,,废板-整机,90,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-9e07c0200c582df66fe1-01,2026-08-25,平板,device,vivo,平板,VIVO Pad air,,,开机屏好,90,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-79b25e5737b4c0c43043-01,2026-08-25,平板,device,vivo,平板,VIVO Pad air,,,开机屏坏,90,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-4bab4afdfbbc9b369d43-01,2026-08-25,平板,device,vivo,平板,VIVO Pad air,,,不开机,90,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-9574b9289e9c2977fafc-01,2026-08-25,平板,device,vivo,平板,VIVO Pad air,,,废板-整机,90,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-fe57816113ae98d3d0eb-01,2026-08-25,平板,device,vivo,平板,VIVO Pad,,,开机屏好,90,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-7c4d8092a417b8c4dbbc-01,2026-08-25,平板,device,vivo,平板,VIVO Pad,,,开机屏坏,90,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-5731f08b27a45625bd09-01,2026-08-25,平板,device,vivo,平板,VIVO Pad,,,不开机,90,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-4c69135efa8a7d87b8e2-01,2026-08-25,平板,device,vivo,平板,VIVO Pad,,,废板-整机,90,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-55b976ee4341024f73c5-01,2026-08-25,平板,device,iQOO,平板,IQOO PAD,,,开机屏好,180,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-3ebd267dff029e12f4a0-01,2026-08-25,平板,device,iQOO,平板,IQOO PAD,,,开机屏坏,180,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-38d400840ee8139b4490-01,2026-08-25,平板,device,iQOO,平板,IQOO PAD,,,不开机,90,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-5434e403f004e4d96c7a-01,2026-08-25,平板,device,iQOO,平板,IQOO PAD,,,废板-整机,90,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-0ec3cca5a3173f395f23-01,2026-08-25,平板,device,iQOO,平板,IQOO Pad AIR,,,开机屏好,120,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-5d7807e169e474b57cda-01,2026-08-25,平板,device,iQOO,平板,IQOO Pad AIR,,,开机屏坏,90,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-e58d1317244a6553c5a7-01,2026-08-25,平板,device,iQOO,平板,IQOO Pad AIR,,,不开机,90,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-9ee6a30525b9e5626b05-01,2026-08-25,平板,device,iQOO,平板,IQOO Pad AIR,,,废板-整机,90,元/台,,image,ov平板.jpg,数码网报价单-0825更新/平板相关/ov平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-dc137b2829202acdc910-01,2026-08-25,平板,device,小米,平板,小米平板6 Max,,,开机屏好,350,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-ddfe50b3b0110f3431d9-01,2026-08-25,平板,device,小米,平板,小米平板6 Max,,,开机屏坏,350,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-47137eca6c4efb504b29-01,2026-08-25,平板,device,小米,平板,小米平板6 Max,,,不开机,120,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-ac14ed0b973c583b4775-01,2026-08-25,平板,device,小米,平板,小米平板6 Max,,,废板-整机,120,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-2d71a746aa47a7f74d04-01,2026-08-25,平板,device,小米,平板,小米平板6S Pro,,,开机屏好,350,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-5a4db9f81a8662c83a5f-01,2026-08-25,平板,device,小米,平板,小米平板6S Pro,,,开机屏坏,350,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-87758889ea7abbb3bb76-01,2026-08-25,平板,device,小米,平板,小米平板6S Pro,,,不开机,120,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-e9f4c614396a4747228e-01,2026-08-25,平板,device,小米,平板,小米平板6S Pro,,,废板-整机,120,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-5efffb583fef993a0e1b-01,2026-08-25,平板,device,小米,平板,小米平板6 Pro,,,开机屏好,350,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-d50dfe59d96abb8ab8f5-01,2026-08-25,平板,device,小米,平板,小米平板6 Pro,,,开机屏坏,350,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-5b0103e8324f0b206a95-01,2026-08-25,平板,device,小米,平板,小米平板6 Pro,,,不开机,120,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-654c5807b61790c1cfba-01,2026-08-25,平板,device,小米,平板,小米平板6 Pro,,,废板-整机,120,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-2cd58df516f2c565ef3d-01,2026-08-25,平板,device,小米,平板,小米平板6,,,开机屏好,350,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-eca40e08f6c5d0055507-01,2026-08-25,平板,device,小米,平板,小米平板6,,,开机屏坏,350,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-3211dedece5508fae9a0-01,2026-08-25,平板,device,小米,平板,小米平板6,,,不开机,120,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-933864fc2cf10a184234-01,2026-08-25,平板,device,小米,平板,小米平板6,,,废板-整机,120,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-245b621f34f7e8c48276-01,2026-08-25,平板,device,小米,平板,小米平板5 Pro,,,开机屏好,300,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-eb2d4643f6e9b81e6274-01,2026-08-25,平板,device,小米,平板,小米平板5 Pro,,,开机屏坏,300,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-f711fc453f1fa8ccd4fc-01,2026-08-25,平板,device,小米,平板,小米平板5 Pro,,,不开机,100,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-6cfe13513c4bd2c4b48d-01,2026-08-25,平板,device,小米,平板,小米平板5 Pro,,,废板-整机,100,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-2465d14317df73c15ca8-01,2026-08-25,平板,device,小米,平板,小米平板5,,,开机屏好,230,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-c166555e8819f9215e66-01,2026-08-25,平板,device,小米,平板,小米平板5,,,开机屏坏,230,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-5d51c0862e90654947a2-01,2026-08-25,平板,device,小米,平板,小米平板5,,,不开机,100,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-fb077991c3c4e120c21a-01,2026-08-25,平板,device,小米,平板,小米平板5,,,废板-整机,100,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-8d660974321f6ca4dde4-01,2026-08-25,平板,device,小米,平板,小米平板4 pro,,,开机屏好,110,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-fd265724ce8a7f826a7f-01,2026-08-25,平板,device,小米,平板,小米平板4 pro,,,开机屏坏,110,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-faf321a770e573869172-01,2026-08-25,平板,device,小米,平板,小米平板4 pro,,,不开机,110,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-07cdac90c3bcc1ba3905-01,2026-08-25,平板,device,小米,平板,小米平板4 pro,,,废板-整机,110,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-039d3d7acbfb943a5371-01,2026-08-25,平板,device,小米,平板,小米平板4代,,,开机屏好,100,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-b9c4910c6a04b61bd83f-01,2026-08-25,平板,device,小米,平板,小米平板4代,,,开机屏坏,100,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-85deff0e55a717486d0a-01,2026-08-25,平板,device,小米,平板,小米平板4代,,,不开机,100,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-44dcf23302d013e72e2e-01,2026-08-25,平板,device,小米,平板,小米平板4代,,,废板-整机,100,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-35fe3c67b461375f195d-01,2026-08-25,平板,device,小米,平板,小米平板3代,,,开机屏好,30,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-25c62a2d4c2d3744029f-01,2026-08-25,平板,device,小米,平板,小米平板3代,,,开机屏坏,30,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-b290b4abaad55515c840-01,2026-08-25,平板,device,小米,平板,小米平板3代,,,不开机,30,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-9988c0860f293827722d-01,2026-08-25,平板,device,小米,平板,小米平板3代,,,废板-整机,30,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-2c862f7cae3805f5dd4e-01,2026-08-25,平板,device,小米,平板,小米平板2代,,,开机屏好,30,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-4ab28701b5139f307811-01,2026-08-25,平板,device,小米,平板,小米平板2代,,,开机屏坏,30,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-abf9d62961a26014a5ba-01,2026-08-25,平板,device,小米,平板,小米平板2代,,,不开机,30,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-9c30d56b665a7c3f4d07-01,2026-08-25,平板,device,小米,平板,小米平板2代,,,废板-整机,30,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-0606569ab21f3e898c66-01,2026-08-25,平板,device,小米,平板,平板一代,,,开机屏好,30,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-a23513ad2f5a07c40bfc-01,2026-08-25,平板,device,小米,平板,平板一代,,,开机屏坏,30,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-bdcc7de69920616b16c8-01,2026-08-25,平板,device,小米,平板,平板一代,,,不开机,30,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-54a0671c248cd41f7c0a-01,2026-08-25,平板,device,小米,平板,平板一代,,,废板-整机,30,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-1001cf73a2a6dbc8c974-01,2026-08-25,平板,device,小米,平板,Redmi Pad 10.6寸,,,开机屏好,190,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-a2bb0d88a7460a51ac12-01,2026-08-25,平板,device,小米,平板,Redmi Pad 10.6寸,,,开机屏坏,190,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-347b3acea0114529fdf4-01,2026-08-25,平板,device,小米,平板,Redmi Pad 10.6寸,,,不开机,140,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-edfa1e60bf20ce068042-01,2026-08-25,平板,device,小米,平板,Redmi Pad 10.6寸,,,废板-整机,140,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-a470eafb26af5008a493-01,2026-08-25,平板,device,小米,平板,Redmi Pad SE 11.5寸,,,开机屏好,190,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-364553fa85ea156792b9-01,2026-08-25,平板,device,小米,平板,Redmi Pad SE 11.5寸,,,开机屏坏,190,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-00869ef4a1596e86c7e6-01,2026-08-25,平板,device,小米,平板,Redmi Pad SE 11.5寸,,,不开机,140,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-4fb56a72530ad61e7051-01,2026-08-25,平板,device,小米,平板,Redmi Pad SE 11.5寸,,,废板-整机,140,元/台,,image,小米平板.jpg,数码网报价单-0825更新/平板相关/小米平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-3e88a654c9246f7996be-01,2026-08-25,平板,device,荣耀,,荣耀平板V8 11寸,,,开机屏好,160,元/台,,image,荣耀平板.jpg,数码网报价单-0825更新/平板相关/荣耀平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-39df7601e6fd0014d57b-01,2026-08-25,平板,device,荣耀,,荣耀平板V8 11寸,,,开机屏坏,160,元/台,,image,荣耀平板.jpg,数码网报价单-0825更新/平板相关/荣耀平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-c89ded8d66da6199505b-01,2026-08-25,平板,device,荣耀,,荣耀平板V8 11寸,,,不开机,70,元/台,,image,荣耀平板.jpg,数码网报价单-0825更新/平板相关/荣耀平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-6471b7809e7f1e1376fe-01,2026-08-25,平板,device,荣耀,,荣耀平板V8 11寸,,,废板-整机,70,元/台,,image,荣耀平板.jpg,数码网报价单-0825更新/平板相关/荣耀平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-23cf2317f67664966040-01,2026-08-25,平板,device,荣耀,,荣耀平板V6 10.4英寸,,,开机屏好,100,元/台,,image,荣耀平板.jpg,数码网报价单-0825更新/平板相关/荣耀平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-0c1870ec9c5bc97f3aef-01,2026-08-25,平板,device,荣耀,,荣耀平板V6 10.4英寸,,,开机屏坏,100,元/台,,image,荣耀平板.jpg,数码网报价单-0825更新/平板相关/荣耀平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-472782d313c7b7a0c895-01,2026-08-25,平板,device,荣耀,,荣耀平板V6 10.4英寸,,,不开机,40,元/台,,image,荣耀平板.jpg,数码网报价单-0825更新/平板相关/荣耀平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-6e630676323f5a187905-01,2026-08-25,平板,device,荣耀,,荣耀平板V6 10.4英寸,,,废板-整机,40,元/台,,image,荣耀平板.jpg,数码网报价单-0825更新/平板相关/荣耀平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-e99834d7ffbe055978ed-01,2026-08-25,平板,device,荣耀,,荣耀平板9 12.1寸,,,开机屏好,300,元/台,,image,荣耀平板.jpg,数码网报价单-0825更新/平板相关/荣耀平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-42e54c6eea6d70a7a5dc-01,2026-08-25,平板,device,荣耀,,荣耀平板9 12.1寸,,,开机屏坏,300,元/台,,image,荣耀平板.jpg,数码网报价单-0825更新/平板相关/荣耀平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-28fb49e62cff88eb8b8d-01,2026-08-25,平板,device,荣耀,,荣耀平板9 12.1寸,,,不开机,200,元/台,,image,荣耀平板.jpg,数码网报价单-0825更新/平板相关/荣耀平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-48959b393fd84ef98ee0-01,2026-08-25,平板,device,荣耀,,荣耀平板9 12.1寸,,,废板-整机,200,元/台,,image,荣耀平板.jpg,数码网报价单-0825更新/平板相关/荣耀平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-90fa3fb66eb43bbf80f1-01,2026-08-25,平板,device,荣耀,,荣耀平板8 12寸,,,开机屏好,160,元/台,,image,荣耀平板.jpg,数码网报价单-0825更新/平板相关/荣耀平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-8e780a0fdba4195cef4f-01,2026-08-25,平板,device,荣耀,,荣耀平板8 12寸,,,开机屏坏,140,元/台,,image,荣耀平板.jpg,数码网报价单-0825更新/平板相关/荣耀平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-05f22d70b02fbe364222-01,2026-08-25,平板,device,荣耀,,荣耀平板8 12寸,,,不开机,40,元/台,,image,荣耀平板.jpg,数码网报价单-0825更新/平板相关/荣耀平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-537712c604d08ec42e10-01,2026-08-25,平板,device,荣耀,,荣耀平板8 12寸,,,废板-整机,15,元/台,,image,荣耀平板.jpg,数码网报价单-0825更新/平板相关/荣耀平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-d66ed06ebba22e3ad925-01,2026-08-25,平板,device,荣耀,,荣耀平板7 10.1寸 WiFi版,,,开机屏好,80,元/台,,image,荣耀平板.jpg,数码网报价单-0825更新/平板相关/荣耀平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-429b7400afcc77dac268-01,2026-08-25,平板,device,荣耀,,荣耀平板7 10.1寸 WiFi版,,,开机屏坏,80,元/台,,image,荣耀平板.jpg,数码网报价单-0825更新/平板相关/荣耀平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-347d31856a1833ad6f3e-01,2026-08-25,平板,device,荣耀,,荣耀平板7 10.1寸 WiFi版,,,不开机,40,元/台,,image,荣耀平板.jpg,数码网报价单-0825更新/平板相关/荣耀平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-15fab93ca8eb662bab2a-01,2026-08-25,平板,device,荣耀,,荣耀平板7 10.1寸 WiFi版,,,废板-整机,40,元/台,,image,荣耀平板.jpg,数码网报价单-0825更新/平板相关/荣耀平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-9b1c7d9e43c44711a2a2-01,2026-08-25,平板,device,荣耀,,荣耀平板5 10.1英寸 WiFi版,,,开机屏好,35,元/台,,image,荣耀平板.jpg,数码网报价单-0825更新/平板相关/荣耀平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-7edd9e6502c866095e33-01,2026-08-25,平板,device,荣耀,,荣耀平板5 10.1英寸 WiFi版,,,开机屏坏,35,元/台,,image,荣耀平板.jpg,数码网报价单-0825更新/平板相关/荣耀平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-944c1202b6e531ce9418-01,2026-08-25,平板,device,荣耀,,荣耀平板5 10.1英寸 WiFi版,,,不开机,35,元/台,,image,荣耀平板.jpg,数码网报价单-0825更新/平板相关/荣耀平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-eea59d4b65a691087db3-01,2026-08-25,平板,device,荣耀,,荣耀平板5 10.1英寸 WiFi版,,,废板-整机,35,元/台,,image,荣耀平板.jpg,数码网报价单-0825更新/平板相关/荣耀平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-94bd3175de83cc0790aa-01,2026-08-25,平板,device,荣耀,,荣耀x1,,,开机屏好,20,元/台,,image,荣耀平板.jpg,数码网报价单-0825更新/平板相关/荣耀平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-ec83c1a70f860da1f7a9-01,2026-08-25,平板,device,荣耀,,荣耀x1,,,开机屏坏,20,元/台,,image,荣耀平板.jpg,数码网报价单-0825更新/平板相关/荣耀平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-1bb471d8deb140a66652-01,2026-08-25,平板,device,荣耀,,荣耀x1,,,不开机,20,元/台,,image,荣耀平板.jpg,数码网报价单-0825更新/平板相关/荣耀平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-17ab69c3bdedfc346143-01,2026-08-25,平板,device,荣耀,,荣耀x1,,,废板-整机,20,元/台,,image,荣耀平板.jpg,数码网报价单-0825更新/平板相关/荣耀平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-28e5881ba28bfdc3ac04-01,2026-08-25,平板,device,荣耀,,荣耀X2,,,开机屏好,20,元/台,,image,荣耀平板.jpg,数码网报价单-0825更新/平板相关/荣耀平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-af63599cca801a17404f-01,2026-08-25,平板,device,荣耀,,荣耀X2,,,开机屏坏,20,元/台,,image,荣耀平板.jpg,数码网报价单-0825更新/平板相关/荣耀平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-929ef4255c62caa9c9af-01,2026-08-25,平板,device,荣耀,,荣耀X2,,,不开机,20,元/台,,image,荣耀平板.jpg,数码网报价单-0825更新/平板相关/荣耀平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-59efe9f54c4051171840-01,2026-08-25,平板,device,荣耀,,荣耀X2,,,废板-整机,20,元/台,,image,荣耀平板.jpg,数码网报价单-0825更新/平板相关/荣耀平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-335edcc6d3fab078904e-01,2026-08-25,平板,device,荣耀,,荣耀畅玩平板3,,,开机屏好,20,元/台,,image,荣耀平板.jpg,数码网报价单-0825更新/平板相关/荣耀平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-e836ec4f56bcadb195c2-01,2026-08-25,平板,device,荣耀,,荣耀畅玩平板3,,,开机屏坏,20,元/台,,image,荣耀平板.jpg,数码网报价单-0825更新/平板相关/荣耀平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-65285b321ae5a0e9a87a-01,2026-08-25,平板,device,荣耀,,荣耀畅玩平板3,,,不开机,20,元/台,,image,荣耀平板.jpg,数码网报价单-0825更新/平板相关/荣耀平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-d1db9c51b90f2dedc255-01,2026-08-25,平板,device,荣耀,,荣耀畅玩平板3,,,废板-整机,20,元/台,,image,荣耀平板.jpg,数码网报价单-0825更新/平板相关/荣耀平板.jpg,1,1.0,visual_verified_same_as_0831_source
+20260825-f843d499f8e583c652d7-01,2026-08-25,平板,device,EVD,,7-8寸屏,,,屏好,5,元/台,没电池扣3元,image,EVD 唱戏机.jpg,数码网报价单-0825更新/平板相关/EVD 唱戏机.jpg,1,0.99,visual_manual
+20260825-825779a4e7341ab7ade2-01,2026-08-25,平板,device,EVD,,7-8寸屏,,,屏坏,3,元/台,没电池扣3元,image,EVD 唱戏机.jpg,数码网报价单-0825更新/平板相关/EVD 唱戏机.jpg,1,0.99,visual_manual
+20260825-b8d8a1d9ba35d5ad536e-01,2026-08-25,平板,device,EVD,,9-10寸屏,,,屏好,13,元/台,没电池扣3元,image,EVD 唱戏机.jpg,数码网报价单-0825更新/平板相关/EVD 唱戏机.jpg,1,0.99,visual_manual
+20260825-207d52c97b25ef6dcab0-01,2026-08-25,平板,device,EVD,,9-10寸屏,,,屏坏,3,元/台,没电池扣3元,image,EVD 唱戏机.jpg,数码网报价单-0825更新/平板相关/EVD 唱戏机.jpg,1,0.99,visual_manual
+20260825-398b6c618b6d13959a4c-01,2026-08-25,平板,device,EVD,,12寸/14寸屏以上,,,屏好,13,元/台,没电池扣3元,image,EVD 唱戏机.jpg,数码网报价单-0825更新/平板相关/EVD 唱戏机.jpg,1,0.99,visual_manual
+20260825-240c351112ea9eab538f-01,2026-08-25,平板,device,EVD,,12寸/14寸屏以上,,,屏坏,3,元/台,没电池扣3元,image,EVD 唱戏机.jpg,数码网报价单-0825更新/平板相关/EVD 唱戏机.jpg,1,0.99,visual_manual
+20260825-05bb58103ab27dde65a3-01,2026-08-25,平板,device,EVD,,进口原装7寸屏以上,,,屏好,6,元/台,,image,EVD 唱戏机.jpg,数码网报价单-0825更新/平板相关/EVD 唱戏机.jpg,1,0.99,visual_manual
+20260825-d18f3003934f38e3b2c0-01,2026-08-25,平板,device,EVD,,进口原装7寸屏以上,,,屏坏,3,元/台,,image,EVD 唱戏机.jpg,数码网报价单-0825更新/平板相关/EVD 唱戏机.jpg,1,0.99,visual_manual
+20260825-ecc6537769c45fc23372-01,2026-08-25,平板,device,唱戏机,,8.9寸唱戏机,,,屏好,3,元/台,没电池扣3元,image,EVD 唱戏机.jpg,数码网报价单-0825更新/平板相关/EVD 唱戏机.jpg,1,0.99,visual_manual
+20260825-a73057c265a68bced6ac-01,2026-08-25,平板,device,唱戏机,,8.9寸唱戏机,,,屏坏,3,元/台,没电池扣3元,image,EVD 唱戏机.jpg,数码网报价单-0825更新/平板相关/EVD 唱戏机.jpg,1,0.99,visual_manual
+20260825-679c73272130e14e7e9b-01,2026-08-25,平板,device,唱戏机,,4.3寸唱戏机,,,屏好,5,元/台,没电池扣3元,image,EVD 唱戏机.jpg,数码网报价单-0825更新/平板相关/EVD 唱戏机.jpg,1,0.99,visual_manual
+20260825-0c03583d353a8bfa6865-01,2026-08-25,平板,device,唱戏机,,4.3寸唱戏机,,,屏坏,3,元/台,没电池扣3元,image,EVD 唱戏机.jpg,数码网报价单-0825更新/平板相关/EVD 唱戏机.jpg,1,0.99,visual_manual
+20260825-c6a31394e331f1d4a64d-01,2026-08-25,平板,device,唱戏机,,7寸唱戏机,,,屏好,9,元/台,没电池扣3元,image,EVD 唱戏机.jpg,数码网报价单-0825更新/平板相关/EVD 唱戏机.jpg,1,0.99,visual_manual
+20260825-0a788a350f0e2400caf2-01,2026-08-25,平板,device,唱戏机,,7寸唱戏机,,,屏坏,3,元/台,没电池扣3元,image,EVD 唱戏机.jpg,数码网报价单-0825更新/平板相关/EVD 唱戏机.jpg,1,0.99,visual_manual
+20260825-0b718ba779bf64da703a-01,2026-08-25,平板,device,唱戏机,,9寸唱戏机,,,屏好,13,元/台,没电池扣3元,image,EVD 唱戏机.jpg,数码网报价单-0825更新/平板相关/EVD 唱戏机.jpg,1,0.99,visual_manual
+20260825-783ec7034dcf4bcbaa90-01,2026-08-25,平板,device,唱戏机,,9寸唱戏机,,,屏坏,3,元/台,没电池扣3元,image,EVD 唱戏机.jpg,数码网报价单-0825更新/平板相关/EVD 唱戏机.jpg,1,0.99,visual_manual
+20260825-c004677810448605e03c-01,2026-08-25,平板,device,唱戏机,,10.1寸唱戏机,,,屏好,13,元/台,没电池扣3元,image,EVD 唱戏机.jpg,数码网报价单-0825更新/平板相关/EVD 唱戏机.jpg,1,0.99,visual_manual
+20260825-4bdb214ce819a0be63a0-01,2026-08-25,平板,device,唱戏机,,10.1寸唱戏机,,,屏坏,3,元/台,没电池扣3元,image,EVD 唱戏机.jpg,数码网报价单-0825更新/平板相关/EVD 唱戏机.jpg,1,0.99,visual_manual
+20260825-052716aff423e9fe1246-01,2026-08-25,平板,device,娃娃机,,娃娃机9寸,,,屏好,12,元/台,,image,EVD 唱戏机.jpg,数码网报价单-0825更新/平板相关/EVD 唱戏机.jpg,1,0.99,visual_manual
+20260825-01563a2557f219cd2aa6-01,2026-08-25,平板,device,娃娃机,,娃娃机9寸,,,屏坏,3,元/台,,image,EVD 唱戏机.jpg,数码网报价单-0825更新/平板相关/EVD 唱戏机.jpg,1,0.99,visual_manual
+20260825-962d4af1a2e32892e23d-01,2026-08-25,平板,device,娃娃机,,娃娃机7寸,,,屏好,10,元/台,,image,EVD 唱戏机.jpg,数码网报价单-0825更新/平板相关/EVD 唱戏机.jpg,1,0.99,visual_manual
+20260825-e113c9062b612b26d5d1-01,2026-08-25,平板,device,娃娃机,,娃娃机7寸,,,屏坏,3,元/台,,image,EVD 唱戏机.jpg,数码网报价单-0825更新/平板相关/EVD 唱戏机.jpg,1,0.99,visual_manual
+20260825-47a2adc13062ff95ff67-01,2026-08-25,平板,device,三星,T系列,T957,,,开机屏好,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-8045bf5578d60b4bdc4c-01,2026-08-25,平板,device,三星,T系列,T957,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-d693f6da61408f5e9094-01,2026-08-25,平板,device,三星,T系列,T957,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-6674905ffd5ac04116e8-01,2026-08-25,平板,device,三星,T系列,T957,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-f378c1628b5703664a0e-01,2026-08-25,平板,device,三星,T系列,T900,,,开机屏好,40,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-9d76e9cca06bf88ce0b9-01,2026-08-25,平板,device,三星,T系列,T900,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-c4ea3d8cdbf7ac04790c-01,2026-08-25,平板,device,三星,T系列,T900,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-4d0c450195d0324b7558-01,2026-08-25,平板,device,三星,T系列,T900,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-16225ed8574cf336cf99-01,2026-08-25,平板,device,三星,T系列,T825,,,开机屏好,60,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-e1ece7ce9c538a00c08f-01,2026-08-25,平板,device,三星,T系列,T825,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-fa4695ec98e2222824c0-01,2026-08-25,平板,device,三星,T系列,T825,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-e1143331dddcb41acb2d-01,2026-08-25,平板,device,三星,T系列,T825,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-88c54cd846d939a07a60-01,2026-08-25,平板,device,三星,T系列,T820,,,开机屏好,60,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-e24fd85b3e20b69ff274-01,2026-08-25,平板,device,三星,T系列,T820,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-2b1debc34c2065a5b493-01,2026-08-25,平板,device,三星,T系列,T820,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-f8423c7fb23d3412a136-01,2026-08-25,平板,device,三星,T系列,T820,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-a52b143b7af414d9865d-01,2026-08-25,平板,device,三星,T系列,T819c,,,开机屏好,60,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-47519407a7fd8854927c-01,2026-08-25,平板,device,三星,T系列,T819c,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-3e145ad52ca2881bd39e-01,2026-08-25,平板,device,三星,T系列,T819c,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-2237b66feeddb219685b-01,2026-08-25,平板,device,三星,T系列,T819c,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-63be9428657572336bcd-01,2026-08-25,平板,device,三星,T系列,T815c,,,开机屏好,60,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-3c9e2b8380d712b97099-01,2026-08-25,平板,device,三星,T系列,T815c,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-ec5830d05f59bdc6efc0-01,2026-08-25,平板,device,三星,T系列,T815c,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-2cae0c06b9b862a7e358-01,2026-08-25,平板,device,三星,T系列,T815c,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-f72538e29b23aff744a5-01,2026-08-25,平板,device,三星,T系列,T813,,,开机屏好,60,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-9e62d52ae87421c9c9fd-01,2026-08-25,平板,device,三星,T系列,T813,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-4e3c19bb434d6528e863-01,2026-08-25,平板,device,三星,T系列,T813,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-f22f3e00bd3e36945e30-01,2026-08-25,平板,device,三星,T系列,T813,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-de51a2b14796c9f9370d-01,2026-08-25,平板,device,三星,T系列,T810,,,开机屏好,60,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-473ec707d2403aa704e2-01,2026-08-25,平板,device,三星,T系列,T810,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-15fc12a28c6524dbc67c-01,2026-08-25,平板,device,三星,T系列,T810,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-83abee4e77b36661162c-01,2026-08-25,平板,device,三星,T系列,T810,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-f6e9fb6f238d9fa9507d-01,2026-08-25,平板,device,三星,T系列,T805C,,,开机屏好,35,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-049e9cd24ebd66a1f574-01,2026-08-25,平板,device,三星,T系列,T805C,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-dc65d548dbd1635db2ff-01,2026-08-25,平板,device,三星,T系列,T805C,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-a9d295e4a21306983dd9-01,2026-08-25,平板,device,三星,T系列,T805C,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-255cceb3fac0a76bd476-01,2026-08-25,平板,device,三星,T系列,T800,,,开机屏好,35,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-d9b29c3113d3d7823487-01,2026-08-25,平板,device,三星,T系列,T800,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-e8a64149db7a2ae907e7-01,2026-08-25,平板,device,三星,T系列,T800,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-918647b6930c64a81abb-01,2026-08-25,平板,device,三星,T系列,T800,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-db661916d6b8af7b155d-01,2026-08-25,平板,device,三星,T系列,T715c,,,开机屏好,30,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-95d31e2edca4afc1beaf-01,2026-08-25,平板,device,三星,T系列,T715c,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-80232aada94651d6ba8d-01,2026-08-25,平板,device,三星,T系列,T715c,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-5193a568ec525f435ad8-01,2026-08-25,平板,device,三星,T系列,T715c,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-a2231ff77fb288514887-01,2026-08-25,平板,device,三星,T系列,T713,,,开机屏好,30,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-2805a88956434c6e230d-01,2026-08-25,平板,device,三星,T系列,T713,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-405617e070de6bce4d52-01,2026-08-25,平板,device,三星,T系列,T713,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-bcaf729d797908abb3f3-01,2026-08-25,平板,device,三星,T系列,T713,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-42b53762231708c3d639-01,2026-08-25,平板,device,三星,T系列,T710,,,开机屏好,30,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-672696c7ba6301463b7d-01,2026-08-25,平板,device,三星,T系列,T710,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-b32d7ea5d7692ad95916-01,2026-08-25,平板,device,三星,T系列,T710,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-0e1629dff9d5420dbe5e-01,2026-08-25,平板,device,三星,T系列,T710,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-cee602c9d6b7cfdbc5d3-01,2026-08-25,平板,device,三星,T系列,T705C,,,开机屏好,30,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-33ae39989418d04eaf19-01,2026-08-25,平板,device,三星,T系列,T705C,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-eb72c71fa98657911af4-01,2026-08-25,平板,device,三星,T系列,T705C,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-4449086d435da725ce00-01,2026-08-25,平板,device,三星,T系列,T705C,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-cebbce1f3e43f10127cb-01,2026-08-25,平板,device,三星,T系列,T705,,,开机屏好,30,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-8dfed1a6a0ea2f5eef4d-01,2026-08-25,平板,device,三星,T系列,T705,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-64e707e405747e9e2d41-01,2026-08-25,平板,device,三星,T系列,T705,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-45ba037ec427bd7733f9-01,2026-08-25,平板,device,三星,T系列,T705,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-b379607701c1be1063d1-01,2026-08-25,平板,device,三星,T系列,T700,,,开机屏好,30,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-92b1562b6f5ee59a6a6a-01,2026-08-25,平板,device,三星,T系列,T700,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-b756891111451e617afa-01,2026-08-25,平板,device,三星,T系列,T700,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-3c3ab341e197772b7198-01,2026-08-25,平板,device,三星,T系列,T700,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-f88c74ba622532297e48-01,2026-08-25,平板,device,三星,T系列,T585c,,,开机屏好,25,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-d61249be48549d5b4440-01,2026-08-25,平板,device,三星,T系列,T585c,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-e1354675edebc306cb41-01,2026-08-25,平板,device,三星,T系列,T585c,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-14bb07a7baa401c84f91-01,2026-08-25,平板,device,三星,T系列,T585c,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-b8b05208269dc6d1b372-01,2026-08-25,平板,device,三星,T系列,T580,,,开机屏好,25,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-30e7a6d75039746892a6-01,2026-08-25,平板,device,三星,T系列,T580,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-ffead37c956635898a63-01,2026-08-25,平板,device,三星,T系列,T580,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-90875def054a86b52675-01,2026-08-25,平板,device,三星,T系列,T580,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-70ff65223a9892ac1df7-01,2026-08-25,平板,device,三星,T系列,T561,,,开机屏好,25,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-38991b949e11aedbcce0-01,2026-08-25,平板,device,三星,T系列,T561,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-a258b244a55cd783231e-01,2026-08-25,平板,device,三星,T系列,T561,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-299665d7d9c3f48012f9-01,2026-08-25,平板,device,三星,T系列,T561,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-c35a06667d362b2a7d0d-01,2026-08-25,平板,device,三星,T系列,T555c,,,开机屏好,25,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-a5258fc35b71b7b29103-01,2026-08-25,平板,device,三星,T系列,T555c,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-f6064c7a718c53af25e5-01,2026-08-25,平板,device,三星,T系列,T555c,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-bae731591a9370ab7913-01,2026-08-25,平板,device,三星,T系列,T555c,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-38c1ce417c213312fa6b-01,2026-08-25,平板,device,三星,T系列,T550,,,开机屏好,25,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-7eae0d38fa515faf80cc-01,2026-08-25,平板,device,三星,T系列,T550,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-8a103b37288eb1e71b0f-01,2026-08-25,平板,device,三星,T系列,T550,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-35c49bc1ef237d6135df-01,2026-08-25,平板,device,三星,T系列,T550,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-6ddc50c02765d3e74ee5-01,2026-08-25,平板,device,三星,T系列,T531,,,开机屏好,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-b1c226602129b66c4fa4-01,2026-08-25,平板,device,三星,T系列,T531,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-c482dfd721bc189476b9-01,2026-08-25,平板,device,三星,T系列,T531,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-23c489f2f511489bb5ac-01,2026-08-25,平板,device,三星,T系列,T531,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-5c682791ed9a7eb40494-01,2026-08-25,平板,device,三星,T系列,T530,,,开机屏好,25,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-c2caee262f72ed9f6842-01,2026-08-25,平板,device,三星,T系列,T530,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-57bef07296c9fed8a44d-01,2026-08-25,平板,device,三星,T系列,T530,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-9fe246bdb44cb0c64fc7-01,2026-08-25,平板,device,三星,T系列,T530,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-79545c19aa8bd91c41e2-01,2026-08-25,平板,device,三星,T系列,T520,,,开机屏好,25,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-fee9b532aaa09ee14f3e-01,2026-08-25,平板,device,三星,T系列,T520,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-026161e5de50d9e07a9f-01,2026-08-25,平板,device,三星,T系列,T520,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-126a72625d3f47b39cb0-01,2026-08-25,平板,device,三星,T系列,T520,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-ff2bbf2ab9b036d205ac-01,2026-08-25,平板,device,三星,T系列,T560,,,开机屏好,25,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-8f5ea7e92dd757674bb6-01,2026-08-25,平板,device,三星,T系列,T560,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-cf75cd467988e58f05e6-01,2026-08-25,平板,device,三星,T系列,T560,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-d83468748c707dabb88e-01,2026-08-25,平板,device,三星,T系列,T560,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-82865ff1b6069b3cae56-01,2026-08-25,平板,device,三星,T系列,T385c,,,开机屏好,25,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-9eccccf6d36d8890b18a-01,2026-08-25,平板,device,三星,T系列,T385c,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-b1b037f9895e5953a2ce-01,2026-08-25,平板,device,三星,T系列,T385c,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-cfd360bc50b45793380b-01,2026-08-25,平板,device,三星,T系列,T385c,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-e3265fd7e29185ebec33-01,2026-08-25,平板,device,三星,T系列,T380,,,开机屏好,25,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-f580c5083c5e8cd1e4da-01,2026-08-25,平板,device,三星,T系列,T380,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-508e3aa39db902655513-01,2026-08-25,平板,device,三星,T系列,T380,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-71492964ef284e7ed3ca-01,2026-08-25,平板,device,三星,T系列,T380,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-a1c6bca29e90da2c7343-01,2026-08-25,平板,device,三星,T系列,T355C,,,开机屏好,25,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-8410131f392df3ef0ea8-01,2026-08-25,平板,device,三星,T系列,T355C,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-e9112b1785135ba21bf2-01,2026-08-25,平板,device,三星,T系列,T355C,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-02997776352b161c1e9e-01,2026-08-25,平板,device,三星,T系列,T355C,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-c3ae8cf45df2d568f4cf-01,2026-08-25,平板,device,三星,T系列,T350/P350,,,开机屏好,25,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-0e400bdd5595d6283987-01,2026-08-25,平板,device,三星,T系列,T350/P350,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-5311ebfc923e5a44a1ea-01,2026-08-25,平板,device,三星,T系列,T350/P350,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-59d817fe1347b44b0171-01,2026-08-25,平板,device,三星,T系列,T350/P350,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-828dae8f99b64a4fcdad-01,2026-08-25,平板,device,三星,T系列,T331,,,开机屏好,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-440f3dfcd2ae17ecbe9d-01,2026-08-25,平板,device,三星,T系列,T331,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-7ae81762df83aeaa9215-01,2026-08-25,平板,device,三星,T系列,T331,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-a639583806801fb7e979-01,2026-08-25,平板,device,三星,T系列,T331,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-dfea8d26f5f74bdabbbd-01,2026-08-25,平板,device,三星,T系列,T330,,,开机屏好,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-613b9eeac7e9753c1d89-01,2026-08-25,平板,device,三星,T系列,T330,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-e6c644b86c5ba2ca31e4-01,2026-08-25,平板,device,三星,T系列,T330,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-89ea15276fca84346c03-01,2026-08-25,平板,device,三星,T系列,T330,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-c9e45370d00c259d146e-01,2026-08-25,平板,device,三星,T系列,T321,,,开机屏好,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-93d23339bf94f2790463-01,2026-08-25,平板,device,三星,T系列,T321,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-06e87a30ffdca99293ec-01,2026-08-25,平板,device,三星,T系列,T321,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-11b19c0fa5714e6aa37f-01,2026-08-25,平板,device,三星,T系列,T321,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-1b719ea5c7cf528777e2-01,2026-08-25,平板,device,三星,T系列,T320,,,开机屏好,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-b56de6c970f77abe2fa0-01,2026-08-25,平板,device,三星,T系列,T320,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-a34b20418b6dbd58d906-01,2026-08-25,平板,device,三星,T系列,T320,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-91c28c0b4964ecb4d518-01,2026-08-25,平板,device,三星,T系列,T320,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-5c67186e953c7ef77459-01,2026-08-25,平板,device,三星,T系列,T311,,,开机屏好,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-82c8efab3ed4f2c2f3c7-01,2026-08-25,平板,device,三星,T系列,T311,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-93edd6beb06d547ad7c4-01,2026-08-25,平板,device,三星,T系列,T311,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-3ccf95b84917696715e7-01,2026-08-25,平板,device,三星,T系列,T311,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-3a9c85bbcdc28814aa93-01,2026-08-25,平板,device,三星,T系列,T310,,,开机屏好,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-c72508cf72a57c49d621-01,2026-08-25,平板,device,三星,T系列,T310,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-eb2ef811b8cf71a8c886-01,2026-08-25,平板,device,三星,T系列,T310,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-7f3fb4b0e18d24ee80b6-01,2026-08-25,平板,device,三星,T系列,T310,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-7e2191968087c5ff4c5f-01,2026-08-25,平板,device,三星,T系列,T285,,,开机屏好,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-148b5fe01d71f67ac725-01,2026-08-25,平板,device,三星,T系列,T285,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-435f070549804458be8c-01,2026-08-25,平板,device,三星,T系列,T285,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-b1e2e39f297e1938e44e-01,2026-08-25,平板,device,三星,T系列,T285,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-766efcdf90ab6dbbb488-01,2026-08-25,平板,device,三星,T系列,T280,,,开机屏好,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-d41f68afbc39b896d303-01,2026-08-25,平板,device,三星,T系列,T280,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-f6536e422a17b487b7ff-01,2026-08-25,平板,device,三星,T系列,T280,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-ae8dce662ccd8c87530f-01,2026-08-25,平板,device,三星,T系列,T280,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-65978154eb023542b284-01,2026-08-25,平板,device,三星,T系列,T231,,,开机屏好,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-e54028d65c1c58761f64-01,2026-08-25,平板,device,三星,T系列,T231,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-aa46f6796223043ca4fa-01,2026-08-25,平板,device,三星,T系列,T231,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-96b34081dbee22bb4c72-01,2026-08-25,平板,device,三星,T系列,T231,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-a04a88084dddd0576f30-01,2026-08-25,平板,device,三星,T系列,T230,,,开机屏好,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-ab0cfc4335e2bd44b17a-01,2026-08-25,平板,device,三星,T系列,T230,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-4aad6427e31922e3e7e2-01,2026-08-25,平板,device,三星,T系列,T230,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-089b2f89560d04bc0063-01,2026-08-25,平板,device,三星,T系列,T230,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-b7f171cb6b1989677028-01,2026-08-25,平板,device,三星,T系列,T211,,,开机屏好,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-d79ab2d074d49e7ec567-01,2026-08-25,平板,device,三星,T系列,T211,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-28a0fa3feebe3e571263-01,2026-08-25,平板,device,三星,T系列,T211,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-66f48daa4ef0470c39fe-01,2026-08-25,平板,device,三星,T系列,T211,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-ab4e338465b3d9557b9d-01,2026-08-25,平板,device,三星,T系列,T210,,,开机屏好,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-b279492e4e703290b080-01,2026-08-25,平板,device,三星,T系列,T210,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-71e13ceffa5d4614d19c-01,2026-08-25,平板,device,三星,T系列,T210,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-8ade49417632854e53bc-01,2026-08-25,平板,device,三星,T系列,T210,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-7979b8995333b4557252-01,2026-08-25,平板,device,三星,T系列,T111,,,开机屏好,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-c69eb54a5b2fd8b0dfee-01,2026-08-25,平板,device,三星,T系列,T111,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-db0f9e84565138975ea2-01,2026-08-25,平板,device,三星,T系列,T111,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-55014f88b5261e3ed78d-01,2026-08-25,平板,device,三星,T系列,T111,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-94c31ced4c8f12616035-01,2026-08-25,平板,device,三星,T系列,T110,,,开机屏好,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-2854065dd2717fd2a9f9-01,2026-08-25,平板,device,三星,T系列,T110,,,开机屏坏,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-a7a729097969eb08c02e-01,2026-08-25,平板,device,三星,T系列,T110,,,不开机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-1d8a13f3de72e70704c3-01,2026-08-25,平板,device,三星,T系列,T110,,,废板-整机,20,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-71e0d00603c55824cac9-01,2026-08-25,平板,device,三星,P系列,P901,,,开机屏好,40,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-3a45fcdf5599613b24aa-01,2026-08-25,平板,device,三星,P系列,P901,,,开机屏坏,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-55673477a753b101e895-01,2026-08-25,平板,device,三星,P系列,P901,,,不开机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-aafea0da5eacc820f9ec-01,2026-08-25,平板,device,三星,P系列,P901,,,废板-整机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-87a7923b789a140c0572-01,2026-08-25,平板,device,三星,P系列,P900,,,开机屏好,40,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-0b93c5a38ce4859d42d4-01,2026-08-25,平板,device,三星,P系列,P900,,,开机屏坏,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-550c6f96c2f830ea2f22-01,2026-08-25,平板,device,三星,P系列,P900,,,不开机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-0d3662646af2a95611dd-01,2026-08-25,平板,device,三星,P系列,P900,,,废板-整机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-42c358c90c00b93accbb-01,2026-08-25,平板,device,三星,P系列,P7510,,,开机屏好,25,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-a77c53c5af9b490af679-01,2026-08-25,平板,device,三星,P系列,P7510,,,开机屏坏,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-2a4edeb6fb5edea8e374-01,2026-08-25,平板,device,三星,P系列,P7510,,,不开机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-67d5f74d03e2afcd8a4c-01,2026-08-25,平板,device,三星,P系列,P7510,,,废板-整机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-f8d07364ae6cd07d95f5-01,2026-08-25,平板,device,三星,P系列,P7500,,,开机屏好,25,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-06aa51d868109a7ec421-01,2026-08-25,平板,device,三星,P系列,P7500,,,开机屏坏,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-b9dc5ddd53a8248bafc6-01,2026-08-25,平板,device,三星,P系列,P7500,,,不开机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-c8a610795d466f5b6c2f-01,2026-08-25,平板,device,三星,P系列,P7500,,,废板-整机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-2d24a449f257554f79e8-01,2026-08-25,平板,device,三星,P系列,P7300/P7310,,,开机屏好,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-5991afd75e628c2f181e-01,2026-08-25,平板,device,三星,P系列,P7300/P7310,,,开机屏坏,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-4a9e5015e1c6cdb8d97d-01,2026-08-25,平板,device,三星,P系列,P7300/P7310,,,不开机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-63631c3859c360e987b8-01,2026-08-25,平板,device,三星,P系列,P7300/P7310,,,废板-整机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-8626f1f58354d07ebcb1-01,2026-08-25,平板,device,三星,P系列,P6800,,,开机屏好,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-0597ef984098fe9b3c86-01,2026-08-25,平板,device,三星,P系列,P6800,,,开机屏坏,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-c10b5af165001a6f66c3-01,2026-08-25,平板,device,三星,P系列,P6800,,,不开机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-ea455eb5262882c0a490-01,2026-08-25,平板,device,三星,P系列,P6800,,,废板-整机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-a06009abe6d4ef48d8ea-01,2026-08-25,平板,device,三星,P系列,P6200,,,开机屏好,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-69d2df50c71e4e5a745a-01,2026-08-25,平板,device,三星,P系列,P6200,,,开机屏坏,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-5ea939a2a2846b7abf66-01,2026-08-25,平板,device,三星,P系列,P6200,,,不开机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-2f0f7bca13a8519b2a64-01,2026-08-25,平板,device,三星,P系列,P6200,,,废板-整机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-ecf7b6c5f731d83b7bc6-01,2026-08-25,平板,device,三星,P系列,P605,,,开机屏好,25,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-eaa887dfa668e7c64ff7-01,2026-08-25,平板,device,三星,P系列,P605,,,开机屏坏,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-78ec8065f79ac5bdc8b6-01,2026-08-25,平板,device,三星,P系列,P605,,,不开机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-06ac3c5e7b98f0c4bade-01,2026-08-25,平板,device,三星,P系列,P605,,,废板-整机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-ae6bf81765932046f904-01,2026-08-25,平板,device,三星,P系列,P601,,,开机屏好,25,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-46f5a3dead8a5bea576d-01,2026-08-25,平板,device,三星,P系列,P601,,,开机屏坏,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-c483c14ebdf94f2404fb-01,2026-08-25,平板,device,三星,P系列,P601,,,不开机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-da3e9dcad7d60f72065e-01,2026-08-25,平板,device,三星,P系列,P601,,,废板-整机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-e752dc260bfc63f5517b-01,2026-08-25,平板,device,三星,P系列,P600,,,开机屏好,25,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-f5f8fd45e53f085929a9-01,2026-08-25,平板,device,三星,P系列,P600,,,开机屏坏,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-f2c1f7026aa8b909f7e7-01,2026-08-25,平板,device,三星,P系列,P600,,,不开机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-61f049a9a293c89b7c7d-01,2026-08-25,平板,device,三星,P系列,P600,,,废板-整机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-63c664e3587465176ff8-01,2026-08-25,平板,device,三星,P系列,P5210,,,开机屏好,25,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-2b3d6c2a4c4b9c9c72ec-01,2026-08-25,平板,device,三星,P系列,P5210,,,开机屏坏,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-c5b6752439533db9f7b2-01,2026-08-25,平板,device,三星,P系列,P5210,,,不开机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-9c4b7f58b2a08cf35095-01,2026-08-25,平板,device,三星,P系列,P5210,,,废板-整机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-079865393c146e302cee-01,2026-08-25,平板,device,三星,P系列,P5200,,,开机屏好,25,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-af2b4c8028b7f96f9f8c-01,2026-08-25,平板,device,三星,P系列,P5200,,,开机屏坏,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-91745fd05baea75f9db4-01,2026-08-25,平板,device,三星,P系列,P5200,,,不开机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-c1d6f0e48d2f1060fa9f-01,2026-08-25,平板,device,三星,P系列,P5200,,,废板-整机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-30666606c629f580ad7d-01,2026-08-25,平板,device,三星,P系列,P5113,,,开机屏好,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-18353c835c6f62882e8e-01,2026-08-25,平板,device,三星,P系列,P5113,,,开机屏坏,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-6bc9ff91747859729ecf-01,2026-08-25,平板,device,三星,P系列,P5113,,,不开机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-a9ba6304f804a9193134-01,2026-08-25,平板,device,三星,P系列,P5113,,,废板-整机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-844ced218551a6fd083e-01,2026-08-25,平板,device,三星,P系列,P5110,,,开机屏好,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-a2f864371ef37ffd6d9b-01,2026-08-25,平板,device,三星,P系列,P5110,,,开机屏坏,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-d0541417c1e9b512338e-01,2026-08-25,平板,device,三星,P系列,P5110,,,不开机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-bf5e4660c5d3ff579fd7-01,2026-08-25,平板,device,三星,P系列,P5110,,,废板-整机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-ffabe0674502af273a00-01,2026-08-25,平板,device,三星,P系列,P355C,,,开机屏好,25,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-e4a0ee980aef6509e287-01,2026-08-25,平板,device,三星,P系列,P355C,,,开机屏坏,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-e33864a7bcdc683ca82b-01,2026-08-25,平板,device,三星,P系列,P355C,,,不开机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-233f565555de83adfc83-01,2026-08-25,平板,device,三星,P系列,P355C,,,废板-整机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-987fffe9513a13ebd380-01,2026-08-25,平板,device,三星,P系列,P3110,,,开机屏好,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-fac23b5bb83d4fc0c192-01,2026-08-25,平板,device,三星,P系列,P3110,,,开机屏坏,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-f75f34f63ca455b30660-01,2026-08-25,平板,device,三星,P系列,P3110,,,不开机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-b326a822454ad99fc28c-01,2026-08-25,平板,device,三星,P系列,P3110,,,废板-整机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-a79e242f372da6ffbc64-01,2026-08-25,平板,device,三星,P系列,P3108,,,开机屏好,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-572181296d511836e513-01,2026-08-25,平板,device,三星,P系列,P3108,,,开机屏坏,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-81a1f94f874eb5491fd8-01,2026-08-25,平板,device,三星,P系列,P3108,,,不开机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-84ae63d3b1eea6784c32-01,2026-08-25,平板,device,三星,P系列,P3108,,,废板-整机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-2e4e818533adf4fe7c8f-01,2026-08-25,平板,device,三星,P系列,P3100,,,开机屏好,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-fd570cc0bb9ee217f862-01,2026-08-25,平板,device,三星,P系列,P3100,,,开机屏坏,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-5a5ed558eb0a3743a7f3-01,2026-08-25,平板,device,三星,P系列,P3100,,,不开机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-925556eae9c0d00b7092-01,2026-08-25,平板,device,三星,P系列,P3100,,,废板-整机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-7f202ee2074c6947df6f-01,2026-08-25,平板,device,三星,P系列,P1000,,,开机屏好,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-eb36cebf99f9cfbe52b6-01,2026-08-25,平板,device,三星,P系列,P1000,,,开机屏坏,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-b2bb37cc6074d6b03ce1-01,2026-08-25,平板,device,三星,P系列,P1000,,,不开机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-525dab7d829d75393f0d-01,2026-08-25,平板,device,三星,P系列,P1000,,,废板-整机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-2b29b9d75ed21f89cd74-01,2026-08-25,平板,device,三星,N系列,N8010,,,开机屏好,25,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-ca64e812b7a4bf7f955f-01,2026-08-25,平板,device,三星,N系列,N8010,,,开机屏坏,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-c2597277fe6fcc4880de-01,2026-08-25,平板,device,三星,N系列,N8010,,,不开机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-b7398ed515489daf7bb1-01,2026-08-25,平板,device,三星,N系列,N8010,,,废板-整机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-2041a38c48f7cf16dd53-01,2026-08-25,平板,device,三星,N系列,N8000,,,开机屏好,25,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-f2b115986e915ee56caa-01,2026-08-25,平板,device,三星,N系列,N8000,,,开机屏坏,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-a287251f44afcc5f364e-01,2026-08-25,平板,device,三星,N系列,N8000,,,不开机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-6222c27e71466739e935-01,2026-08-25,平板,device,三星,N系列,N8000,,,废板-整机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-47e31bcb42e1e5f65e1b-01,2026-08-25,平板,device,三星,N系列,N5120,,,开机屏好,10,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-c942b1dc64cb5304e2fb-01,2026-08-25,平板,device,三星,N系列,N5120,,,开机屏坏,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-5158b181db86f2644c5d-01,2026-08-25,平板,device,三星,N系列,N5120,,,不开机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-060e50ea578c585c6f13-01,2026-08-25,平板,device,三星,N系列,N5120,,,废板-整机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-15b137ca5b849e623185-01,2026-08-25,平板,device,三星,N系列,N5100,,,开机屏好,10,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-b10d2a1e34b12f404cf3-01,2026-08-25,平板,device,三星,N系列,N5100,,,开机屏坏,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-41d979675ccd53e0505b-01,2026-08-25,平板,device,三星,N系列,N5100,,,不开机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-ff540b917846e3bb31a2-01,2026-08-25,平板,device,三星,N系列,N5100,,,废板-整机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-53749ccf6bb14674d25b-01,2026-08-25,平板,device,三星,N系列,N5110,,,开机屏好,10,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-cc0057d15880ec1bd299-01,2026-08-25,平板,device,三星,N系列,N5110,,,开机屏坏,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-513aa7e856f718ee3909-01,2026-08-25,平板,device,三星,N系列,N5110,,,不开机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-49cf8dcee552c7eb2975-01,2026-08-25,平板,device,三星,N系列,N5110,,,废板-整机,15,元/台,,image,三星平板.jpg,数码网报价单-0825更新/平板相关/三星平板.jpg,1,0.98,visual_manual
+20260825-9f625d987a75830919da-01,2026-08-25,平板,device,读书郎,,读书郎学习机C25,,,开机屏好,180,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-84fb1d20630b89e03a31-01,2026-08-25,平板,device,读书郎,,读书郎学习机C25,,,开机屏坏,32,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-87d8849d44a00ce90fb3-01,2026-08-25,平板,device,读书郎,,读书郎学习机C25,,,不开机,32,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-181e27ed825a870ab2f7-01,2026-08-25,平板,device,读书郎,,读书郎学习机C15,,,开机屏好,40,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-1ea16cd836eea79a57cc-01,2026-08-25,平板,device,读书郎,,读书郎学习机C15,,,开机屏坏,40,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-c17d8e1f804b911a977a-01,2026-08-25,平板,device,读书郎,,读书郎学习机C15,,,不开机,40,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-5062eefdf85f2bd79a9c-01,2026-08-25,平板,device,读书郎,,读书郎学习机C12,,,开机屏好,35,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-1d9feaf69749c2d053e2-01,2026-08-25,平板,device,读书郎,,读书郎学习机C12,,,开机屏坏,20,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-a6d20c438de50c6a2552-01,2026-08-25,平板,device,读书郎,,读书郎学习机C12,,,不开机,20,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-cff62c2c7164ce7cb130-01,2026-08-25,平板,device,读书郎,,读书郎学习机C10X,,,开机屏好,15,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-86a752f971a09ddf3596-01,2026-08-25,平板,device,读书郎,,读书郎学习机C10X,,,开机屏坏,15,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-a7dac377d1088c00d3ab-01,2026-08-25,平板,device,读书郎,,读书郎学习机C10X,,,不开机,15,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-73eb64d323a2ec9e3bf7-01,2026-08-25,平板,device,读书郎,,读书郎学习机C10,,,开机屏好,15,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-60cc3f37e3436c6b68ac-01,2026-08-25,平板,device,读书郎,,读书郎学习机C10,,,开机屏坏,15,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-cbd440537e49d6bb40eb-01,2026-08-25,平板,device,读书郎,,读书郎学习机C10,,,不开机,15,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-ec62c3af2b8a825307ad-01,2026-08-25,平板,device,读书郎,,读书郎学习机S5,,,开机屏好,15,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-d35e7b6024d56d75ae47-01,2026-08-25,平板,device,读书郎,,读书郎学习机S5,,,开机屏坏,15,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-18109e1c1c3cc2143850-01,2026-08-25,平板,device,读书郎,,读书郎学习机S5,,,不开机,15,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-4bc7baddb3b4f589deaf-01,2026-08-25,平板,device,读书郎,,读书郎学习机G35/G35S,,,开机屏好,22,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-f4af0fea24f20a495820-01,2026-08-25,平板,device,读书郎,,读书郎学习机G35/G35S,,,开机屏坏,22,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-fb2bc831f757db21af64-01,2026-08-25,平板,device,读书郎,,读书郎学习机G35/G35S,,,不开机,22,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-27eddfa39a1a23ff5be1-01,2026-08-25,平板,device,读书郎,,读书郎学习机G90S,,,开机屏好,25,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-4836f3e919d1b74b68bd-01,2026-08-25,平板,device,读书郎,,读书郎学习机G90S,,,开机屏坏,25,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-534bf55ff5340bbf7f06-01,2026-08-25,平板,device,读书郎,,读书郎学习机G90S,,,不开机,25,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-c576d948983862d78e95-01,2026-08-25,平板,device,读书郎,,读书郎学习机G90,,,开机屏好,25,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-9b1034385000eb22c576-01,2026-08-25,平板,device,读书郎,,读书郎学习机G90,,,开机屏坏,25,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-2399efdc20c69f20455b-01,2026-08-25,平板,device,读书郎,,读书郎学习机G90,,,不开机,25,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-a2a8e4f041df8cdebf6b-01,2026-08-25,平板,device,步步高,,S2步步高,,,开机屏好,40,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-ff3d05905da3bba5e954-01,2026-08-25,平板,device,步步高,,S2步步高,,,开机屏坏,15,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-d34f468ebef9c64b778d-01,2026-08-25,平板,device,步步高,,S2步步高,,,不开机,15,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-62b1ed6529b67b07d03a-01,2026-08-25,平板,device,步步高,,S3,,,开机屏好,15,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-5fe5d7c10b37ca5f8c23-01,2026-08-25,平板,device,步步高,,S3,,,开机屏坏,15,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-8bf3254035163a0cf275-01,2026-08-25,平板,device,步步高,,S3,,,不开机,15,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-ac156cd518d0f29fc335-01,2026-08-25,平板,device,步步高,,S5步步高,,,开机屏好,90,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-c0185569e05588a69b83-01,2026-08-25,平板,device,步步高,,S5步步高,,,开机屏坏,90,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-1dfd0a913f881169699c-01,2026-08-25,平板,device,步步高,,S5步步高,,,不开机,90,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-a2055ec70aace55a5afc-01,2026-08-25,平板,device,步步高,,S8步步高,,,开机屏好,500,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-9c1700f92e02c00b7cd6-01,2026-08-25,平板,device,步步高,,S8步步高,,,开机屏坏,100,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-d8f3649c773b024313de-01,2026-08-25,平板,device,步步高,,S8步步高,,,不开机,100,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-e7aef156d93ec80fa036-01,2026-08-25,平板,device,步步高,,S6步步高,,,开机屏好,100,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-203cf729abf1c64b37f4-01,2026-08-25,平板,device,步步高,,S6步步高,,,开机屏坏,100,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-e72adba492e5e4eab311-01,2026-08-25,平板,device,步步高,,S6步步高,,,不开机,100,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-a2a79d973c9237e657bb-01,2026-08-25,平板,device,步步高,,S7步步高,,,开机屏好,300,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-5400772fa1d498453fed-01,2026-08-25,平板,device,步步高,,S7步步高,,,开机屏坏,100,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-4e0069f6fb23f31baf2f-01,2026-08-25,平板,device,步步高,,S7步步高,,,不开机,100,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-2199a47c43ecc0c5b65b-01,2026-08-25,平板,device,步步高,,S8,,,开机屏好,400,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-e524992f1a6cf1d67c07-01,2026-08-25,平板,device,步步高,,S8,,,开机屏坏,100,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-efd23f36ada3a0ac2472-01,2026-08-25,平板,device,步步高,,S8,,,不开机,100,元/台,,image,家教机.jpg,数码网报价单-0825更新/平板相关/家教机.jpg,1,0.99,visual_manual
+20260825-9665ae28a47dd5882ea3-01,2026-08-25,平板,tablet,杂牌,杂牌平板,10.1金边,,,屏好,30,元/台,,image_first,杂牌国产平板.jpg,/mnt/data/decoded2/需要获取数据与不需要获数据原文件/需要获取的图片正文数据/数码网报价单-0825更新/平板相关/杂牌国产平板.jpg,1,1.0,visual_manual_0825
+20260825-acc8eafe2a47d85e812d-01,2026-08-25,平板,tablet,杂牌,杂牌平板,10.1金边,,,屏坏,10,元/台,,image_first,杂牌国产平板.jpg,/mnt/data/decoded2/需要获取数据与不需要获数据原文件/需要获取的图片正文数据/数码网报价单-0825更新/平板相关/杂牌国产平板.jpg,1,1.0,visual_manual_0825
+20260825-62280cad315ed0896480-01,2026-08-25,平板,tablet,杂牌,杂牌平板,9.6金边,,,屏好,20,元/台,,image_first,杂牌国产平板.jpg,/mnt/data/decoded2/需要获取数据与不需要获数据原文件/需要获取的图片正文数据/数码网报价单-0825更新/平板相关/杂牌国产平板.jpg,1,1.0,visual_manual_0825
+20260825-b27a69274a681f37bd48-01,2026-08-25,平板,tablet,杂牌,杂牌平板,9.6金边,,,屏坏,10,元/台,,image_first,杂牌国产平板.jpg,/mnt/data/decoded2/需要获取数据与不需要获数据原文件/需要获取的图片正文数据/数码网报价单-0825更新/平板相关/杂牌国产平板.jpg,1,1.0,visual_manual_0825
+20260825-bc3148f9f3868f79a464-01,2026-08-25,平板,tablet,杂牌,杂牌平板,9寸学习机,,,屏好,10,元/台,,image_first,杂牌国产平板.jpg,/mnt/data/decoded2/需要获取数据与不需要获数据原文件/需要获取的图片正文数据/数码网报价单-0825更新/平板相关/杂牌国产平板.jpg,1,1.0,visual_manual_0825
+20260825-1b247f5aa4ca4116b384-01,2026-08-25,平板,tablet,杂牌,杂牌平板,9寸学习机,,,屏坏,7,元/台,,image_first,杂牌国产平板.jpg,/mnt/data/decoded2/需要获取数据与不需要获数据原文件/需要获取的图片正文数据/数码网报价单-0825更新/平板相关/杂牌国产平板.jpg,1,1.0,visual_manual_0825
+20260825-1056adafcba690667bb8-01,2026-08-25,平板,tablet,杂牌,杂牌平板,9寸平板,,,屏好,25,元/台,,image_first,杂牌国产平板.jpg,/mnt/data/decoded2/需要获取数据与不需要获数据原文件/需要获取的图片正文数据/数码网报价单-0825更新/平板相关/杂牌国产平板.jpg,1,1.0,visual_manual_0825
+20260825-0a02c4dd07b139509780-01,2026-08-25,平板,tablet,杂牌,杂牌平板,9寸平板,,,屏坏,10,元/台,,image_first,杂牌国产平板.jpg,/mnt/data/decoded2/需要获取数据与不需要获数据原文件/需要获取的图片正文数据/数码网报价单-0825更新/平板相关/杂牌国产平板.jpg,1,1.0,visual_manual_0825
+20260825-faf82fc446f867eeb4f9-01,2026-08-25,平板,tablet,杂牌,杂牌平板,8.9寸,,,屏好,10,元/台,,image_first,杂牌国产平板.jpg,/mnt/data/decoded2/需要获取数据与不需要获数据原文件/需要获取的图片正文数据/数码网报价单-0825更新/平板相关/杂牌国产平板.jpg,1,1.0,visual_manual_0825
+20260825-731d38379af6d7241e72-01,2026-08-25,平板,tablet,杂牌,杂牌平板,8.9寸,,,屏坏,10,元/台,,image_first,杂牌国产平板.jpg,/mnt/data/decoded2/需要获取数据与不需要获数据原文件/需要获取的图片正文数据/数码网报价单-0825更新/平板相关/杂牌国产平板.jpg,1,1.0,visual_manual_0825
+20260825-936ea94be2743746d73c-01,2026-08-25,平板,tablet,杂牌,杂牌平板,7寸平板,,,屏好,20,元/台,,image_first,杂牌国产平板.jpg,/mnt/data/decoded2/需要获取数据与不需要获数据原文件/需要获取的图片正文数据/数码网报价单-0825更新/平板相关/杂牌国产平板.jpg,1,1.0,visual_manual_0825
+20260825-db8615f3abbf211b834d-01,2026-08-25,平板,tablet,杂牌,杂牌平板,7寸平板,,,屏坏,10,元/台,,image_first,杂牌国产平板.jpg,/mnt/data/decoded2/需要获取数据与不需要获数据原文件/需要获取的图片正文数据/数码网报价单-0825更新/平板相关/杂牌国产平板.jpg,1,1.0,visual_manual_0825
+20260825-1d033679dc365a9a3a41-01,2026-08-25,其它,car_navigation,杂牌,车载导航,杂牌导航（7寸以上）,,,屏好,10,元/台,,image_first,杂牌国产平板.jpg,/mnt/data/decoded2/需要获取数据与不需要获数据原文件/需要获取的图片正文数据/数码网报价单-0825更新/平板相关/杂牌国产平板.jpg,1,1.0,visual_manual_0825
+20260825-8f9b892851e10458a785-01,2026-08-25,其它,car_navigation,杂牌,车载导航,杂牌导航（7寸以上）,,,屏坏,3,元/台,,image_first,杂牌国产平板.jpg,/mnt/data/decoded2/需要获取数据与不需要获数据原文件/需要获取的图片正文数据/数码网报价单-0825更新/平板相关/杂牌国产平板.jpg,1,1.0,visual_manual_0825
+20260825-7f5f4802754a05d31144-01,2026-08-25,其它,car_navigation,杂牌,车载导航,杂屏,,,屏好,7,元/台,,image_first,杂牌国产平板.jpg,/mnt/data/decoded2/需要获取数据与不需要获数据原文件/需要获取的图片正文数据/数码网报价单-0825更新/平板相关/杂牌国产平板.jpg,1,1.0,visual_manual_0825
+20260825-9d8f390e2d11c5ad26df-01,2026-08-25,其它,car_navigation,杂牌,车载导航,杂屏,,,屏坏,/,元/台,,image_first,杂牌国产平板.jpg,/mnt/data/decoded2/需要获取数据与不需要获数据原文件/需要获取的图片正文数据/数码网报价单-0825更新/平板相关/杂牌国产平板.jpg,1,1.0,visual_manual_0825
