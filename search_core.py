@@ -1,7 +1,7 @@
 """Search engine for the verified device price database.
 
 Rules:
-- A brand in the query scopes the result to that brand.
+- A brand in the query scopes the result to that brand or one of its verified aliases.
 - Multiple query terms are AND conditions.
 - A model term expands only from model/series prefixes, so "OPPO A5"
   returns A5-family variants without leaking unrelated OPPO models.
@@ -14,6 +14,7 @@ import unicodedata
 MODEL_FIELDS = ("model", "series")
 NETWORK_MODEL_FIELD = "model_code"
 SEPARATORS = re.compile(r"[\s_\-—–·•/\\（）()【】\[\],，.;；:：|、]+")
+BRAND_PARTS = re.compile(r"[/|、,&+]+")
 
 
 def clean(value):
@@ -29,17 +30,35 @@ def tokenize(value):
 
 
 def _brands(rows):
+    """Expose complete brand names and verified composite-brand aliases."""
     out = {}
     for row in rows:
         brand = clean(row.get("brand", ""))
         key = normalize(brand)
         if key:
             out.setdefault(key, brand)
+        for part in BRAND_PARTS.split(brand):
+            part = clean(part)
+            part_key = normalize(part)
+            if part_key:
+                out.setdefault(part_key, part)
     return out
 
 
+def _brand_matches(row, brand):
+    """Match a queried brand against a full brand or a slash-separated alias."""
+    query_key = normalize(brand)
+    row_brand = clean(row.get("brand", ""))
+    row_key = normalize(row_brand)
+    if not query_key:
+        return False
+    if row_key == query_key:
+        return True
+    return any(normalize(part) == query_key for part in BRAND_PARTS.split(row_brand) if clean(part))
+
+
 def detect_brand(query, rows):
-    """Find the longest known brand in the normalized query."""
+    """Find the longest known brand or composite-brand alias in the query."""
     q_key = normalize(query)
     brands = _brands(rows)
     for brand_key in sorted(brands, key=len, reverse=True):
@@ -74,7 +93,7 @@ def _term_matches(row, term):
 def _score(row, brand, terms, query_key):
     score = 0
     if brand:
-        if normalize(row.get("brand", "")) != normalize(brand):
+        if not _brand_matches(row, brand):
             return -1
         score += 1000
     model_key = normalize(row.get("model", ""))
@@ -123,7 +142,7 @@ def search_rows(rows, query, category="全部"):
     for row in rows:
         if category != "全部" and row.get("category") != category:
             continue
-        if brand and normalize(row.get("brand", "")) != normalize(brand):
+        if brand and not _brand_matches(row, brand):
             continue
         if terms and not all(_term_matches(row, term) for term in terms):
             continue
