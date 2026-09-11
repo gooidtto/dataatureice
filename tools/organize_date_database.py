@@ -101,9 +101,10 @@ def validate():
             continue
         try:
             rows = read_rows(price)
-            if list(rows[0].keys()) if rows else FIELDS != FIELDS:
-                pass
-            if rows and list(rows[0].keys()) != FIELDS:
+            if not rows:
+                errors.append(f"{price}: empty database")
+                continue
+            if list(rows[0].keys()) != FIELDS:
                 errors.append(f"{price}: database schema mismatch")
             if len(rows) != expected:
                 errors.append(f"{price}: expected {expected} rows, got {len(rows)}")
