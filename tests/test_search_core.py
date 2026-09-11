@@ -49,3 +49,35 @@ def test_multiple_model_terms_are_and_conditions():
             row(record_id='b', brand='OPPO', model='N1'),
             row(record_id='c', brand='OPPO', model='Find X Pro')]
     assert [r['record_id'] for r in search_rows(rows, 'OPPO N1 Pro')] == ['a']
+
+
+def test_oppo_a5_expands_a5_family_but_excludes_find_x9():
+    rows = [
+        row(record_id='x9', brand='OPPO', model='Find X9 Ultra 5G'),
+        row(record_id='a5', brand='OPPO', model='A5'),
+        row(record_id='a5pro', brand='OPPO', model='A5 Pro'),
+        row(record_id='a52020', brand='OPPO', model='A5 2020'),
+        row(record_id='a51', brand='OPPO', model='A51'),
+        row(record_id='other', brand='Nokia', model='A5'),
+    ]
+    result = search_rows(rows, 'OPPO A5')
+    ids = [r['record_id'] for r in result]
+    assert 'x9' not in ids
+    assert 'other' not in ids
+    assert {'a5', 'a5pro', 'a52020', 'a51'} <= set(ids)
+
+
+def test_model_family_query_does_not_use_alias_as_unrelated_match():
+    rows = [
+        row(record_id='x9', brand='OPPO', model='Find X9 Ultra 5G', alias='A5'),
+        row(record_id='a5', brand='OPPO', model='A5', alias='旧款'),
+    ]
+    assert [r['record_id'] for r in search_rows(rows, 'OPPO A5')] == ['a5']
+
+
+def test_model_code_query():
+    rows = [
+        row(record_id='p1', brand='OPPO', model='Find X', model_code='CPH1234'),
+        row(record_id='p2', brand='OPPO', model='Find Y', model_code='CPH5678'),
+    ]
+    assert [r['record_id'] for r in search_rows(rows, 'OPPO CPH1234')] == ['p1']
