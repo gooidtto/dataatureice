@@ -31,7 +31,7 @@ def test_matrix_headers_follow_dynamic_search_columns():
     assert matrix_headers(rows) == expected
 
 
-def test_visible_matrix_row_keeps_full_condition_and_price_in_matching_buckets():
+def test_visible_matrix_row_keeps_price_in_matching_buckets():
     rows = [
         row(record_id="a", condition="开机靓好", price="700"),
         row(record_id="b", condition="开机好屏", price="500"),
@@ -43,28 +43,28 @@ def test_visible_matrix_row_keeps_full_condition_and_price_in_matching_buckets()
     display = visible_matrix_rows(rows)
     assert len(display) == 1
     assert matrix_values(display[0], rows)[1] == "手机 华为 荣耀畅玩系列 畅玩7x (3+32) BND-AL00"
-    assert display[0]["condition_grade"] == "开机靓好：700 CNY/台"
-    assert display[0]["condition_screen"] == "开机好屏：500 CNY/台"
-    assert display[0]["condition_good_broken"] == "开机好碎：450 CNY/台"
-    assert display[0]["condition_cracked"] == "开机碎屏：320 CNY/台"
-    assert display[0]["condition_bad_parts"] == "开机坏配件：240 CNY/台"
-    assert display[0]["condition_waste"] == "废板·整机：240 CNY/台"
+    assert display[0]["condition_grade"] == "700"
+    assert display[0]["condition_screen"] == "500"
+    assert display[0]["condition_good_broken"] == "450"
+    assert display[0]["condition_cracked"] == "320"
+    assert display[0]["condition_bad_parts"] == "240"
+    assert display[0]["condition_waste"] == "240"
 
 
 def test_unusual_screen_quote_is_kept_in_matching_screen_bucket():
     rows = [row(record_id="a", condition="开机屏好外屏碎", price="60")]
     display = visible_matrix_rows(rows)
     assert len(display) == 1
-    assert display[0]["condition_screen"] == "开机屏好外屏碎：60 CNY/台"
+    assert display[0]["condition_screen"] == "60"
 
 
-def test_repeated_quote_values_are_all_rendered_in_same_bucket():
+def test_repeated_prices_are_all_rendered_in_same_bucket():
     rows = [
         row(record_id="a", condition="开机好", price="60"),
         row(record_id="b", condition="开机好", price="60", source_image="华为3.jpg"),
     ]
     display = visible_matrix_rows(rows)
-    assert display[0]["condition_grade"] == "开机好：60 CNY/台\n开机好：60 CNY/台"
+    assert display[0]["condition_grade"] == "60\n60"
     assert display[0]["source_image"] == "华为2.jpg；华为3.jpg"
 
 
