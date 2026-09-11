@@ -81,8 +81,6 @@ def _term_matches(row, term):
         return False
     if any(_field_prefix_match(row.get(field, ""), term) for field in MODEL_FIELDS):
         return True
-    # A network-model identifier is meaningful once it has at least three
-    # normalized characters; this avoids making single-letter queries broad.
     if len(term) >= 3:
         code = normalize(row.get(NETWORK_MODEL_FIELD, ""))
         if code == term or code.startswith(term):
@@ -126,6 +124,12 @@ def _score(row, brand, terms, query_key):
     return score
 
 
+def _has_network_model_prefix(rows, query_key):
+    if len(query_key) < 3:
+        return False
+    return any(normalize(row.get(NETWORK_MODEL_FIELD, "")).startswith(query_key) for row in rows)
+
+
 def search_rows(rows, query, category="全部"):
     """Search with brand scoping, AND semantics and controlled family expansion."""
     q = clean(query)
@@ -135,7 +139,11 @@ def search_rows(rows, query, category="全部"):
     if brand:
         terms = tokenize(remainder) or ([remainder] if remainder else [])
     else:
-        terms = tokenize(q)
+        query_key = normalize(q)
+        # Keep a compound network-model identifier such as ATU-AL00 intact.
+        # Splitting it into "ATU" + "AL00" would incorrectly impose AND
+        # semantics on two pieces of one identifier.
+        terms = [query_key] if _has_network_model_prefix(rows, query_key) else tokenize(q)
     query_key = normalize(remainder if brand else q)
 
     candidates = []
