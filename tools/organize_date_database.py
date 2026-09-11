@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the canonical date database without dropping callable rows."""
+"""Build the canonical date database without dropping callable fields or rows."""
 from pathlib import Path
 import csv
 import re
@@ -9,8 +9,7 @@ DATA = ROOT / "data"
 DATABASE = DATA / "database"
 DATE_FILE = re.compile(r"^(\d{4}-\d{2}-\d{2})\.csv$")
 DATE_DIR = re.compile(r"^\d{4}-\d{2}-\d{2}$")
-FIELDS = ["data_date", "category", "subtype", "brand", "series", "model", "condition", "price", "unit", "note", "source_image"]
-FULL_FIELDS = ["record_id", "data_date", "category", "subtype", "brand", "series", "model", "model_code", "alias", "condition", "price", "unit", "note", "origin", "source_image", "source_path", "verified", "confidence", "verification"]
+FIELDS = ["record_id", "data_date", "category", "subtype", "brand", "series", "model", "model_code", "alias", "condition", "price", "unit", "note", "origin", "source_image", "source_path", "verified", "confidence", "verification"]
 EXPECTED_COUNTS = {"2026-07-05": 503, "2026-07-10": 1128, "2026-08-25": 15400, "2026-08-31": 14415}
 EXPECTED_DATES = list(EXPECTED_COUNTS)
 
@@ -23,14 +22,10 @@ def read_rows(path: Path):
 def write_rows(path: Path, rows):
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8-sig", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=FIELDS)
+        writer = csv.DictWriter(f, fieldnames=FIELDS, extrasaction="ignore")
         writer.writeheader()
         for row in rows:
             writer.writerow({field: row.get(field, "") for field in FIELDS})
-
-
-def canonical_rows(rows):
-    return [{field: row.get(field, "") for field in FIELDS} for row in rows]
 
 
 def snapshot_rows(date: str):
@@ -64,9 +59,9 @@ def restore_from_snapshots():
         if not rows:
             continue
         target = DATABASE / date / "price.csv"
-        # The 08-25/08-31 snapshots are the authoritative full callable snapshots.
-        # Copy every row; never filter or deduplicate here.
-        write_rows(target, canonical_rows(rows))
+        # The 08-25/08-31 snapshots are authoritative full callable snapshots.
+        # Copy every field and every row; do not filter, deduplicate, or collapse values.
+        write_rows(target, rows)
         restored.append((date, len(rows)))
     return restored
 
@@ -100,13 +95,15 @@ def validate():
             rows = read_rows(price)
             if len(rows) != expected:
                 errors.append(f"{price}: expected {expected} rows, got {len(rows)}")
+            if list(rows[0].keys()) != FIELDS if rows else False:
+                errors.append(f"{price}: database schema mismatch")
             ids = [r.get("record_id", "") for r in rows if r.get("record_id", "")]
             if len(ids) != len(set(ids)):
                 errors.append(f"{price}: duplicate record_id")
             for line, row in enumerate(rows, 2):
                 if row.get("data_date", "").strip() != date:
                     errors.append(f"{price}:{line}: data_date mismatch")
-                for field in ("category", "subtype", "model", "condition", "price", "unit"):
+                for field in ("record_id", "category", "subtype", "model", "condition", "price", "unit", "source_image", "verified"):
                     if not row.get(field, "").strip():
                         errors.append(f"{price}:{line}: missing {field}")
                         break
@@ -116,11 +113,11 @@ def validate():
         snap = snapshot_rows(date)
         if snap:
             db_rows = read_rows(price)
-            db_ids = {r.get("record_id", "") for r in db_rows}
-            snap_ids = {r.get("record_id", "") for r in snap}
+            db_keys = {(r.get("record_id", ""), r.get("data_date", ""), r.get("model", ""), r.get("condition", ""), r.get("price", ""), r.get("unit", "")) for r in db_rows}
+            snap_keys = {(r.get("record_id", ""), r.get("data_date", ""), r.get("model", ""), r.get("condition", ""), r.get("price", ""), r.get("unit", "")) for r in snap}
             if len(snap) != expected:
                 errors.append(f"{date}: snapshot expected {expected} rows, got {len(snap)}")
-            if db_ids != snap_ids:
+            if db_keys != snap_keys or len(db_rows) != len(snap):
                 errors.append(f"{date}: database record set differs from snapshot")
 
     for p in sorted(DATA.iterdir()):
