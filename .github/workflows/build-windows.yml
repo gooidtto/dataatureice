@@ -83,6 +83,16 @@ jobs:
           if (-not (git diff --cached --quiet)) {
             git commit -m "data: persist canonical date database [skip ci]"
             git push origin "HEAD:${env:GITHUB_REF_NAME}"
+            if ($LASTEXITCODE -ne 0) {
+              git fetch origin "${env:GITHUB_REF_NAME}"
+              $remoteDb = git show "origin/${env:GITHUB_REF_NAME}:data/database/2026-08-31/price.csv" 2>$null
+              $localDb = Get-Content "data/database/2026-08-31/price.csv" -Raw
+              if ($remoteDb -eq $localDb) {
+                Write-Warning "canonical database push raced with another build; identical database is already on remote"
+              } else {
+                throw "canonical database push rejected and remote database differs"
+              }
+            }
           }
       - name: Build EXE
         run: pyinstaller --noconfirm --clean --windowed --name "数码回收价格秒查工具" ui_bootstrap.py
