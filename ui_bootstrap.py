@@ -78,6 +78,15 @@ def ui(self):
     self._matrix_columns=DISPLAY_COLUMNS
 
 
+def _matrix_anchor(field):
+    """Fixed visual alignment: identity left, dates/quotes/source centered."""
+    if field == "identity":
+        return "w"
+    if field == "data_date" or field.startswith("condition_") or field == "source_image":
+        return "center"
+    return "w"
+
+
 def _render_search_matrix(self,result):
     display_rows=normalize_search_results(result)
     self.rows=result
@@ -89,8 +98,9 @@ def _render_search_matrix(self,result):
     tree_columns=[c[0] for c in columns]+["favorite"]
     self.tree.configure(columns=tree_columns)
     for c,h,width in columns:
-        self.tree.heading(c,text=h);self.tree.column(c,width=width,anchor="center" if c.startswith("condition_") else "w")
-    self.tree.heading("favorite",text="收藏");self.tree.column("favorite",width=110,anchor="center")
+        self.tree.heading(c,text=h,anchor="center")
+        self.tree.column(c,width=width,minwidth=width,stretch=False,anchor=_matrix_anchor(c))
+    self.tree.heading("favorite",text="收藏",anchor="center");self.tree.column("favorite",width=110,minwidth=110,stretch=False,anchor="center")
     row_index=0
     for display in display_rows:
         iid=str(row_index);row_index+=1
