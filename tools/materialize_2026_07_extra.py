@@ -7,9 +7,10 @@ FIELDS=['record_id','data_date','category','subtype','brand','series','model','m
 rows=list(csv.DictReader(p.open(encoding='utf-8-sig',newline=''))) if p.exists() else []
 
 def add_rows(img,path,items,category='其它',subtype='播放器'):
+    unit='元/片' if category=='手机配件' else '元/台'
     for brand,model,conds,prices in items:
         for cond,price in zip(conds,prices):
-            r={k:'' for k in FIELDS};r.update(data_date='2026-07-10',category=category,subtype=subtype,brand=brand,series=brand,model=model,condition=cond,price=str(price),unit='元/台',origin='image',source_image=img,source_path=path,verified='1',confidence='1.0',verification='visual_verified_from_uploaded_image')
+            r={k:'' for k in FIELDS};r.update(data_date='2026-07-10',category=category,subtype=subtype,brand=brand,series=brand,model=model,condition=cond,price=str(price),unit=unit,origin='image',source_image=img,source_path=path,verified='1',confidence='1.0',verification='visual_verified_from_uploaded_image')
             r['record_id']=hashlib.sha256('|'.join(r.get(x,'') for x in ('data_date','category','subtype','brand','series','model','condition','price','unit')).encode()).hexdigest()[:16];rows.append(r)
 
 img='小度，天猫，小爱.jpg';path='数码网报价单-0710更新/其它/'+img
@@ -18,22 +19,7 @@ add_rows(img,path,[
 
 img='ipad内爆屏幕.jpg';path='数码网报价单-0710更新/手机配件/'+img
 add_rows(img,path,[
-('苹果','IPAD PRO(12.9寸) 带小板1代/2代',['内爆'],(2,)),
-('苹果','IPAD PRO(12.9寸) 不带小板',['内爆'],(2,)),
-('苹果','IPAD PRO(11寸)',['内爆'],(2,)),
-('苹果','IPAD PRO(10.5寸)',['内爆'],(2,)),
-('苹果','IPAD(10.2寸)',['内爆'],(2,)),
-('苹果','IPAD(9.7寸)',['内爆'],(2,)),
-('苹果','IPAD7',['内爆'],(2,)),
-('苹果','IPAD6低配',['内爆'],(0.5,)),
-('苹果','IPAD6高配',['内爆'],(0.5,)),
-('苹果','IPAD5低配',['内爆'],(0.5,)),
-('苹果','IPAD5高配',['内爆'],(0.5,)),
-('苹果','迷你6',['内爆'],(2,)),
-('苹果','迷你5',['内爆'],(0.5,)),
-('苹果','迷你4',['内爆'],(0.5,)),
-('苹果','迷你2（夏普）组/迷你3（低配）',['内爆'],(0.5,)),
-('苹果','迷你2（夏普）原/迷你3',['内爆'],(0.5,))],category='手机配件',subtype='平板屏幕')
+('苹果','IPAD PRO(12.9寸) 带小板1代/2代',['内爆'],(2,)),('苹果','IPAD PRO(12.9寸) 不带小板',['内爆'],(2,)),('苹果','IPAD PRO(11寸)',['内爆'],(2,)),('苹果','IPAD PRO(10.5寸)',['内爆'],(2,)),('苹果','IPAD(10.2寸)',['内爆'],(2,)),('苹果','IPAD(9.7寸)',['内爆'],(2,)),('苹果','IPAD7',['内爆'],(2,)),('苹果','IPAD6低配',['内爆'],(0.5,)),('苹果','IPAD6高配',['内爆'],(0.5,)),('苹果','IPAD5低配',['内爆'],(0.5,)),('苹果','IPAD5高配',['内爆'],(0.5,)),('苹果','迷你6',['内爆'],(2,)),('苹果','迷你5',['内爆'],(0.5,)),('苹果','迷你4',['内爆'],(0.5,)),('苹果','迷你2（夏普）组/迷你3（低配）',['内爆'],(0.5,)),('苹果','迷你2（夏普）原/迷你3',['内爆'],(0.5,))],category='手机配件',subtype='平板屏幕')
 
 seen=set();out=[]
 for r in rows:
