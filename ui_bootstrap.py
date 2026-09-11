@@ -4,7 +4,6 @@ import re
 import tkinter as tk
 from tkinter import ttk
 import phone_search
-from favorite_toggle import toggle_favorite
 from app_actions import install as install_app_actions
 from app_actions_fix import install_fix as install_app_action_fixes
 from search_display import DISPLAY_COLUMNS, result_display_columns, normalize_search_results
@@ -13,7 +12,6 @@ phone_search.CAT["手机配件"] = "手机配件"
 phone_search.COLS = DISPLAY_COLUMNS
 _EMPTY_HINT = "输入品牌 / 系列 / 型号开始查询\n\n数据来自已验证的图片事实价格库"
 _original_ui = phone_search.App.ui
-_original_load = phone_search.App.load
 _real_toplevel = phone_search.tk.Toplevel
 
 
@@ -80,11 +78,10 @@ def _rebuild_matrix_surface(self):
 
 def clear_search(self):
     self.q.set('');self.hide_suggestions();self.rows=[];self.map={};self._matrix_map={};self._matrix_columns=DISPLAY_COLUMNS
-    if hasattr(self,'_matrix_inner'):
-        for child in self._matrix_inner.winfo_children():child.destroy()
-        self._matrix_canvas.configure(scrollregion=(0,0,0,0))
+    for child in self._matrix_inner.winfo_children():child.destroy()
+    self._matrix_canvas.configure(scrollregion=(0,0,0,0))
     self.target.config(text='输入品牌 / 系列 / 型号开始查询')
-    if hasattr(self,'empty_hint'):self.empty_hint.place(relx=0.5,rely=0.5,anchor='center')
+    self.empty_hint.place(relx=0.5,rely=0.5,anchor='center')
     self.status.config(text='请输入品牌、系列、型号或别名');self.entry.focus_set()
 
 
@@ -101,11 +98,6 @@ def ui(self):
     self.empty_hint=tk.Label(self._matrix_canvas,text=_EMPTY_HINT,font=('微软雅黑',15),justify='center',fg='#666666',bg='#ffffff',padx=28,pady=22)
     self.empty_hint.place(relx=0.5,rely=0.5,anchor='center')
     self._matrix_map={};self._matrix_columns=DISPLAY_COLUMNS
-
-
-def _result_column_anchor(field):
-    if field=='identity':return 'w'
-    return 'center'
 
 
 def _select_result(self,iid,payload,event=None):
@@ -136,9 +128,8 @@ def _render_search_matrix(self,result):
     for child in self._matrix_inner.winfo_children():child.destroy()
     self._matrix_widgets={}
     self.tree.delete(*self.tree.get_children())
-    row_index=0
     for block_index,display in enumerate(display_rows):
-        iid=str(row_index);row_index+=1
+        iid=str(block_index)
         raw_rows=display.get('_rows',[])
         self.tree.insert('','end',iid=iid,values=[display.get('data_date',''),display.get('identity','')])
         self.map[iid]=raw_rows[0] if raw_rows else None
@@ -146,28 +137,24 @@ def _render_search_matrix(self,result):
         columns=display.get('_columns') or result_display_columns(raw_rows)
         block=tk.Frame(self._matrix_inner,bg='white',bd=0,highlightthickness=0)
         block.grid(row=block_index,column=0,sticky='ew',padx=8,pady=(10,8))
-        inner_width=sum(width for _field,_label,width in columns)
-        block.grid_columnconfigure(len(columns)-1,minsize=1)
         header=[];values=[]
         for col,(field,label,width) in enumerate(columns):
             block.grid_columnconfigure(col,minsize=width,weight=0)
             h=tk.Label(block,text=label,font=('微软雅黑',10,'bold'),bg='white',anchor='center',justify='center',wraplength=max(width-12,80),padx=4,pady=3)
             h.grid(row=0,column=col,sticky='ew')
-            v=tk.Label(block,text=display.get(field,''),font=('微软雅黑',10),bg='white',anchor=_result_column_anchor(field),justify='center' if field!='identity' else 'left',wraplength=max(width-12,80),padx=4,pady=6)
+            v=tk.Label(block,text=display.get(field,''),font=('微软雅黑',10),bg='white',anchor='center' if field!='identity' else 'w',justify='center' if field!='identity' else 'left',wraplength=max(width-12,80),padx=4,pady=6)
             v.grid(row=1,column=col,sticky='ew')
             header.append(h);values.append(v)
         widgets=header+values+[block]
         self._matrix_widgets[iid]=widgets
         for widget in widgets:
             widget.bind('<Button-1>',lambda e,_iid=iid,_payload=display:_select_result(self,_iid,_payload,e),add='+')
-            widget.bind('<Double-Button-1>',lambda e,_iid=iid,_payload=display:( _select_result(self,_iid,_payload,e), self.detail(e) ),add='+')
+            widget.bind('<Double-Button-1>',lambda e,_iid=iid,_payload=display:( _select_result(self,_iid,_payload,e), self.detail() ),add='+')
             widget.bind('<Button-3>',lambda e,_iid=iid,_payload=display:_matrix_menu(self,_iid,_payload,e),add='+')
-        if block_index<len(display_rows)-1:
-            spacer=tk.Frame(self._matrix_inner,height=4,bg='white');spacer.grid(row=block_index,column=0,sticky='ew')
-    if self._matrix_map:
-        self.empty_hint.place_forget()
-    else:
-        self.empty_hint.place(relx=0.5,rely=0.5,anchor='center')
+    self._matrix_canvas.update_idletasks()
+    self._matrix_canvas.configure(scrollregion=self._matrix_canvas.bbox('all'))
+    if self._matrix_map:self.empty_hint.place_forget()
+    else:self.empty_hint.place(relx=0.5,rely=0.5,anchor='center')
     return display_rows
 
 
@@ -181,9 +168,8 @@ def search(self,record_history=True):
         self.status.config(text='请输入品牌、系列、型号或别名');return []
     if record_history:self.h.add(q)
     result=self.s.search(q,self.cat.get());display_rows=_render_search_matrix(self,result)
-    count=len(display_rows)
-    self.target.config(text=f'搜索结果：{q} · {count} 个独立结果')
-    self.status.config(text=f'找到 {count} 个独立结果')
+    self.target.config(text=f'搜索结果：{q} · {len(display_rows)} 个独立结果')
+    self.status.config(text=f'找到 {len(display_rows)} 个独立结果')
     self.refresh_suggestions();return result
 
 
