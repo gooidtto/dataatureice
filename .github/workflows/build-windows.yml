@@ -37,9 +37,12 @@ jobs:
       - name: Materialize callable data
         run: python -X utf8 tools/materialize_data.py
 
+      - name: Materialize 2026-07 image facts
+        run: python -X utf8 tools/materialize_2026_07.py
+
       - name: Validate source and callable data
         run: |
-          python -X utf8 -m py_compile phone_search.py ui_bootstrap.py data_validator.py tools/materialize_data.py
+          python -X utf8 -m py_compile phone_search.py ui_bootstrap.py data_validator.py tools/materialize_data.py tools/materialize_2026_07.py
           python -X utf8 data_validator.py data
           python -X utf8 -m pytest -q
 
@@ -60,6 +63,8 @@ jobs:
           if (!(Test-Path "dist/数码回收价格秒查工具/数码回收价格秒查工具.exe")) { throw "EXE missing" }
           $parts = Get-ChildItem "dist/数码回收价格秒查工具/data/snapshots/2026-08-31" -Filter *.csv
           if ($parts.Count -lt 1) { throw "latest snapshot has no CSV shards" }
+          if (!(Test-Path "dist/数码回收价格秒查工具/data/2026-07-05.csv")) { throw "2026-07-05 data missing" }
+          if (!(Test-Path "dist/数码回收价格秒查工具/data/2026-07-10.csv")) { throw "2026-07-10 data missing" }
 
       - name: Create ZIP package
         shell: pwsh
