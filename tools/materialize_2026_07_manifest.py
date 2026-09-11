@@ -17,6 +17,7 @@ ADD=[
 ('2026-07-10','其它','机顶盒.jpg','数码网报价单-0710更新/其它/机顶盒.jpg','89023ae305282cca69ad010e8f2b1279631f2a635c91e6e4bf79b5a457560707','285179'),
 ('2026-07-10','电脑','苹果笔记本.jpg','数码网报价单-0710更新/电脑以及电脑配件/苹果笔记本.jpg','8ca35d775919258bae00f1e90738e76ef5b4807d8e756574a3d23703f3f91f53','161958'),
 ('2026-07-10','其它','小度，天猫，小爱.jpg','数码网报价单-0710更新/其它/小度，天猫，小爱.jpg','5530c65bc6f538322cfe021e6e9c45c1a5eb5c8129f12eb9b775ac4dd9a39617','112614'),
+('2026-07-10','手机配件','ipad内爆屏幕.jpg','数码网报价单-0710更新/手机配件/ipad内爆屏幕.jpg','0bbc20542df9d62d3e0ebaba15b12c4ab66a795f1ddbeae3f303d8f48577e09c','88426'),
 ]
 headers=['include','data_date','category','status','source_path','source_image','sha256','bytes','verification','verification_note']
 rows=[]
