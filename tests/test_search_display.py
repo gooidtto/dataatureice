@@ -1,4 +1,4 @@
-from search_display import DISPLAY_COLUMNS, normalize_search_results
+from search_display import DISPLAY_COLUMNS, build_identity, normalize_search_results
 
 
 def row(**kw):
@@ -44,6 +44,23 @@ def test_search_display_pivots_conditions_without_mutating_source_rows():
     assert rows[0]["price"] == "700"
 
 
+def test_build_identity_uses_only_available_fields():
+    assert build_identity(row()) == "手机 华为 荣耀畅玩系列 畅玩7x (3+32) BND-AL00"
+    assert build_identity(row(series="")) == "手机 华为 畅玩7x (3+32) BND-AL00"
+    assert build_identity(row(model_code="")) == "手机 华为 荣耀畅玩系列 畅玩7x (3+32)"
+    assert build_identity(row(brand="", series="")) == "手机 畅玩7x (3+32) BND-AL00"
+    assert build_identity(row(category="", brand="", series="", model="", model_code="")) == ""
+
+
+def test_search_display_keeps_missing_identity_fields_out_of_display():
+    rows = [row(series="", model_code="", condition="开机靓好", price="700")]
+    result = [r for r in normalize_search_results(rows) if not r.get("_separator")]
+    assert len(result) == 1
+    assert result[0]["identity"] == "手机 华为 畅玩7x (3+32)"
+    assert "  " not in result[0]["identity"]
+    assert "/" not in result[0]["identity"]
+
+
 def test_search_display_keeps_models_separate_and_inserts_spacing():
     rows = [
         row(model="畅玩8x (3+32)", model_code="BNK-AL00", condition="开机靓好", price="900"),
@@ -52,7 +69,7 @@ def test_search_display_keeps_models_separate_and_inserts_spacing():
     result = normalize_search_results(rows)
     assert any(r.get("_separator") for r in result)
     display = [r for r in result if not r.get("_separator")]
-    assert [r["model"] if "model" in r else r["identity"] for r in display] == [
+    assert [r["identity"] for r in display] == [
         "手机 华为 荣耀畅玩系列 畅玩7x (3+32) BND-AL00",
         "手机 华为 荣耀畅玩系列 畅玩8x (3+32) BNK-AL00",
     ]
