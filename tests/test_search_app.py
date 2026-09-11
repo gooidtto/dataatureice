@@ -4,31 +4,27 @@ from pathlib import Path
 HERE=Path(__file__).resolve().parents[1]
 spec=importlib.util.spec_from_file_location('phone_search',HERE/'phone_search.py');mod=importlib.util.module_from_spec(spec);spec.loader.exec_module(mod)
 def row(**kw):
- r={k:'' for k in mod.FIELDS};r.update({'data_date':'2026-08-31','category':'手机','subtype':'device','brand':'A','series':'S','model':'M','condition':'好','price':'100','unit':'CNY/台','verified':'1'});r.update(kw);return r
+ r={k:'' for k in mod.FIELDS};r.update({'data_date':'2026-08-31','category':'手机','subtype':'device','brand':'A','series':'S','model':'M','condition':'好','price':'100','unit':'CNY/台','verified':'1','source_path':'x.csv','source_image':'x.jpg'});r.update(kw);return r
+def write_snapshot(root,r):
+ p=root/'snapshots'/r['data_date']/'part.csv';p.parent.mkdir(parents=True,exist_ok=True)
+ with p.open('w',encoding='utf-8-sig',newline='') as f:
+  w=csv.DictWriter(f,fieldnames=mod.FIELDS);w.writeheader();w.writerow(r)
 def test_category_canonical():
  assert mod.CAT['phone']=='手机';assert mod.CAT['电脑']=='电脑'
 def test_num_rejects_slash_value():
  assert mod.num('/') is None;assert mod.num('0/0') is None;assert mod.num('12.5')==12.5
 def test_search_matches_alias_and_model_code(tmp_path):
- p=tmp_path/'2026-08-31.csv'
- with p.open('w',encoding='utf-8-sig',newline='') as f:
-  w=csv.DictWriter(f,fieldnames=mod.FIELDS);w.writeheader();w.writerow(row(alias='别名X',model_code='ABC123'))
+ write_snapshot(tmp_path,row(alias='别名X',model_code='ABC123',record_id='r1'))
  s=mod.Store(str(tmp_path));s.load();assert len(s.search('别名X'))==1;assert len(s.search('ABC123'))==1
 def test_history_compare_key_distinguishes_subtype():
  assert mod.rid(row(subtype='device'))!=mod.rid(row(subtype='component'))
 def test_search_order_is_new_date_then_high_price(tmp_path):
  for d,prices in [('2026-08-25',['300','200']),('2026-08-31',['150','500'])]:
-  p=tmp_path/f'{d}.csv'
-  with p.open('w',encoding='utf-8-sig',newline='') as f:
-   w=csv.DictWriter(f,fieldnames=mod.FIELDS);w.writeheader()
-   for i,price in enumerate(prices):w.writerow(row(data_date=d,price=price,record_id=f'{d}-{i}'))
+  for i,price in enumerate(prices):write_snapshot(tmp_path,row(data_date=d,price=price,record_id=f'{d}-{i}'))
  s=mod.Store(str(tmp_path));s.load();rs=s.search('M');assert [r['data_date'] for r in rs]==['2026-08-31','2026-08-31','2026-08-25','2026-08-25'];assert [r['price'] for r in rs[:2]]==['500','150']
 def test_history_matches_same_model_across_model_code_changes(tmp_path):
  rows=[row(data_date='2026-08-25',record_id='old',model_code='OLD',price='100'),row(data_date='2026-08-31',record_id='new',model_code='NEW',price='120')]
- for r in rows:
-  p=tmp_path/f'{r["data_date"]}.csv'
-  with p.open('w',encoding='utf-8-sig',newline='') as f:
-   w=csv.DictWriter(f,fieldnames=mod.FIELDS);w.writeheader();w.writerow(r)
+ for r in rows:write_snapshot(tmp_path,r)
  s=mod.Store(str(tmp_path));s.load();rs=s.history([rows[1]]);assert {r['record_id'] for r in rs}=={'old','new'}
 def test_history_persists_deduped_at_least_twenty_capacity(tmp_path):
  h=mod.JsonList(str(tmp_path/'history.json'))
