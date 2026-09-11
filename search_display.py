@@ -31,21 +31,20 @@ def clean(value):
 
 
 def _condition_bucket(condition):
+    """Map only established condition names; never invent a price state."""
     value = clean(condition)
     compact = value.replace(" ", "")
-    # Check the most specific states first.  Real source data is not required
-    # to use one fixed wording, so bucket matching is deliberately tolerant.
-    if any(token in compact for token in ("废板", "整机")):
+    if compact == "废板·整机":
         return "condition_waste"
-    if any(token in compact for token in ("不开机", "不开", "坏配件", "配件坏")):
+    if compact in {"不开机", "开机坏配件"}:
         return "condition_bad_parts"
-    if any(token in compact for token in ("好碎", "屏好外屏碎", "屏好碎")):
+    if compact == "开机好碎":
         return "condition_good_broken"
-    if any(token in compact for token in ("碎屏", "屏碎", "外屏碎")):
+    if compact in {"开机碎屏", "开机屏碎"}:
         return "condition_cracked"
-    if any(token in compact for token in ("内屏碎", "屏幕碎")):
+    if compact in {"开机好屏/内屏碎", "内屏碎"}:
         return "condition_screen"
-    if any(token in compact for token in ("靓机", "靓好", "靓", "好屏", "屏好", "开机好")):
+    if compact in {"开机靓好", "开机靓机", "靓机", "开机好屏", "开机好"}:
         return "condition_grade"
     return None
 
