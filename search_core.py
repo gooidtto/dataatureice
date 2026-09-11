@@ -168,3 +168,11 @@ def search_rows(rows, query, category="全部"):
         item[1].get("brand", ""), item[1].get("series", ""),
         item[1].get("model", ""), item[1].get("record_id", "")))
     return [row for _, row in candidates]
+
+
+# Install the action layer here so it is in place before ui_bootstrap creates
+# the App instance and binds the action-bar buttons. The UI bootstrap later
+# supplies the matrix renderer itself.
+from matrix_ui_actions import install as _install_matrix_actions
+import phone_search as _phone_search
+_install_matrix_actions(_phone_search.App)
