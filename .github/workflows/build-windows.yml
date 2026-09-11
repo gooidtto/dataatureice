@@ -67,7 +67,9 @@ jobs:
         run: |
           python -X utf8 -m py_compile phone_search.py ui_bootstrap.py data_validator.py tools/materialize_data.py tools/materialize_2026_07.py tools/materialize_2026_07_safe.py tools/materialize_2026_07_extra.py tools/materialize_2026_07_reviewed.py tools/materialize_2026_07_reviewed2.py tools/materialize_2026_07_reviewed3.py tools/materialize_2026_07_reviewed4.py tools/materialize_2026_07_reviewed5.py tools/materialize_2026_07_reviewed6.py tools/materialize_2026_07_reviewed7.py tools/materialize_2026_07_reviewed8.py tools/materialize_2026_07_reviewed9.py tools/materialize_2026_07_manifest.py tools/materialize_2026_07_manifest_extra.py tools/materialize_2026_07_manifest3.py tools/materialize_2026_07_manifest4.py tools/materialize_2026_07_manifest5.py tools/materialize_2026_07_manifest6.py tools/materialize_2026_07_manifest7.py tools/materialize_2026_07_manifest8.py tools/materialize_2026_07_manifest9.py tools/materialize_2026_07_manifest10.py
           python -X utf8 data_validator.py data
+          if ($LASTEXITCODE -ne 0) { throw "data validation failed" }
           python -X utf8 -m pytest -q
+          if ($LASTEXITCODE -ne 0) { throw "pytest failed" }
       - name: Build EXE
         run: pyinstaller --noconfirm --clean --windowed --name "数码回收价格秒查工具" ui_bootstrap.py
       - name: Include callable data
