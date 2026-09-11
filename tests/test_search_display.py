@@ -24,27 +24,27 @@ def row(**kw):
 def test_search_display_pivots_conditions_without_mutating_source_rows():
     rows = [
         row(record_id="a", data_date="2026-08-31", condition="开机靓好", price="700"),
-        row(record_id="b", data_date="2026-08-31", condition="开机好碎", price="500"),
-        row(record_id="c", data_date="2026-08-31", condition="开机碎屏", price="320"),
-        row(record_id="d", data_date="2026-08-31", condition="开机坏配件", price="240"),
-        row(record_id="e", data_date="2026-08-31", condition="废板·整机", price="240"),
-        row(record_id="f", data_date="2026-08-25", condition="开机靓好", price="800"),
+        row(record_id="b", data_date="2026-08-31", condition="开机好屏", price="500"),
+        row(record_id="c", data_date="2026-08-31", condition="开机好碎", price="450"),
+        row(record_id="d", data_date="2026-08-31", condition="开机碎屏", price="320"),
+        row(record_id="e", data_date="2026-08-31", condition="开机坏配件", price="240"),
+        row(record_id="f", data_date="2026-08-31", condition="废板·整机", price="240"),
+        row(record_id="g", data_date="2026-08-31", condition="开机屏好外屏碎", price="60"),
+        row(record_id="h", data_date="2026-08-25", condition="开机靓好", price="800"),
     ]
     result = normalize_search_results(rows)
     display = [r for r in result if not r.get("_separator")]
     assert len(display) == 2
     assert display[0]["data_date"] == "2026-08-31"
     assert display[0]["identity"] == "手机 华为 荣耀畅玩系列 畅玩7x (3+32) BND-AL00"
-    assert display[0]["condition_grade"] == "700"
-    assert display[0]["condition_good_broken"] == "500"
-    assert display[0]["condition_cracked"] == "320"
-    assert display[0]["condition_bad_parts"] == "240"
-    assert display[0]["condition_waste"] == "240"
-    assert "开机靓好：700 CNY/台" in display[0]["quote_detail"]
-    assert "开机好碎：500 CNY/台" in display[0]["quote_detail"]
-    assert "废板·整机：240 CNY/台" in display[0]["quote_detail"]
+    assert display[0]["condition_grade"] == "开机靓好：700 CNY/台"
+    assert display[0]["condition_screen"] == "开机好屏：500 CNY/台\n开机屏好外屏碎：60 CNY/台"
+    assert display[0]["condition_good_broken"] == "开机好碎：450 CNY/台"
+    assert display[0]["condition_cracked"] == "开机碎屏：320 CNY/台"
+    assert display[0]["condition_bad_parts"] == "开机坏配件：240 CNY/台"
+    assert display[0]["condition_waste"] == "废板·整机：240 CNY/台"
     assert display[1]["data_date"] == "2026-08-25"
-    assert display[1]["condition_grade"] == "800"
+    assert display[1]["condition_grade"] == "开机靓好：800 CNY/台"
     assert rows[0]["condition"] == "开机靓好"
     assert rows[0]["price"] == "700"
 
@@ -98,12 +98,11 @@ def test_display_columns_match_new_contract():
     assert labels == [
         "数据日期",
         "手机/品牌/系列/型号/网络型号",
-        "开机靓机/靓机/开机好屏",
-        "开机好屏/内屏碎",
+        "开机靓机/靓机",
+        "开机好屏/内屏",
         "开机好碎",
         "开机碎屏",
-        "不开机/开机坏配件",
+        "不开机/坏配件",
         "废板·整机",
-        "全部报价（原始条件/价格）",
         "来源图片",
     ]
