@@ -5,6 +5,7 @@ import tkinter as tk
 from tkinter import ttk
 import phone_search
 from favorite_toggle import toggle_favorite
+from app_actions import install as install_app_actions
 
 phone_search.CAT["手机配件"]="手机配件"
 _EMPTY_HINT="输入品牌 / 系列 / 型号开始查询\n\n数据来自已验证的图片事实价格库"
@@ -63,15 +64,12 @@ def _canonical_store_load(self):
 
 
 def clear_search(self):
-    """Clear the active query without touching search history or favorites."""
     self.q.set("")
     self.hide_suggestions()
-    self.rows=[]
-    self.map={}
+    self.rows=[];self.map={}
     self.tree.delete(*self.tree.get_children())
     self.target.config(text="输入品牌 / 系列 / 型号开始查询")
-    if hasattr(self,"empty_hint"):
-        self.empty_hint.place(relx=0.5,rely=0.5,anchor="center")
+    if hasattr(self,"empty_hint"):self.empty_hint.place(relx=0.5,rely=0.5,anchor="center")
     self.status.config(text="请输入品牌、系列、型号或别名")
     self.entry.focus_set()
 
@@ -83,7 +81,7 @@ def ui(self):
             for child in widget.winfo_children():
                 if isinstance(child,ttk.Combobox):
                     values=list(child.cget("values"))
-                    if "手机配件" not in values: child.configure(values=values+["手机配件"])
+                    if "手机配件" not in values:child.configure(values=values+["手机配件"])
                     break
     self.empty_hint=tk.Label(self.tree.master,text=_EMPTY_HINT,font=("微软雅黑",15),justify="center",fg="#666666",bg="#ffffff",padx=28,pady=22)
     self.empty_hint.place(relx=0.5,rely=0.5,anchor="center")
@@ -93,7 +91,7 @@ def search(self,record_history=True):
     q=phone_search.clean(self.q.get())
     if not q:
         self.hide_suggestions();self.rows=[];self.map={};self.tree.delete(*self.tree.get_children());self.target.config(text="输入品牌 / 系列 / 型号开始查询")
-        if hasattr(self,"empty_hint"): self.empty_hint.place(relx=0.5,rely=0.5,anchor="center")
+        if hasattr(self,"empty_hint"):self.empty_hint.place(relx=0.5,rely=0.5,anchor="center")
         self.status.config(text="请输入品牌、系列、型号或别名");return []
     if record_history:self.h.add(q)
     result=self.s.search(q,self.cat.get());self.rows=result;self.map={};self.tree.delete(*self.tree.get_children())
@@ -107,9 +105,9 @@ def search(self,record_history=True):
 
 
 def load(self):
-    _original_load(self);self.meta.config(text=f"最新：{self.s.latest or '无'} · 快照 {len(self.s.dates)} · 已验证价格行 {len(self.s.rows)}")
-    if phone_search.clean(self.q.get()):
-        if hasattr(self,"empty_hint"):self.empty_hint.place_forget()
+    self.s.load();self.meta.config(text=f"最新：{self.s.latest or '无'} · 快照 {len(self.s.dates)} · 已验证价格行 {len(self.s.rows)}")
+    q=phone_search.clean(self.q.get())
+    if q:self.search(False)
     else:
         self.rows=[];self.map={};self.tree.delete(*self.tree.get_children());self.target.config(text="输入品牌 / 系列 / 型号开始查询")
         if hasattr(self,"empty_hint"):self.empty_hint.place(relx=0.5,rely=0.5,anchor="center")
@@ -119,7 +117,8 @@ def load(self):
 
 def on_tree_click(self,event):
     region=self.tree.identify("region",event.x,event.y);column=self.tree.identify_column(event.x);iid=self.tree.identify_row(event.y);favorite_column=f"#{len(phone_search.COLS)+1}";row=self.map.get(iid) if iid else None
-    if region=="cell" and column==favorite_column and row:self.tree.selection_set(iid);toggle_favorite(self,row);return "break"
+    if region=="cell" and column==favorite_column and row:
+        self.tree.selection_set(iid);toggle_favorite(self,row);return "break"
     if callable(_original_tree_click):return _original_tree_click(self,event)
     return None
 
@@ -146,6 +145,7 @@ def _standardize_window(w):
 def standardized_toplevel(*args,**kwargs):
     w=_real_toplevel(*args,**kwargs);w.after_idle(lambda:_standardize_window(w));return w
 
+install_app_actions(phone_search.App)
 phone_search.Store.load=_canonical_store_load
 phone_search.App.ui=ui;phone_search.App.search=search;phone_search.App.load=load;phone_search.App.clear_search=clear_search;phone_search.App.on_tree_click=on_tree_click;phone_search.App.favorite_groups=favorite_groups;phone_search.tk.Toplevel=standardized_toplevel
 
