@@ -14,6 +14,7 @@ def row(**kw):
         "model_code": "BND-AL00",
         "condition": "",
         "price": "",
+        "unit": "CNY/台",
         "source_image": "华为2.jpg",
     }
     base.update(kw)
@@ -39,6 +40,9 @@ def test_search_display_pivots_conditions_without_mutating_source_rows():
     assert display[0]["condition_cracked"] == "320"
     assert display[0]["condition_bad_parts"] == "240"
     assert display[0]["condition_waste"] == "240"
+    assert "开机靓好：700 CNY/台" in display[0]["quote_detail"]
+    assert "开机好碎：500 CNY/台" in display[0]["quote_detail"]
+    assert "废板·整机：240 CNY/台" in display[0]["quote_detail"]
     assert display[1]["data_date"] == "2026-08-25"
     assert display[1]["condition_grade"] == "800"
     assert rows[0]["condition"] == "开机靓好"
@@ -100,5 +104,6 @@ def test_display_columns_match_new_contract():
         "开机碎屏",
         "不开机/开机坏配件",
         "废板·整机",
+        "全部报价（原始条件/价格）",
         "来源图片",
     ]
