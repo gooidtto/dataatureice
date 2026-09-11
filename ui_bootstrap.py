@@ -15,6 +15,46 @@ _original_ui = phone_search.App.ui
 _real_toplevel = phone_search.tk.Toplevel
 
 
+def _fit_geometry(screen_w, screen_h, width, height, min_w, min_h, width_ratio=0.92, height_ratio=0.88):
+    """Keep requested content size while fitting it inside the desktop work area."""
+    max_w = max(640, int(screen_w * width_ratio))
+    max_h = max(480, int(screen_h * height_ratio))
+    width = min(max(int(width), int(min_w)), max_w)
+    height = min(max(int(height), int(min_h)), max_h)
+    min_w = min(int(min_w), width)
+    min_h = min(int(min_h), height)
+    return width, height, min_w, min_h
+
+
+def _center_on_screen(window, width, height):
+    """Center a window on the physical desktop, not relative to a child window."""
+    try:
+        window.update_idletasks()
+        screen_w = window.winfo_screenwidth()
+        screen_h = window.winfo_screenheight()
+        x = max(0, (screen_w - int(width)) // 2)
+        y = max(0, (screen_h - int(height)) // 2)
+        window.geometry(f"{int(width)}x{int(height)}+{x}+{y}")
+    except tk.TclError:
+        pass
+
+
+def _standardize_main_window(root):
+    """Center the main window and adapt its size to the current desktop."""
+    try:
+        root.update_idletasks()
+        screen_w = root.winfo_screenwidth()
+        screen_h = root.winfo_screenheight()
+        width, height, min_w, min_h = _fit_geometry(screen_w, screen_h, 1180, 760, 900, 620)
+        root.minsize(min_w, min_h)
+        _center_on_screen(root, width, height)
+        root.resizable(True, True)
+        root.lift()
+        root.focus_force()
+    except tk.TclError:
+        pass
+
+
 def _canonical_store_load(self):
     self.rows=[]; self.snapshots={}; self.manifest=[]; self.errors=[]
     db=os.path.join(self.d,'database'); loaded_dates=set()
@@ -98,6 +138,7 @@ def ui(self):
     self.empty_hint=tk.Label(self._matrix_canvas,text=_EMPTY_HINT,font=('微软雅黑',15),justify='center',fg='#666666',bg='#ffffff',padx=28,pady=22)
     self.empty_hint.place(relx=0.5,rely=0.5,anchor='center')
     self._matrix_map={};self._matrix_columns=DISPLAY_COLUMNS
+    self.root.after_idle(lambda:_standardize_main_window(self.root))
 
 
 def _select_result(self,iid,payload,event=None):
@@ -203,18 +244,44 @@ def favorite_groups(self):
     ordered.sort(key=lambda x:(x[1],x[0]),reverse=True);return [(k,b) for k,_,b in ordered]
 
 
+def _window_spec(title):
+    """Return preferred content dimensions and minimums for child windows."""
+    specs=(
+        ("搜索历史",560,620,420,420),
+        ("我的收藏",1500,760,1050,560),
+        ("记录详情",1500,620,1000,480),
+        ("历史价格对比",1650,760,1100,600),
+        ("来源图片结构",1100,620,800,480),
+    )
+    for marker,sw,sh,smw,smh in specs:
+        if marker in title:
+            return sw,sh,smw,smh
+    return 900,600,640,420
+
+
 def _standardize_window(w):
+    """Center every child window on the desktop and adapt its geometry to screen size."""
     try:
-        if not w.winfo_exists() or bool(w.overrideredirect()):return
-        title=phone_search.clean(w.title());specs=(("搜索历史",560,620,420,420),("我的收藏",1500,760,1050,560),("记录详情",760,560,600,420),("历史价格对比",1650,760,1100,600),("来源图片结构",1100,620,800,480));width,height,min_w,min_h=900,600,640,420
-        for marker,sw,sh,smw,smh in specs:
-            if marker in title:width,height,min_w,min_h=sw,sh,smw,smh;break
-        parent=w.master if getattr(w,'master',None) is not None else w.winfo_toplevel();parent.update_idletasks();pw,ph=parent.winfo_width(),parent.winfo_height();px,py=parent.winfo_rootx(),parent.winfo_rooty();w.minsize(min_w,min_h);w.geometry(f'{width}x{height}+{max(0,px+(pw-width)//2)}+{max(0,py+(ph-height)//2)}');w.transient(parent.winfo_toplevel());w.bind('<Escape>',lambda _e:w.destroy(),add='+');w.protocol('WM_DELETE_WINDOW',w.destroy);w.focus_set()
-    except tk.TclError:pass
+        if not w.winfo_exists() or bool(w.overrideredirect()):
+            return
+        title=phone_search.clean(w.title())
+        screen_w=w.winfo_screenwidth();screen_h=w.winfo_screenheight()
+        pref_w,pref_h,min_w,min_h=_window_spec(title)
+        width,height,min_w,min_h=_fit_geometry(screen_w,screen_h,pref_w,pref_h,min_w,min_h,0.94,0.90)
+        w.minsize(min_w,min_h)
+        _center_on_screen(w,width,height)
+        w.transient(w.winfo_toplevel())
+        w.bind('<Escape>',lambda _e:w.destroy(),add='+')
+        w.protocol('WM_DELETE_WINDOW',w.destroy)
+        w.lift();w.focus_force()
+    except tk.TclError:
+        pass
 
 
 def standardized_toplevel(*args,**kwargs):
-    w=_real_toplevel(*args,**kwargs);w.after_idle(lambda:_standardize_window(w));return w
+    w=_real_toplevel(*args,**kwargs)
+    w.after_idle(lambda:_standardize_window(w))
+    return w
 
 install_app_actions(phone_search.App);install_app_action_fixes(phone_search.App)
 phone_search.COLS=DISPLAY_COLUMNS
@@ -222,5 +289,9 @@ phone_search.Store.load=_canonical_store_load
 phone_search.App.ui=ui;phone_search.App.search=search;phone_search.App.render=_render_search_matrix;phone_search.App.load=load;phone_search.App.clear_search=clear_search;phone_search.App.favorite_groups=favorite_groups;phone_search.tk.Toplevel=standardized_toplevel
 
 def main():
-    root=tk.Tk();phone_search.App(root);root.mainloop()
+    root=tk.Tk()
+    phone_search.App(root)
+    _standardize_main_window(root)
+    root.after_idle(lambda:root.focus_force())
+    root.mainloop()
 if __name__=='__main__':main()
