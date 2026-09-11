@@ -7,6 +7,7 @@ import phone_search
 from favorite_toggle import toggle_favorite
 from app_actions import install as install_app_actions
 from app_actions_fix import install_fix as install_app_action_fixes
+from search_display import DISPLAY_COLUMNS, normalize_search_results
 
 phone_search.CAT["手机配件"]="手机配件"
 _EMPTY_HINT="输入品牌 / 系列 / 型号开始查询\n\n数据来自已验证的图片事实价格库"
@@ -76,6 +77,32 @@ def ui(self):
     self.empty_hint.place(relx=0.5,rely=0.5,anchor="center")
 
 
+def _render_search_matrix(self,result):
+    display_rows=normalize_search_results(result)
+    self.rows=result
+    self.map={}
+    self.tree.delete(*self.tree.get_children())
+    tree_columns=[c[0] for c in DISPLAY_COLUMNS]+["favorite"]
+    self.tree.configure(columns=tree_columns)
+    for c,h,width in DISPLAY_COLUMNS:
+        self.tree.heading(c,text=h);self.tree.column(c,width=width,anchor="w")
+    self.tree.heading("favorite",text="收藏");self.tree.column("favorite",width=110,anchor="center")
+    for index,display in enumerate(display_rows):
+        iid=str(index)
+        if display.get("_separator"):
+            self.tree.insert("","end",iid=iid,values=[""]*len(tree_columns),tags=("matrix_separator",))
+            continue
+        raw_rows=display.get("_rows",[])
+        representative=raw_rows[0] if raw_rows else {}
+        self.map[iid]={"display":display,"rows":raw_rows,"representative":representative}
+        all_favorite=bool(raw_rows) and all(self.fav.has(r) for r in raw_rows)
+        values=[display.get(c,"") for c,_,_ in DISPLAY_COLUMNS]+["★ 已收藏" if all_favorite else "☆ 一键收藏"]
+        self.tree.insert("","end",iid=iid,values=values)
+    try:self.tree.tag_configure("matrix_separator",height=10)
+    except tk.TclError:pass
+    return display_rows
+
+
 def search(self,record_history=True):
     q=phone_search.clean(self.q.get())
     if not q:
@@ -83,12 +110,11 @@ def search(self,record_history=True):
         if hasattr(self,"empty_hint"):self.empty_hint.place(relx=0.5,rely=0.5,anchor="center")
         self.status.config(text="请输入品牌、系列、型号或别名");return []
     if record_history:self.h.add(q)
-    result=self.s.search(q,self.cat.get());self.rows=result;self.map={};self.tree.delete(*self.tree.get_children())
-    for i,r in enumerate(result):
-        iid=str(i);self.map[iid]=r;values=[r.get(c,"") for c,_,_ in phone_search.COLS]+["★ 已收藏" if self.fav.has(r) else "☆ 一键收藏"];self.tree.insert("","end",iid=iid,values=values)
-    self.target.config(text=f"搜索结果：{q} · {len(result)} 条");self.status.config(text=f"找到 {len(result)} 条")
+    result=self.s.search(q,self.cat.get());_render_search_matrix(self,result)
+    self.target.config(text=f"搜索结果：{q} · {len([r for r in self.map.values() if isinstance(r,dict) and r.get('representative')])} 个型号")
+    self.status.config(text=f"找到 {len([r for r in self.map.values() if isinstance(r,dict) and r.get('representative')])} 个型号")
     if hasattr(self,"empty_hint"):
-        if result:self.empty_hint.place_forget()
+        if self.map:self.empty_hint.place_forget()
         else:self.empty_hint.place(relx=0.5,rely=0.5,anchor="center")
     self.refresh_suggestions();return result
 
@@ -104,9 +130,21 @@ def load(self):
     self.root.after_idle(self.entry.focus_set);self.root.after_idle(self.show_suggestions)
 
 
+def _toggle_matrix_favorite(self, iid, payload):
+    rows=payload.get("rows",[])
+    if not rows:return
+    selected_all=all(self.fav.has(r) for r in rows)
+    if selected_all:
+        for row in rows: self.fav.remove([row])
+    else:
+        self.fav.add(rows)
+    _render_search_matrix(self,self.rows)
+
+
 def on_tree_click(self,event):
-    region=self.tree.identify("region",event.x,event.y);column=self.tree.identify_column(event.x);iid=self.tree.identify_row(event.y);favorite_column=f"#{len(phone_search.COLS)+1}";row=self.map.get(iid) if iid else None
-    if region=="cell" and column==favorite_column and row:self.tree.selection_set(iid);toggle_favorite(self,row);return "break"
+    region=self.tree.identify("region",event.x,event.y);column=self.tree.identify_column(event.x);iid=self.tree.identify_row(event.y);favorite_column=f"#{len(DISPLAY_COLUMNS)+1}";payload=self.map.get(iid) if iid else None
+    if region=="cell" and column==favorite_column and isinstance(payload,dict) and not payload.get("_separator"):
+        self.tree.selection_set(iid);_toggle_matrix_favorite(self,iid,payload);return "break"
     if callable(_original_tree_click):return _original_tree_click(self,event)
     return None
 
