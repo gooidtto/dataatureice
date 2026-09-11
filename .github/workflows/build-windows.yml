@@ -1,0 +1,74 @@
+name: Build Windows EXE
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, release-image-first-windows]
+    tags: ['v*']
+permissions: {contents: write}
+env: {PYTHONUTF8: '1'}
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with: {python-version: '3.12', architecture: 'x64', cache: pip}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Materialize callable data
+        run: python -X utf8 tools/materialize_data.py
+      - name: Materialize 2026-07 image facts
+        run: python -X utf8 tools/materialize_2026_07_safe.py
+      - name: Materialize extra 2026-07 image facts
+        run: python -X utf8 tools/materialize_2026_07_extra.py
+      - name: Materialize reviewed 2026-07 image facts
+        run: python -X utf8 tools/materialize_2026_07_reviewed.py
+      - name: Materialize reviewed 2026-07 image facts 2
+        run: python -X utf8 tools/materialize_2026_07_reviewed2.py
+      - name: Materialize reviewed 2026-07 image facts 3
+        run: python -X utf8 tools/materialize_2026_07_reviewed3.py
+      - name: Materialize reviewed 2026-07 image facts 4
+        run: python -X utf8 tools/materialize_2026_07_reviewed4.py
+      - name: Merge 2026-07 source manifest
+        run: python -X utf8 tools/materialize_2026_07_manifest.py
+      - name: Merge extra 2026-07 source manifest
+        run: python -X utf8 tools/materialize_2026_07_manifest_extra.py
+      - name: Merge third-pass 2026-07 source manifest
+        run: python -X utf8 tools/materialize_2026_07_manifest3.py
+      - name: Merge fourth-pass 2026-07 source manifest
+        run: python -X utf8 tools/materialize_2026_07_manifest4.py
+      - name: Validate source and callable data
+        run: |
+          python -X utf8 -m py_compile phone_search.py ui_bootstrap.py data_validator.py tools/materialize_data.py tools/materialize_2026_07.py tools/materialize_2026_07_safe.py tools/materialize_2026_07_extra.py tools/materialize_2026_07_reviewed.py tools/materialize_2026_07_reviewed2.py tools/materialize_2026_07_reviewed3.py tools/materialize_2026_07_reviewed4.py tools/materialize_2026_07_manifest.py tools/materialize_2026_07_manifest_extra.py tools/materialize_2026_07_manifest3.py tools/materialize_2026_07_manifest4.py
+          python -X utf8 data_validator.py data
+          python -X utf8 -m pytest -q
+      - name: Build EXE
+        run: pyinstaller --noconfirm --clean --windowed --name "数码回收价格秒查工具" ui_bootstrap.py
+      - name: Include callable data
+        shell: pwsh
+        run: |
+          if (!(Test-Path "data/snapshots/2026-08-31")) { throw "latest callable snapshot missing" }
+          if (Test-Path "data/callable_release_payload.tar.xz") { Remove-Item "data/callable_release_payload.tar.xz" -Force }
+          Copy-Item -Path "data" -Destination "dist/数码回收价格秒查工具/data" -Recurse -Force
+      - name: Smoke-check package contents
+        shell: pwsh
+        run: |
+          if (!(Test-Path "dist/数码回收价格秒查工具/数码回收价格秒查工具.exe")) { throw "EXE missing" }
+          $parts = Get-ChildItem "dist/数码回收价格秒查工具/data/snapshots/2026-08-31" -Filter *.csv
+          if ($parts.Count -lt 1) { throw "latest snapshot has no CSV shards" }
+          if (!(Test-Path "dist/数码回收价格秒查工具/data/2026-07-05.csv")) { throw "2026-07-05 data missing" }
+          if (!(Test-Path "dist/数码回收价格秒查工具/data/2026-07-10.csv")) { throw "2026-07-10 data missing" }
+      - name: Create ZIP package
+        shell: pwsh
+        run: Compress-Archive -Path "dist/数码回收价格秒查工具/*" -DestinationPath "数码回收价格秒查工具-Windows.zip" -Force
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with: {name: 数码回收价格秒查工具-Windows, path: 数码回收价格秒查工具-Windows.zip, if-no-files-found: error}
+      - name: Publish GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with: {files: 数码回收价格秒查工具-Windows.zip, generate_release_notes: true}
