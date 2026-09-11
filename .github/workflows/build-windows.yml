@@ -66,12 +66,24 @@ jobs:
       - name: Organize date database
         run: python -X utf8 tools/organize_date_database.py
       - name: Validate source and callable data
+        shell: pwsh
         run: |
-          python -X utf8 -m py_compile phone_search.py ui_bootstrap.py data_validator.py tools/materialize_data.py tools/organize_date_database.py tools/materialize_2026_07.py tools/materialize_2026_07_safe.py tools/materialize_2026_07_extra.py tools/materialize_2026_07_reviewed.py tools/materialize_2026_07_reviewed2.py tools/materialize_2026_07_reviewed3.py tools/materialize_2026_07_reviewed4.py tools/materialize_2026_07_reviewed5.py tools/materialize_2026_07_reviewed6.py tools/materialize_2026_07_reviewed7.py tools/materialize_2026_07_reviewed8.py tools/materialize_2026_07_reviewed9.py tools/materialize_2026_07_manifest.py tools/materialize_2026_07_manifest_extra.py tools/materialize_2026_07_manifest3.py tools/materialize_2026_07_manifest4.py tools/materialize_2026_07_manifest5.py tools/materialize_2026_07_manifest6.py tools/materialize_2026_07_manifest7.py tools/materialize_2026_07_manifest8.py tools/materialize_2026_07_manifest9.py tools/materialize_2026_07_manifest10.py
+          python -X utf8 -m py_compile phone_search.py ui_bootstrap.py data_validator.py tools/date_database.py tools/materialize_data.py tools/organize_date_database.py tools/materialize_2026_07.py tools/materialize_2026_07_safe.py tools/materialize_2026_07_extra.py tools/materialize_2026_07_reviewed.py tools/materialize_2026_07_reviewed2.py tools/materialize_2026_07_reviewed3.py tools/materialize_2026_07_reviewed4.py tools/materialize_2026_07_reviewed5.py tools/materialize_2026_07_reviewed6.py tools/materialize_2026_07_reviewed7.py tools/materialize_2026_07_reviewed8.py tools/materialize_2026_07_reviewed9.py tools/materialize_2026_07_manifest.py tools/materialize_2026_07_manifest_extra.py tools/materialize_2026_07_manifest3.py tools/materialize_2026_07_manifest4.py tools/materialize_2026_07_manifest5.py tools/materialize_2026_07_manifest6.py tools/materialize_2026_07_manifest7.py tools/materialize_2026_07_manifest8.py tools/materialize_2026_07_manifest9.py tools/materialize_2026_07_manifest10.py
           python -X utf8 data_validator.py data
           if ($LASTEXITCODE -ne 0) { throw "data validation failed" }
           python -X utf8 -m pytest -q
           if ($LASTEXITCODE -ne 0) { throw "pytest failed" }
+      - name: Persist canonical date database
+        if: github.event_name == 'push' && github.ref == 'refs/heads/release-image-first-windows'
+        shell: pwsh
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/database
+          if (-not (git diff --cached --quiet)) {
+            git commit -m "data: persist canonical date database [skip ci]"
+            git push origin "HEAD:${env:GITHUB_REF_NAME}"
+          }
       - name: Build EXE
         run: pyinstaller --noconfirm --clean --windowed --name "数码回收价格秒查工具" ui_bootstrap.py
       - name: Include callable data
@@ -86,20 +98,14 @@ jobs:
           if (!(Test-Path "dist/数码回收价格秒查工具/数码回收价格秒查工具.exe")) { throw "EXE missing" }
           $parts = Get-ChildItem "dist/数码回收价格秒查工具/data/snapshots/2026-08-31" -Filter *.csv
           if ($parts.Count -lt 1) { throw "latest snapshot has no CSV shards" }
-          $dateDb = Get-ChildItem "dist/数码回收价格秒查工具/data/database" -Directory
-          if ($dateDb.Count -lt 1) { throw "date database is empty" }
           $expectedDates = @('2026-07-05','2026-07-10','2026-08-25','2026-08-31')
           foreach ($d in $expectedDates) {
             $dbFile = "dist/数码回收价格秒查工具/data/database/$d/price.csv"
             if (!(Test-Path $dbFile)) { throw "date database missing: $d" }
+            if ((Get-Content $dbFile).Count -lt 1) { throw "empty database file: $d" }
           }
           $rootDateFiles = Get-ChildItem "dist/数码回收价格秒查工具/data" -File -Filter "????-??-??.csv"
           if ($rootDateFiles.Count -gt 0) { throw "date csv remains in data root" }
-          foreach ($d in $expectedDates) {
-            $p = "dist/数码回收价格秒查工具/data/database/$d/price.csv"
-            $lines = Get-Content $p
-            if ($lines.Count -lt 1) { throw "empty database file: $d" }
-          }
       - name: Create ZIP package
         shell: pwsh
         run: Compress-Archive -Path "dist/数码回收价格秒查工具/*" -DestinationPath "数码回收价格秒查工具-Windows.zip" -Force
