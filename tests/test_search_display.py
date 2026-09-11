@@ -1,4 +1,4 @@
-from search_display import DISPLAY_COLUMNS, build_identity, normalize_search_results
+from search_display import DISPLAY_COLUMNS, build_identity, display_columns_for_rows, normalize_search_results
 from app_actions_fix import LEGACY_DETAIL_COLS, legacy_detail_rows
 
 
@@ -49,6 +49,31 @@ def test_search_display_pivots_conditions_without_mutating_source_rows():
     assert rows[0]["price"] == "700"
 
 
+def test_dynamic_columns_keep_identity_fixed_and_hide_absent_buckets():
+    rows = [
+        row(condition="开机靓好", price="700"),
+        row(condition="废板·整机", price="240"),
+    ]
+    labels = [label for _field, label, _width in display_columns_for_rows(rows)]
+    assert labels == [
+        "数据日期",
+        "手机/品牌/系列/型号/网络型号",
+        "开机靓机/靓机",
+        "废板·整机",
+        "来源图片",
+    ]
+
+
+def test_dynamic_columns_drop_source_when_no_source_exists():
+    rows = [row(condition="开机靓好", price="700", source_image="")]
+    labels = [label for _field, label, _width in display_columns_for_rows(rows)]
+    assert labels == [
+        "数据日期",
+        "手机/品牌/系列/型号/网络型号",
+        "开机靓机/靓机",
+    ]
+
+
 def test_build_identity_uses_only_available_fields():
     assert build_identity(row()) == "手机 华为 荣耀畅玩系列 畅玩7x (3+32) BND-AL00"
     assert build_identity(row(series="")) == "手机 华为 畅玩7x (3+32) BND-AL00"
@@ -93,7 +118,7 @@ def test_legacy_detail_recovers_all_raw_price_rows():
     assert "model_code" in {field for field, _label, _width in LEGACY_DETAIL_COLS}
 
 
-def test_display_columns_match_new_contract():
+def test_display_columns_full_contract():
     labels = [label for _field, label, _width in DISPLAY_COLUMNS]
     assert labels == [
         "数据日期",
