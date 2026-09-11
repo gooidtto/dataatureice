@@ -22,7 +22,7 @@ jobs:
       - name: Materialize callable data
         run: python -X utf8 tools/materialize_data.py
       - name: Materialize 2026-07 image facts
-        run: python -X utf8 tools/materialize_2026_07.py
+        run: python -X utf8 tools/materialize_2026_07_safe.py
       - name: Materialize extra 2026-07 image facts
         run: python -X utf8 tools/materialize_2026_07_extra.py
       - name: Materialize reviewed 2026-07 image facts
@@ -35,7 +35,7 @@ jobs:
         run: python -X utf8 tools/materialize_2026_07_manifest_extra.py
       - name: Validate source and callable data
         run: |
-          python -X utf8 -m py_compile phone_search.py ui_bootstrap.py data_validator.py tools/materialize_data.py tools/materialize_2026_07.py tools/materialize_2026_07_extra.py tools/materialize_2026_07_reviewed.py tools/materialize_2026_07_reviewed2.py tools/materialize_2026_07_manifest.py tools/materialize_2026_07_manifest_extra.py
+          python -X utf8 -m py_compile phone_search.py ui_bootstrap.py data_validator.py tools/materialize_data.py tools/materialize_2026_07.py tools/materialize_2026_07_safe.py tools/materialize_2026_07_extra.py tools/materialize_2026_07_reviewed.py tools/materialize_2026_07_reviewed2.py tools/materialize_2026_07_manifest.py tools/materialize_2026_07_manifest_extra.py
           python -X utf8 data_validator.py data
           python -X utf8 -m pytest -q
       - name: Build EXE
