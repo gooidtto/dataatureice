@@ -39,12 +39,14 @@ def test_visible_matrix_row_keeps_horizontal_price_columns_and_raw_rows():
     assert len(display) == 1
     columns = build_display_columns(rows)
     values = matrix_values(display[0], columns)
+    assert values[0] == "2026-08-31"
     assert values[1] == "手机 华为 荣耀畅玩系列 畅玩7x (3+32) BND-AL00"
-    assert display[0]["condition_grade"] == "700"
-    assert display[0]["condition_good_broken"] == "500"
-    assert display[0]["condition_cracked"] == "320"
-    assert display[0]["condition_bad_parts"] == "240"
-    assert display[0]["condition_waste"] == "240"
+    by_title = {label: display[0][field] for field, label, _width in columns}
+    assert by_title["开机靓好"] == "700"
+    assert by_title["开机好碎"] == "500"
+    assert by_title["开机碎屏"] == "320"
+    assert by_title["开机坏配件"] == "240"
+    assert by_title["废板·整机"] == "240"
 
 
 def test_matrix_favorite_payload_keeps_all_source_price_records():
