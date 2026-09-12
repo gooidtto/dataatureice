@@ -10,13 +10,35 @@ def row(**kw):
 def payloads(result): return [r for r in result if not r.get("_separator")]
 
 
+def labels(columns): return [label for _field,label,_width in columns]
+
+
 def test_search_display_generates_condition_columns_from_actual_result():
     rows=[row(record_id="a",condition="开机靓好",price="700"),row(record_id="b",condition="开机好碎",price="500"),row(record_id="c",condition="开机碎屏",price="320"),row(record_id="d",condition="开机坏配件",price="240"),row(record_id="e",condition="废板·整机",price="240")]
-    columns=build_display_columns(rows); labels=[label for _field,label,_width in columns]
-    assert labels[:2]==["数据日期","手机/品牌/系列/型号/网络型号"]; assert labels[-1]=="来源图片"
-    assert set(labels[2:-1])=={"开机靓好","开机好碎","开机碎屏","开机坏配件","废板·整机"}
+    columns=build_display_columns(rows)
+    assert labels(columns)[:2]==["数据日期","手机/品牌/系列/型号/网络型号"]
+    assert labels(columns)[-1]=="来源图片"
+    assert set(labels(columns)[2:-1])=={"开机靓好","开机好碎","开机碎屏","开机坏配件","废板·整机"}
     display=payloads(normalize_search_results(rows))[0]; by_label={title:field for field,title,_width in columns}
     assert display[by_label["开机靓好"]]=="700"; assert display[by_label["开机好碎"]]=="500"; assert display[by_label["开机碎屏"]]=="320"; assert display[by_label["开机坏配件"]]=="240"; assert display[by_label["废板·整机"]]=="240"
+
+
+def test_each_result_block_owns_only_its_own_condition_columns():
+    rows=[row(record_id="new",data_date="2026-08-31",condition="开机靓好",price="700"),row(record_id="old",data_date="2026-08-25",condition="废板·整机",price="240")]
+    blocks=payloads(normalize_search_results(rows))
+    assert labels(blocks[0]["_columns"])==["数据日期","手机/品牌/系列/型号/网络型号","开机靓好","来源图片"]
+    assert labels(blocks[1]["_columns"])==["数据日期","手机/品牌/系列/型号/网络型号","废板·整机","来源图片"]
+    assert [blocks[0][field] for field,title,_ in blocks[0]["_columns"] if title=="开机靓好"]==["700"]
+    assert [blocks[1][field] for field,title,_ in blocks[1]["_columns"] if title=="废板·整机"]==["240"]
+    assert all("废板·整机" not in labels(blocks[0]["_columns"]) for _ in [0])
+    assert all("开机靓好" not in labels(blocks[1]["_columns"]) for _ in [0])
+
+
+def test_different_model_blocks_do_not_share_dynamic_columns():
+    rows=[row(record_id="a",model="畅玩8x (3+32)",model_code="BNK-AL00",condition="开机好碎",price="900"),row(record_id="b",model="畅玩7x (3+32)",model_code="BND-AL00",condition="开机碎屏",price="700")]
+    blocks=payloads(normalize_search_results(rows))
+    assert set(labels(blocks[0]["_columns"])[2:-1])=={"开机好碎"}
+    assert set(labels(blocks[1]["_columns"])[2:-1])=={"开机碎屏"}
 
 
 def test_duplicate_condition_rows_are_not_silently_dropped():
