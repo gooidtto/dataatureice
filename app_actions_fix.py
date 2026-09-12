@@ -45,6 +45,32 @@ def _add_all_search_results(self):
     return self.addToFavorites(rows)
 
 
+def _disable_debounced_search_trace(self):
+    """Keep typing responsive: typing updates suggestions but never starts a search."""
+    try:
+        traces = [trace for trace in self.q.trace_info() if trace and trace[0] == 'write']
+        # phone_search.App.ui installs the history-suggestion trace first;
+        # ui_bootstrap.ui installs the two-second search trace second.
+        if len(traces) >= 2:
+            self.q.trace_remove('write', traces[-1][1])
+    except (AttributeError, tk.TclError, IndexError):
+        pass
+
+
+def _wrap_init_without_typing_search(App):
+    """Remove the bootstrap debounce trace after the UI has been constructed."""
+    if getattr(App, '_typing_search_trace_disabled', False):
+        return
+    original_init = App.__init__
+
+    def init_without_typing_search(self, *args, **kwargs):
+        original_init(self, *args, **kwargs)
+        _disable_debounced_search_trace(self)
+
+    App.__init__ = init_without_typing_search
+    App._typing_search_trace_disabled = True
+
+
 def compare(self):
     rows = self.selected() or self.rows
     if not rows: return messagebox.showinfo("历史价格对比", "请先选择或查询记录", parent=self.root)
@@ -213,6 +239,7 @@ def _show_full_raw_record(self, rows, parent=None):
 
 def install_fix(App):
     _sync_search_palette()
+    _wrap_init_without_typing_search(App)
     phone_search.Favorites.MAX_ITEMS = max(phone_search.Favorites.MAX_ITEMS, 5000)
     phone_search.Store.search=_semantic_search
     App.add_favorite=_add_all_search_results
