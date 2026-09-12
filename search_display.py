@@ -1,11 +1,7 @@
-"""Search-result presentation normalization.
-
-Presentation only: canonical 19-field database rows are never modified or
-collapsed on disk. Search rows are grouped by the fields that actually exist
-in the source rows, then condition prices are pivoted into stable columns.
-"""
+"""Search-result presentation normalized by the real-world value rule."""
 import re
 import unicodedata
+from value_order import sort_display_groups
 
 PRICE_COLUMNS = (
     ("condition_grade", "开机靓机/靓机/开机好屏"),
@@ -23,79 +19,44 @@ DISPLAY_COLUMNS = (
 )
 IDENTITY_FIELDS = ("category", "brand", "series", "model", "model_code")
 
-
 def clean(value):
     return re.sub(r"\s+", " ", unicodedata.normalize("NFKC", "" if value is None else str(value))).strip()
 
-
 def _condition_bucket(condition):
-    value = clean(condition)
-    compact = value.replace(" ", "")
-    if any(token in compact for token in ("废板", "整机")):
-        return "condition_waste"
-    if any(token in compact for token in ("不开机", "不开", "坏配件", "配件坏")):
-        return "condition_bad_parts"
-    if "碎屏" in compact:
-        return "condition_cracked"
-    if "好碎" in compact:
-        return "condition_good_broken"
-    if any(token in compact for token in ("内屏碎", "屏碎", "屏幕碎")):
-        return "condition_screen"
-    if any(token in compact for token in ("靓机", "靓好", "靓", "好屏", "开机好")):
-        return "condition_grade"
+    value = clean(condition); compact = value.replace(" ", "")
+    if any(token in compact for token in ("废板", "整机")): return "condition_waste"
+    if any(token in compact for token in ("不开机", "不开", "坏配件", "配件坏")): return "condition_bad_parts"
+    if "碎屏" in compact: return "condition_cracked"
+    if "好碎" in compact: return "condition_good_broken"
+    if any(token in compact for token in ("内屏碎", "屏碎", "屏幕碎")): return "condition_screen"
+    if any(token in compact for token in ("靓机", "靓好", "靓", "好屏", "开机好")): return "condition_grade"
     return None
 
-
 def build_identity(row):
-    """Build the compact identity from fields that actually exist in the row."""
     return " ".join(clean(row.get(field, "")) for field in IDENTITY_FIELDS if clean(row.get(field, "")))
 
-
 def normalize_search_results(rows):
-    """Return display-only model/date rows, omitting unavailable identity fields."""
     groups = {}
     for row in rows:
-        category = clean(row.get("category", ""))
-        brand = clean(row.get("brand", ""))
-        series = clean(row.get("series", ""))
-        model = clean(row.get("model", ""))
-        model_code = clean(row.get("model_code", ""))
-        date = clean(row.get("data_date", ""))
-        identity = build_identity(row)
-        key = (category, brand, series, model, model_code, date)
+        category = clean(row.get("category", "")); brand = clean(row.get("brand", "")); series = clean(row.get("series", "")); model = clean(row.get("model", "")); model_code = clean(row.get("model_code", "")); date = clean(row.get("data_date", ""))
+        identity = build_identity(row); key = (category, brand, series, model, model_code, date)
         group = groups.setdefault(key, {"identity": identity, "source_image": "", "prices": {}, "rows": []})
         group["rows"].append(row)
         source = clean(row.get("source_image", ""))
-        if source and not group["source_image"]:
-            group["source_image"] = source
+        if source and not group["source_image"]: group["source_image"] = source
         bucket = _condition_bucket(row.get("condition", ""))
         if bucket and clean(row.get("price", "")) and bucket not in group["prices"]:
             group["prices"][bucket] = clean(row.get("price", ""))
-
     result = []
     for key, group in groups.items():
         _category, _brand, _series, _model, _model_code, date = key
-        out = {
-            "data_date": date,
-            "identity": group["identity"],
-            "source_image": group["source_image"],
-            "_rows": list(group["rows"]),
-        }
-        for bucket, _label in PRICE_COLUMNS:
-            out[bucket] = group["prices"].get(bucket, "")
+        out = {"data_date": date, "identity": group["identity"], "source_image": group["source_image"], "_rows": list(group["rows"])}
+        for bucket, _label in PRICE_COLUMNS: out[bucket] = group["prices"].get(bucket, "")
         result.append(out)
-
-    result.sort(key=lambda row: (
-        row["identity"],
-        -int(row["data_date"].replace("-", "") or 0),
-    ))
-
-    ordered = []
-    last_identity = None
+    result = sort_display_groups(result)
+    ordered = []; last_identity = None
     for row in result:
         identity = row["identity"]
-        if last_identity is not None and identity != last_identity:
-            ordered.append({"_separator": True})
-        ordered.append(row)
-        last_identity = identity
+        if last_identity is not None and identity != last_identity: ordered.append({"_separator": True})
+        ordered.append(row); last_identity = identity
     return ordered
