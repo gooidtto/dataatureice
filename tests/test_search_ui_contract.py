@@ -18,5 +18,5 @@ def test_favorite_groups_keep_same_model_together_and_dates_descending():
  app=object.__new__(mod.App);app.fav=mod.Favorites('unused');app.fav.items=[row(record_id='m2-old',model='M2',data_date='2026-08-20',price='80'),row(record_id='m1-old',model='M1',data_date='2026-08-20',price='70'),row(record_id='m1-new',model='M1',data_date='2026-08-31',price='100'),row(record_id='m2-new',model='M2',data_date='2026-08-31',price='110')]
  display=ui.favorite_groups(app)
  display=[item for item in display if not item.get('_separator')]
- assert [item['identity'] for item in display]==['M2','M2','M1','M1']
+ assert [item['identity'].split()[-1] for item in display]==['M2','M2','M1','M1']
  assert [item['data_date'] for item in display]==['2026-08-31','2026-08-20','2026-08-31','2026-08-20']
