@@ -205,7 +205,15 @@ def legacy_detail_rows(payload):
 
 
 def _detail_columns(rows):
-    labels=(('data_date','数据日期'),('category','品类'),('subtype','子类型'),('brand','品牌'),('series','系列'),('model','市场型号'),('model_code','网络型号'),('condition','原始价格条件'),('price','价格'),('unit','单位'),('note','备注'),('origin','来源'),('source_image','来源图片'),('source_path','来源路径'),('verified','已验证'),('confidence','置信度'),('verification','验证说明'),('record_id','记录ID'),('alias','别名'))
+    # Detail view intentionally omits internal/source-verification metadata.
+    # The remaining real data stays horizontal and dynamically sized from the
+    # actual values present in this result block.
+    labels=(
+        ('data_date','数据日期'),('category','品类'),('brand','品牌'),
+        ('series','系列'),('model','市场型号'),('model_code','网络型号'),
+        ('condition','原始价格条件'),('price','价格'),('unit','单位'),
+        ('note','备注'),('source_path','来源路径'),
+    )
     return tuple((field,title,column_width(title,[r.get(field,'') for r in rows],80,360)) for field,title in labels)
 
 
@@ -217,8 +225,8 @@ def detail(self,event=None):
         if not row:return
         payload={'_rows':[row]}
     rows=legacy_detail_rows(payload); columns=_detail_columns(rows)
-    w=tk.Toplevel(self.root); w.title("记录详情 · 全部原始事实"); w.geometry("1650x700"); w.minsize(1100,520)
-    ttk.Label(w,text="全部原始事实记录（不合并、不丢失；按现实商品价值排序）",font=("微软雅黑",12,"bold")).pack(anchor="w",padx=12,pady=10)
+    w=tk.Toplevel(self.root); w.title("记录详情"); w.geometry("1650x620"); w.minsize(1100,500)
+    ttk.Label(w,text="记录详情（按实际信息横向展示；按现实商品价值排序）",font=("微软雅黑",12,"bold")).pack(anchor="w",padx=12,pady=10)
     f=ttk.Frame(w,padding=(12,0,12,8)); f.pack(fill='both',expand=True); fields=[c[0] for c in columns]
     tree=ttk.Treeview(f,columns=fields,show='headings',selectmode='extended')
     for field,title,width in columns: tree.heading(field,text=title); tree.column(field,width=width,anchor='w',stretch=False)
