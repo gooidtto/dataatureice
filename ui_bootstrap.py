@@ -55,28 +55,39 @@ def _canonical_store_load(self):
 
 
 def clear_search(self):
+    if getattr(self, '_search_after_id', None):
+        try: self.root.after_cancel(self._search_after_id)
+        except tk.TclError: pass
+        self._search_after_id = None
     self.q.set(''); self.hide_suggestions(); self.rows = []; self.map = {}; self._matrix_map = {}; self._display_columns = (); self.tree.delete(*self.tree.get_children()); self.target.config(text='输入品牌 / 系列 / 型号开始查询')
     if hasattr(self, 'empty_hint'): self.empty_hint.place(relx=0.5, rely=0.5, anchor='center')
     self.status.config(text='请输入品牌、系列、型号或别名'); self.entry.focus_set()
 
 
-# A small palette is assigned per real model. Periods within one model use
-# distinct shades so the model remains visually grouped while dates remain distinct.
+# One solid color per real-world model group. Different dates of the same
+# model stay in the same visual group; a blank row separates the periods.
 _MODEL_PALETTE = (
-    ('#E8F1FF', '#D5E6FF', '#C1DAFF', '#A9CCFF'),
-    ('#EAF7EA', '#D5F0D5', '#BFE6BF', '#A7DBA7'),
-    ('#FFF3E0', '#FFE4BD', '#FFD69A', '#FFC875'),
-    ('#F3EAFB', '#E7D5F5', '#D9C0EE', '#C9A7E5'),
-    ('#E7F7F7', '#CFECEC', '#B5E1E1', '#99D5D5'),
-    ('#FFF0F3', '#FFDDE5', '#FFC9D6', '#FFB4C8'),
-    ('#F4F4E7', '#E8E8CD', '#DCDCBA', '#CFCF9F'),
-    ('#ECECF8', '#DCDCF0', '#CBCBE7', '#B9B9DE'),
+    '#E8F1FF', '#EAF7EA', '#FFF3E0', '#F3EAFB',
+    '#E7F7F7', '#FFF0F3', '#F4F4E7', '#ECECF8',
 )
 
 
 def _row_tag(model_index, period_index):
-    palette = _MODEL_PALETTE[model_index % len(_MODEL_PALETTE)]
-    return f'model_{model_index}_period_{period_index}', palette[period_index % len(palette)]
+    return f'model_{model_index}_period_{period_index}', _MODEL_PALETTE[model_index % len(_MODEL_PALETTE)]
+
+
+def _fit_main_width(self, columns):
+    """Fit the main window to visible content while respecting the screen."""
+    try:
+        self.root.update_idletasks()
+        screen_w = self.root.winfo_screenwidth()
+        desired = sum(max(70, int(width)) for _, _, width in columns) + 110 + 44
+        width = min(max(1050, desired), max(1050, screen_w - 24))
+        current_h = max(self.root.winfo_height(), 720)
+        x = max(12, (screen_w - width) // 2)
+        self.root.geometry(f'{width}x{current_h}+{x}+12')
+    except tk.TclError:
+        pass
 
 
 def _configure_dynamic_columns(self, columns):
@@ -88,6 +99,7 @@ def _configure_dynamic_columns(self, columns):
     self.tree.heading('favorite', text='收藏')
     self.tree.column('favorite', width=110, minwidth=90, anchor='center', stretch=False)
     self._display_columns = tuple(columns)
+    _fit_main_width(self, columns)
 
 
 def _render_search_matrix(self, result):
@@ -97,16 +109,16 @@ def _render_search_matrix(self, result):
     self.tree.delete(*self.tree.get_children()); _configure_dynamic_columns(self, columns)
     for display in display_rows:
         if display.get('_separator'):
-            iid = self.tree.insert('', 'end', values=[''] * (len(columns) + 1), tags=('model_separator',))
+            iid = self.tree.insert('', 'end', values=[''] * (len(columns) + 1), tags=('period_separator',))
             self.map[iid] = None; self._matrix_map[iid] = None
             continue
         raw_rows = display.get('_rows', []); representative = raw_rows[0] if raw_rows else {}
         iid = self.tree.insert('', 'end', values=[display.get(c, '') for c, _, _ in columns] + ['★ 已收藏' if raw_rows and all(self.fav.has(r) for r in raw_rows) else '☆ 一键收藏'], tags=(_row_tag(display['_model_index'], display['_period_index'])[0],))
         self.map[iid] = representative; self._matrix_map[iid] = display
     try:
-        self.tree.tag_configure('model_separator', height=18)
+        self.tree.tag_configure('period_separator', height=18)
         for model_index in range(len(_MODEL_PALETTE)):
-            for period_index in range(4):
+            for period_index in range(64):
                 tag, bg = _row_tag(model_index, period_index); self.tree.tag_configure(tag, background=bg)
     except tk.TclError:
         pass
@@ -123,7 +135,26 @@ def ui(self):
                     if '手机配件' not in values: child.configure(values=values + ['手机配件'])
                     break
     self.empty_hint = tk.Label(self.tree.master, text=_EMPTY_HINT, font=('微软雅黑', 15), justify='center', fg='#666666', bg='#ffffff', padx=28, pady=22)
-    self.empty_hint.place(relx=0.5, rely=0.5, anchor='center'); self._matrix_map = {}; self._display_columns = ()
+    self.empty_hint.place(relx=0.5, rely=0.5, anchor='center'); self._matrix_map = {}; self._display_columns = (); self._search_after_id = None
+    self.q.trace_add('write', lambda *_: _schedule_search(self))
+
+
+def _schedule_search(self):
+    """Run a search two seconds after typing stops."""
+    if getattr(self, '_search_after_id', None):
+        try: self.root.after_cancel(self._search_after_id)
+        except tk.TclError: pass
+    q = phone_search.clean(self.q.get())
+    if not q:
+        self._search_after_id = None
+        return
+    self._search_after_id = self.root.after(2000, lambda: _debounced_search(self))
+
+
+def _debounced_search(self):
+    self._search_after_id = None
+    if phone_search.clean(self.q.get()):
+        self.search()
 
 
 def search(self, record_history=True):
@@ -132,6 +163,10 @@ def search(self, record_history=True):
         self.hide_suggestions(); self.rows = []; self.map = {}; self._matrix_map = {}; self._display_columns = (); self.tree.delete(*self.tree.get_children()); self.target.config(text='输入品牌 / 系列 / 型号开始查询')
         if hasattr(self, 'empty_hint'): self.empty_hint.place(relx=0.5, rely=0.5, anchor='center')
         self.status.config(text='请输入品牌、系列、型号或别名'); return []
+    if getattr(self, '_search_after_id', None):
+        try: self.root.after_cancel(self._search_after_id)
+        except tk.TclError: pass
+        self._search_after_id = None
     if record_history: self.h.add(q)
     result = self.s.search(q, self.cat.get()); _render_search_matrix(self, result)
     count = sum(1 for payload in self._matrix_map.values() if payload); self.target.config(text=f'搜索结果：{q} · {count} 个结果块'); self.status.config(text=f'找到 {count} 个结果块')
@@ -172,7 +207,6 @@ def on_tree_click(self, event):
 
 
 def favorite_groups(self):
-    # Favorites use exactly the same source-of-truth grouping as search results.
     return normalize_search_results(sort_rows(self.fav.dedupe()))
 
 
@@ -182,7 +216,7 @@ def _standardize_window(w):
         title = phone_search.clean(w.title()); specs = (("搜索历史",560,620,420,420),("我的收藏",1500,760,1050,560),("记录详情",1500,680,1000,500),("历史价格对比",1650,760,1100,600),("来源图片结构",1100,620,800,480)); width,height,min_w,min_h=900,600,640,420
         for marker,sw,sh,smw,smh in specs:
             if marker in title: width,height,min_w,min_h=sw,sh,smw,smh; break
-        parent=w.master if getattr(w,'master',None) is not None else w.winfo_toplevel(); parent.update_idletasks(); pw,ph=parent.winfo_width(),parent.winfo_height(); px,py=parent.winfo_rootx(),parent.winfo_rooty(); w.minsize(min_w,min_h); w.geometry(f'{width}x{height}+{max(0,px+(pw-width)//2)}+{max(0,py+(ph-height)//2)}'); w.transient(parent.winfo_toplevel()); w.bind('<Escape>',lambda _e:w.destroy(),add='+'); w.protocol('WM_DELETE_WINDOW',w.destroy); w.focus_set()
+        parent=w.master if getattr(w,'master',None) is not None else w.winfo_toplevel(); parent.update_idletasks(); pw,ph=parent.winfo_width(),parent.winfo_height(); px,py=parent.winfo_rootx(),parent.winfo_rooty(); w.minsize(min_w,min_h); x=max(12,px+(pw-width)//2); y=max(12,py+12); w.geometry(f'{width}x{height}+{x}+{y}'); w.transient(parent.winfo_toplevel()); w.bind('<Escape>',lambda _e:w.destroy(),add='+'); w.protocol('WM_DELETE_WINDOW',w.destroy); w.focus_set()
     except tk.TclError: pass
 
 
