@@ -216,9 +216,24 @@ class App:
   elif duplicate:self.toast(f'已收藏 {len(added)} 条，{len(duplicate)} 条已经收藏')
   else:self.toast(f'已收藏 {len(added)} 条')
   return added,duplicate
+ def _favorite_targets(self):
+  """Use selected result blocks when present; otherwise use the whole search result."""
+  selected_iids=list(self.tree.selection()) if hasattr(self,'tree') else []
+  matrix=getattr(self,'_matrix_map',{})
+  if selected_iids and matrix:
+   targets=[];seen=set()
+   for iid in selected_iids:
+    payload=matrix.get(iid)
+    if not payload:continue
+    for r in payload.get('_rows',[]):
+     k=self.fav.identity(r)
+     if k not in seen:seen.add(k);targets.append(r)
+   if targets:return targets
+  return list(getattr(self,'rows',[]) or [])
  def add_favorite(self):
-  if not self.rows:return self.toast('当前没有搜索结果')
-  return self.addToFavorites(self.rows)
+  targets=self._favorite_targets()
+  if not targets:return self.toast('当前没有可收藏的搜索结果')
+  return self.addToFavorites(targets)
  def on_tree_click(self,e):
   region=self.tree.identify('region',e.x,e.y);col=self.tree.identify_column(e.x);iid=self.tree.identify_row(e.y)
   if region=='cell' and col==f'#{len(COLS)+1}' and iid and self.map.get(iid):self.tree.selection_set(iid);self.addToFavorites([self.map[iid]]);return 'break'
@@ -353,7 +368,7 @@ class App:
   except Exception as e:messagebox.showerror('数据目录',str(e))
  def sources(self):
   if not self.s.manifest:return messagebox.showinfo('来源结构','未找到 source_image_manifest.csv')
-  w=tk.Toplevel(self.root);w.title('来源图片结构');w.geometry('1100x620');f=ttk.Frame(w,padding=10);f.pack(fill='both',expand=True);cols=['include','data_date','category','status','source_image','verification','verification_note'];tr=ttk.Treeview(f,columns=cols,show='headings');heads={'include':'纳入','data_date':'日期','category':'分类','status':'状态','source_image':'来源图片','verification':'验证','verification_note':'说明'}
+  w=tk.Toplevel(self.root);w.title('来源结构');w.geometry('1100x620');f=ttk.Frame(w,padding=10);f.pack(fill='both',expand=True);cols=['include','data_date','category','status','source_image','verification','verification_note'];tr=ttk.Treeview(f,columns=cols,show='headings');heads={'include':'纳入','data_date':'日期','category':'分类','status':'状态','source_image':'来源图片','verification':'验证','verification_note':'说明'}
   for c in cols:tr.heading(c,text=heads[c]);tr.column(c,width=130 if c!='verification_note' else 360)
   for r in self.s.manifest:tr.insert('', 'end',values=tuple(r.get(c,'') for c in cols))
   tr.pack(fill='both',expand=True)
