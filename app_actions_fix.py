@@ -15,9 +15,34 @@ DISPLAY_COLS = [
 ]
 phone_search.COLS = DISPLAY_COLS
 
+# One shared solid-color palette for both search and favorites.
+# Each real-world model group gets one distinct non-black/non-white color.
+MODEL_PALETTE = (
+    '#EEB5B5', '#EED1B5', '#EEEEB5', '#D1EEB5',
+    '#B5EEB5', '#B5EED1', '#B5EEEE', '#B5D1EE',
+    '#B5B5EE', '#D1B5EE', '#EEB5EE', '#EEB5D1',
+)
+
+
+def _sync_search_palette():
+    """Make the bootstrap search renderer use exactly this palette."""
+    try:
+        import ui_bootstrap
+        ui_bootstrap._MODEL_PALETTE = MODEL_PALETTE
+    except Exception:
+        pass
+
 
 def _semantic_search(self, q='', cat='全部'):
     return search_rows(self.rows, q, cat)
+
+
+def _add_all_search_results(self):
+    """Top-level 一键收藏 always means all current search results."""
+    rows = list(getattr(self, 'rows', []) or [])
+    if not rows:
+        return self.toast('当前没有可收藏的搜索结果')
+    return self.addToFavorites(rows)
 
 
 def compare(self):
@@ -33,8 +58,9 @@ def compare(self):
 
 
 def _palette_tag(tree, model_index, period_index):
-    palettes=(('#E8F1FF','#D5E6FF','#C1DAFF','#A9CCFF'),('#EAF7EA','#D5F0D5','#BFE6BF','#A7DBA7'),('#FFF3E0','#FFE4BD','#FFD69A','#FFC875'),('#F3EAFB','#E7D5F5','#D9C0EE','#C9A7E5'),('#E7F7F7','#CFECEC','#B5E1E1','#99D5D5'),('#FFF0F3','#FFDDE5','#FFC9D6','#FFB4C8'))
-    colors=palettes[model_index%len(palettes)]; tag=f'model_{model_index}_period_{period_index}'; tree.tag_configure(tag,background=colors[period_index%len(colors)]); return tag
+    tag=f'model_{model_index}_period_{period_index}'
+    tree.tag_configure(tag, background=MODEL_PALETTE[model_index % len(MODEL_PALETTE)])
+    return tag
 
 
 def _insert_result_blocks(tree, rows, favorite=False):
@@ -144,6 +170,7 @@ def show_favorites(self):
     ttk.Button(bar,text='🗑 一键移除收藏',command=remove_all).pack(side="left",padx=4)
     ttk.Button(bar,text='🗑 移除选中',command=remove_selected).pack(side="left",padx=4)
     ttk.Button(bar,text='关闭',command=w.destroy).pack(side="right",padx=4)
+
     w.bind("<Escape>",lambda _e:w.destroy()); w.transient(self.root); w.focus_set()
 
 
@@ -185,4 +212,11 @@ def _show_full_raw_record(self, rows, parent=None):
 
 
 def install_fix(App):
-    phone_search.Store.search=_semantic_search; App.compare=compare; App.show_favorites=show_favorites; App.detail=detail; App._show_full_raw_record=_show_full_raw_record
+    _sync_search_palette()
+    phone_search.Favorites.MAX_ITEMS = max(phone_search.Favorites.MAX_ITEMS, 5000)
+    phone_search.Store.search=_semantic_search
+    App.add_favorite=_add_all_search_results
+    App.compare=compare
+    App.show_favorites=show_favorites
+    App.detail=detail
+    App._show_full_raw_record=_show_full_raw_record
