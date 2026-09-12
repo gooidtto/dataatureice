@@ -92,13 +92,17 @@ def show_favorites(self):
         target=nearest_selectable(iid)
         if not target:return
         ctrl=bool(e.state & 0x0004); shift=bool(e.state & 0x0001)
-        selection_state['anchor']=target; selection_state['dragging']=True; selection_state['additive']=ctrl
+        old_anchor=selection_state.get('anchor')
+        selection_state['dragging']=True; selection_state['additive']=ctrl
         if shift:
-            selected=range_items(selection_state.get('anchor'),target); tree.selection_set(selected)
+            anchor=old_anchor if old_anchor in selectable_items() else target
+            selected=range_items(anchor,target); tree.selection_set(selected)
         elif ctrl:
+            selection_state['anchor']=target
             if target in tree.selection(): tree.selection_remove(target)
             else: tree.selection_add(target)
         else:
+            selection_state['anchor']=target
             tree.selection_set(target)
         tree.focus(target); tree.see(target)
         return 'break'
