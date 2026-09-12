@@ -3,15 +3,14 @@
 Rules:
 - A brand in the query scopes the result to that brand or one of its verified aliases.
 - Multiple query terms are AND conditions.
-- A model term expands only from model/series prefixes, so "OPPO A5"
+- A model term expands only from model/series/verified alias prefixes, so "OPPO A5"
   returns A5-family variants without leaking unrelated OPPO models.
-- Network-model (model_code) matching is a first-class identifier and ranks
-  exact matches above broad model-family matches.
+- Network-model (model_code) matching is a first-class identifier and ranks exact matches above broad model-family matches.
 """
 import re
 import unicodedata
 
-MODEL_FIELDS = ("model", "series")
+MODEL_FIELDS = ("model", "series", "alias")
 NETWORK_MODEL_FIELD = "model_code"
 SEPARATORS = re.compile(r"[\s_\-—–·•/\\（）()【】\[\],，.;；:：|、]+")
 BRAND_PARTS = re.compile(r"[/|、,&+]+")
@@ -75,7 +74,7 @@ def _field_prefix_match(value, term):
 
 
 def _term_matches(row, term):
-    """Match model family or network-model identifier without alias leakage."""
+    """Match model family, verified model alias, or network-model identifier."""
     term = normalize(term)
     if not term:
         return False
@@ -96,6 +95,7 @@ def _score(row, brand, terms, query_key):
         score += 1000
     model_key = normalize(row.get("model", ""))
     series_key = normalize(row.get("series", ""))
+    alias_key = normalize(row.get("alias", ""))
     network_key = normalize(row.get(NETWORK_MODEL_FIELD, ""))
     if query_key and network_key == query_key:
         score += 700
@@ -107,6 +107,12 @@ def _score(row, brand, terms, query_key):
         score += 350
     if query_key and series_key == query_key:
         score += 280
+    elif query_key and series_key.startswith(query_key):
+        score += 140
+    if query_key and alias_key == query_key:
+        score += 260
+    elif query_key and alias_key.startswith(query_key):
+        score += 130
     for term in terms:
         tk = normalize(term)
         if tk == network_key:
@@ -121,6 +127,10 @@ def _score(row, brand, terms, query_key):
             score += 150
         elif series_key.startswith(tk):
             score += 120
+        elif tk == alias_key:
+            score += 135
+        elif alias_key.startswith(tk):
+            score += 105
     return score
 
 
@@ -138,15 +148,10 @@ def search_rows(rows, query, category="全部"):
     brand, remainder = detect_brand(q, rows)
     if brand:
         remainder_key = normalize(remainder)
-        # Preserve a compound network-model identifier after removing the
-        # brand, e.g. "华为 ATU-AL00" must stay one identifier.
         terms = ([remainder_key] if _has_network_model_prefix(rows, remainder_key)
                  else tokenize(remainder)) if remainder_key else []
     else:
         query_key = normalize(q)
-        # Keep a compound network-model identifier such as ATU-AL00 intact.
-        # Splitting it into "ATU" + "AL00" would incorrectly impose AND
-        # semantics on two pieces of one identifier.
         terms = [query_key] if _has_network_model_prefix(rows, query_key) else tokenize(q)
     query_key = normalize(remainder if brand else q)
 
