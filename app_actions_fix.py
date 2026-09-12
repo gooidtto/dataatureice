@@ -15,8 +15,6 @@ DISPLAY_COLS = [
 ]
 phone_search.COLS = DISPLAY_COLS
 
-# One shared solid-color palette for both search and favorites.
-# Each real-world model group gets one distinct non-black/non-white color.
 MODEL_PALETTE = (
     '#EEB5B5', '#EED1B5', '#EEEEB5', '#D1EEB5',
     '#B5EEB5', '#B5EED1', '#B5EEEE', '#B5D1EE',
@@ -25,7 +23,6 @@ MODEL_PALETTE = (
 
 
 def _sync_search_palette():
-    """Make the bootstrap search renderer use exactly this palette."""
     try:
         import ui_bootstrap
         ui_bootstrap._MODEL_PALETTE = MODEL_PALETTE
@@ -38,37 +35,24 @@ def _semantic_search(self, q='', cat='全部'):
 
 
 def _add_all_search_results(self):
-    """Top-level 一键收藏 always means all current search results."""
     rows = list(getattr(self, 'rows', []) or [])
-    if not rows:
-        return self.toast('当前没有可收藏的搜索结果')
+    if not rows: return self.toast('当前没有可收藏的搜索结果')
     return self.addToFavorites(rows)
 
 
 def _disable_debounced_search_trace(self):
-    """Keep typing responsive: typing updates suggestions but never starts a search."""
     try:
         traces = [trace for trace in self.q.trace_info() if trace and trace[0] == 'write']
-        # phone_search.App.ui installs the history-suggestion trace first;
-        # ui_bootstrap.ui installs the two-second search trace second.
-        if len(traces) >= 2:
-            self.q.trace_remove('write', traces[-1][1])
-    except (AttributeError, tk.TclError, IndexError):
-        pass
+        if len(traces) >= 2: self.q.trace_remove('write', traces[-1][1])
+    except (AttributeError, tk.TclError, IndexError): pass
 
 
 def _wrap_init_without_typing_search(App):
-    """Remove the bootstrap debounce trace after the UI has been constructed."""
-    if getattr(App, '_typing_search_trace_disabled', False):
-        return
+    if getattr(App, '_typing_search_trace_disabled', False): return
     original_init = App.__init__
-
     def init_without_typing_search(self, *args, **kwargs):
-        original_init(self, *args, **kwargs)
-        _disable_debounced_search_trace(self)
-
-    App.__init__ = init_without_typing_search
-    App._typing_search_trace_disabled = True
+        original_init(self, *args, **kwargs); _disable_debounced_search_trace(self)
+    App.__init__ = init_without_typing_search; App._typing_search_trace_disabled = True
 
 
 def compare(self):
@@ -103,7 +87,6 @@ def _insert_result_blocks(tree, rows, favorite=False):
 
 
 def _display_payload_for_item(tree, displays, iid):
-    """Map a Treeview item back to its result block, ignoring blank separators."""
     if not iid: return None
     idx = tree.index(iid)
     if idx < 0 or idx >= len(displays): return None
@@ -118,10 +101,6 @@ def show_favorites(self):
     tree=ttk.Treeview(f,columns=("placeholder",),show="headings",selectmode="extended")
     y=ttk.Scrollbar(f,orient="vertical",command=tree.yview); x=ttk.Scrollbar(f,orient="horizontal",command=tree.xview); tree.configure(yscrollcommand=y.set,xscrollcommand=x.set); tree.grid(row=0,column=0,sticky="nsew"); y.grid(row=0,column=1,sticky="ns"); x.grid(row=1,column=0,sticky="ew"); f.grid_rowconfigure(0,weight=1); f.grid_columnconfigure(0,weight=1)
     displays,columns=_insert_result_blocks(tree,rows,True)
-
-    # Native extended selection plus explicit drag selection. Ctrl/Cmd adds or
-    # toggles individual blocks; Shift selects a contiguous range; plain drag
-    # creates a new range. Separator rows are never selected as content.
     selection_state={'anchor':None,'dragging':False,'additive':False}
     def selectable_items(): return [iid for iid in tree.get_children() if _display_payload_for_item(tree,displays,iid)]
     def nearest_selectable(iid, direction=1):
@@ -143,39 +122,25 @@ def show_favorites(self):
         if not iid:return
         target=nearest_selectable(iid)
         if not target:return
-        ctrl=bool(e.state & 0x0004); shift=bool(e.state & 0x0001)
-        old_anchor=selection_state.get('anchor')
-        selection_state['dragging']=True; selection_state['additive']=ctrl
+        ctrl=bool(e.state & 0x0004); shift=bool(e.state & 0x0001); old_anchor=selection_state.get('anchor'); selection_state['dragging']=True; selection_state['additive']=ctrl
         if shift:
-            anchor=old_anchor if old_anchor in selectable_items() else target
-            selected=range_items(anchor,target); tree.selection_set(selected)
+            anchor=old_anchor if old_anchor in selectable_items() else target; tree.selection_set(range_items(anchor,target))
         elif ctrl:
             selection_state['anchor']=target
             if target in tree.selection(): tree.selection_remove(target)
             else: tree.selection_add(target)
         else:
-            selection_state['anchor']=target
-            tree.selection_set(target)
-        tree.focus(target); tree.see(target)
-        return 'break'
+            selection_state['anchor']=target; tree.selection_set(target)
+        tree.focus(target); tree.see(target); return 'break'
     def drag_motion(e):
         if not selection_state['dragging']:return
         iid=tree.identify_row(e.y)
         if not iid:return
-        target=nearest_selectable(iid, 1 if e.y>=0 else -1)
-        anchor=selection_state.get('anchor')
+        target=nearest_selectable(iid,1); anchor=selection_state.get('anchor')
         if not target or not anchor:return
-        chosen=range_items(anchor,target)
-        if selection_state['additive']:
-            tree.selection_add(chosen)
-        else:
-            tree.selection_set(chosen)
-        tree.focus(target); tree.see(target)
-        return 'break'
+        chosen=range_items(anchor,target); tree.selection_add(chosen) if selection_state['additive'] else tree.selection_set(chosen); tree.focus(target); tree.see(target); return 'break'
     def button_up(_e): selection_state['dragging']=False
-    tree.bind('<Button-1>',button_down,add='+'); tree.bind('<B1-Motion>',drag_motion,add='+'); tree.bind('<ButtonRelease-1>',button_up,add='+')
-    tree.bind('<Control-a>',lambda _e:(tree.selection_set(selectable_items()),'break')[-1]); tree.bind('<Control-A>',lambda _e:(tree.selection_set(selectable_items()),'break')[-1])
-
+    tree.bind('<Button-1>',button_down,add='+'); tree.bind('<B1-Motion>',drag_motion,add='+'); tree.bind('<ButtonRelease-1>',button_up,add='+'); tree.bind('<Control-a>',lambda _e:(tree.selection_set(selectable_items()),'break')[-1]); tree.bind('<Control-A>',lambda _e:(tree.selection_set(selectable_items()),'break')[-1])
     bar=ttk.Frame(w,padding=8); bar.pack(fill="x")
     def selected_rows():
         targets=[]
@@ -185,41 +150,27 @@ def show_favorites(self):
         return targets
     def remove_selected():
         targets=selected_rows()
-        if not targets:
-            messagebox.showinfo('移除收藏','请先选中要移除的收藏内容。',parent=w); return
+        if not targets: messagebox.showinfo('移除收藏','请先选中要移除的收藏内容。',parent=w); return
         self.fav.remove(targets); w.destroy(); self.show_favorites(); self.status.config(text=f'已移除收藏 {len(targets)} 条')
     def remove_all():
-        if not self.fav.items:
-            messagebox.showinfo('移除收藏','当前没有收藏内容。',parent=w); return
+        if not self.fav.items: messagebox.showinfo('移除收藏','当前没有收藏内容。',parent=w); return
         if not messagebox.askyesno('一键移除收藏',f'确定移除全部 {len(self.fav.items)} 条收藏内容吗？',parent=w): return
         count=len(self.fav.items); self.fav.items=[]; self.fav.save(); w.destroy(); self.show_favorites(); self.status.config(text=f'已一键移除收藏 {count} 条')
-    ttk.Button(bar,text='🗑 一键移除收藏',command=remove_all).pack(side="left",padx=4)
-    ttk.Button(bar,text='🗑 移除选中',command=remove_selected).pack(side="left",padx=4)
-    ttk.Button(bar,text='关闭',command=w.destroy).pack(side="right",padx=4)
-
-    w.bind("<Escape>",lambda _e:w.destroy()); w.transient(self.root); w.focus_set()
+    ttk.Button(bar,text='🗑 一键移除收藏',command=remove_all).pack(side="left",padx=4); ttk.Button(bar,text='🗑 移除选中',command=remove_selected).pack(side="left",padx=4); ttk.Button(bar,text='关闭',command=w.destroy).pack(side="right",padx=4)
 
 
-def legacy_detail_rows(payload):
-    return sort_rows(list((payload or {}).get('_rows', [])))
+def legacy_detail_rows(payload): return sort_rows(list((payload or {}).get('_rows', [])))
 
 
 def _detail_columns(rows):
-    # Detail view intentionally omits internal/source-verification metadata.
-    # The remaining real data stays horizontal and dynamically sized from the
-    # actual values present in this result block.
-    labels=(
-        ('data_date','数据日期'),('category','品类'),('brand','品牌'),
-        ('series','系列'),('model','市场型号'),('model_code','网络型号'),
-        ('condition','原始价格条件'),('price','价格'),('unit','单位'),
-        ('note','备注'),('source_path','来源路径'),
-    )
+    labels=(('data_date','数据日期'),('category','品类'),('brand','品牌'),('series','系列'),('model','市场型号'),('model_code','网络型号'),('condition','原始价格条件'),('price','价格'),('unit','单位'),('note','备注'),('source_path','来源路径'))
     return tuple((field,title,column_width(title,[r.get(field,'') for r in rows],80,360)) for field,title in labels)
 
 
 def detail(self,event=None):
-    iid=self.tree.identify_row(event.y) if event is not None else (self.tree.selection()[0] if self.tree.selection() else "")
-    payload=getattr(self,'_matrix_map',{}).get(iid) if iid else None
+    source_tree = getattr(event, 'widget', None) if event is not None else getattr(self, '_active_result_tree', None)
+    iid = source_tree.identify_row(event.y) if source_tree is not None and event is not None else getattr(self, '_active_result_iid', '')
+    payload = getattr(self,'_matrix_map',{}).get(iid) if iid else None
     if not payload:
         row=self.map.get(iid) if iid and hasattr(self,'map') else None
         if not row:return
@@ -246,12 +197,5 @@ def _show_full_raw_record(self, rows, parent=None):
 
 
 def install_fix(App):
-    _sync_search_palette()
-    _wrap_init_without_typing_search(App)
-    phone_search.Favorites.MAX_ITEMS = max(phone_search.Favorites.MAX_ITEMS, 5000)
-    phone_search.Store.search=_semantic_search
-    App.add_favorite=_add_all_search_results
-    App.compare=compare
-    App.show_favorites=show_favorites
-    App.detail=detail
-    App._show_full_raw_record=_show_full_raw_record
+    _sync_search_palette(); _wrap_init_without_typing_search(App); phone_search.Favorites.MAX_ITEMS = max(phone_search.Favorites.MAX_ITEMS, 5000)
+    phone_search.Store.search=_semantic_search; App.add_favorite=_add_all_search_results; App.compare=compare; App.show_favorites=show_favorites; App.detail=detail; App._show_full_raw_record=_show_full_raw_record
