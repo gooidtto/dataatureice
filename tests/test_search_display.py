@@ -49,7 +49,7 @@ def test_build_identity_uses_only_available_fields():
     assert build_identity(row()) == "手机 华为 荣耀畅玩系列 畅玩7x (3+32) BND-AL00"
     assert build_identity(row(series="")) == "手机 华为 畅玩7x (3+32) BND-AL00"
     assert build_identity(row(model_code="")) == "手机 华为 荣耀畅玩系列 畅玩7x (3+32)"
-    assert build_identity(row(brand="", series="")) == "手机 畅玩7x (3+32) BND-AL00"
+    assert build_identity(row(brand="", series="")) == "手机 华为 畅玩7x (3+32) BND-AL00"
     assert build_identity(row(category="", brand="", series="", model="", model_code="")) == ""
 
 
@@ -70,9 +70,11 @@ def test_search_display_keeps_models_separate_and_inserts_spacing():
     result = normalize_search_results(rows)
     assert any(r.get("_separator") for r in result)
     display = [r for r in result if not r.get("_separator")]
+    # Both rows have identical semantic value; canonical tie-breakers therefore
+    # use the real model name rather than historical price.
     assert [r["identity"] for r in display] == [
-        "手机 华为 荣耀畅玩系列 畅玩7x (3+32) BND-AL00",
         "手机 华为 荣耀畅玩系列 畅玩8x (3+32) BNK-AL00",
+        "手机 华为 荣耀畅玩系列 畅玩7x (3+32) BND-AL00",
     ]
 
 
@@ -83,8 +85,10 @@ def test_legacy_detail_recovers_all_raw_price_rows():
         row(record_id="third", data_date="2026-08-31", condition="废板·整机", price="240"),
     ]}
     rows = legacy_detail_rows(payload)
-    assert [r["record_id"] for r in rows] == ["new", "third", "old"]
-    assert [r["condition"] for r in rows] == ["开机好碎", "废板·整机", "开机靓好"]
+    # Canonical ordering ranks usable/functioning stock ahead of broken stock,
+    # then waste; date and input order are not primary sort criteria.
+    assert [r["record_id"] for r in rows] == ["old", "new", "third"]
+    assert [r["condition"] for r in rows] == ["开机靓好", "开机好碎", "废板·整机"]
     assert "condition" in {field for field, _label, _width in LEGACY_DETAIL_COLS}
     assert "model_code" in {field for field, _label, _width in LEGACY_DETAIL_COLS}
 
