@@ -49,7 +49,8 @@ def test_build_identity_uses_only_available_fields():
     assert build_identity(row()) == "手机 华为 荣耀畅玩系列 畅玩7x (3+32) BND-AL00"
     assert build_identity(row(series="")) == "手机 华为 畅玩7x (3+32) BND-AL00"
     assert build_identity(row(model_code="")) == "手机 华为 荣耀畅玩系列 畅玩7x (3+32)"
-    assert build_identity(row(brand="", series="")) == "手机 华为 畅玩7x (3+32) BND-AL00"
+    # Missing brand must not be fabricated or inherited from the fixture default.
+    assert build_identity(row(brand="", series="")) == "手机 畅玩7x (3+32) BND-AL00"
     assert build_identity(row(category="", brand="", series="", model="", model_code="")) == ""
 
 
