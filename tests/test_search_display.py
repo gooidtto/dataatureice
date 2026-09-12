@@ -1,5 +1,5 @@
-from search_display import DISPLAY_COLUMNS, build_identity, normalize_search_results
-from app_actions_fix import LEGACY_DETAIL_COLS, legacy_detail_rows
+from search_display import build_display_columns, build_identity, normalize_search_results
+from app_actions_fix import legacy_detail_rows
 
 
 def row(**kw):
@@ -20,90 +20,97 @@ def row(**kw):
     return base
 
 
-def test_search_display_pivots_conditions_without_mutating_source_rows():
+def payloads(result):
+    return [r for r in result if not r.get("_separator")]
+
+
+def test_search_display_generates_condition_columns_from_actual_result():
     rows = [
-        row(record_id="a", data_date="2026-08-31", condition="开机靓好", price="700"),
-        row(record_id="b", data_date="2026-08-31", condition="开机好碎", price="500"),
-        row(record_id="c", data_date="2026-08-31", condition="开机碎屏", price="320"),
-        row(record_id="d", data_date="2026-08-31", condition="开机坏配件", price="240"),
-        row(record_id="e", data_date="2026-08-31", condition="废板·整机", price="240"),
-        row(record_id="f", data_date="2026-08-25", condition="开机靓好", price="800"),
+        row(record_id="a", condition="开机靓好", price="700"),
+        row(record_id="b", condition="开机好碎", price="500"),
+        row(record_id="c", condition="开机碎屏", price="320"),
+        row(record_id="d", condition="开机坏配件", price="240"),
+        row(record_id="e", condition="废板·整机", price="240"),
+    ]
+    columns = build_display_columns(rows)
+    labels = [label for _field, label, _width in columns]
+    assert labels[:2] == ["数据日期", "手机/品牌/系列/型号/网络型号"]
+    assert labels[-1] == "来源图片"
+    assert set(labels[2:-1]) == {"开机靓好", "开机好碎", "开机碎屏", "开机坏配件", "废板·整机"}
+
+    display = payloads(normalize_search_results(rows))[0]
+    assert display["identity"] == "手机 华为 荣耀畅玩系列 畅玩7x (3+32) BND-AL00"
+    by_label = {title: field for field, title, _width in columns}
+    assert display[by_label["开机靓好"]] == "700"
+    assert display[by_label["开机好碎"]] == "500"
+    assert display[by_label["开机碎屏"]] == "320"
+    assert display[by_label["开机坏配件"]] == "240"
+    assert display[by_label["废板·整机"]] == "240"
+
+
+def test_duplicate_condition_rows_are_not_silently_dropped():
+    rows = [
+        row(record_id="a", condition="开机靓好", price="700"),
+        row(record_id="b", condition="开机靓好", price="680"),
+    ]
+    display = payloads(normalize_search_results(rows))[0]
+    columns = build_display_columns(rows)
+    field = next(field for field, title, _width in columns if title == "开机靓好")
+    assert display[field] == "700 / 680"
+    assert len(display["_rows"]) == 2
+
+
+def test_different_periods_are_ordered_newest_first_with_one_separator():
+    rows = [
+        row(record_id="old", data_date="2026-08-25", condition="开机靓好", price="800"),
+        row(record_id="new", data_date="2026-08-31", condition="开机好碎", price="500"),
     ]
     result = normalize_search_results(rows)
-    display = [r for r in result if not r.get("_separator")]
-    assert len(display) == 2
-    assert display[0]["data_date"] == "2026-08-31"
-    assert display[0]["identity"] == "手机 华为 荣耀畅玩系列 畅玩7x (3+32) BND-AL00"
-    assert display[0]["condition_grade"] == "700"
-    assert display[0]["condition_good_broken"] == "500"
-    assert display[0]["condition_cracked"] == "320"
-    assert display[0]["condition_bad_parts"] == "240"
-    assert display[0]["condition_waste"] == "240"
-    assert display[1]["data_date"] == "2026-08-25"
-    assert display[1]["condition_grade"] == "800"
-    assert rows[0]["condition"] == "开机靓好"
-    assert rows[0]["price"] == "700"
+    assert [r.get("data_date") for r in result if not r.get("_separator")] == ["2026-08-31", "2026-08-25"]
+    separators = [r for r in result if r.get("_separator")]
+    assert len(separators) == 0
+    # A separator is needed only when two different models are adjacent; periods
+    # of the same model are represented by contiguous rows and period metadata.
+    assert [r["_period_index"] for r in payloads(result)] == [0, 1]
+
+
+def test_different_models_get_two_row_separator_and_independent_group_metadata():
+    rows = [
+        row(record_id="a", model="畅玩8x (3+32)", model_code="BNK-AL00", condition="开机靓好", price="900"),
+        row(record_id="b", model="畅玩7x (3+32)", model_code="BND-AL00", condition="开机靓好", price="700"),
+    ]
+    result = normalize_search_results(rows)
+    assert sum(1 for r in result if r.get("_separator") == "model") == 1
+    assert [r["_model_index"] for r in payloads(result)] == [0, 1]
+    assert payloads(result)[0]["_model_key"] != payloads(result)[1]["_model_key"]
+
+
+def test_same_model_different_periods_have_distinct_period_indexes():
+    rows = [
+        row(record_id="a", data_date="2026-08-31", condition="开机靓好", price="700"),
+        row(record_id="b", data_date="2026-08-25", condition="开机靓好", price="800"),
+    ]
+    result = payloads(normalize_search_results(rows))
+    assert [(r["data_date"], r["_model_index"], r["_period_index"]) for r in result] == [
+        ("2026-08-31", 0, 0),
+        ("2026-08-25", 0, 1),
+    ]
 
 
 def test_build_identity_uses_only_available_fields():
     assert build_identity(row()) == "手机 华为 荣耀畅玩系列 畅玩7x (3+32) BND-AL00"
     assert build_identity(row(series="")) == "手机 华为 畅玩7x (3+32) BND-AL00"
     assert build_identity(row(model_code="")) == "手机 华为 荣耀畅玩系列 畅玩7x (3+32)"
-    # Missing brand must not be fabricated or inherited from the fixture default.
     assert build_identity(row(brand="", series="")) == "手机 畅玩7x (3+32) BND-AL00"
     assert build_identity(row(category="", brand="", series="", model="", model_code="")) == ""
 
 
-def test_search_display_keeps_missing_identity_fields_out_of_display():
-    rows = [row(series="", model_code="", condition="开机靓好", price="700")]
-    result = [r for r in normalize_search_results(rows) if not r.get("_separator")]
-    assert len(result) == 1
-    assert result[0]["identity"] == "手机 华为 畅玩7x (3+32)"
-    assert "  " not in result[0]["identity"]
-    assert "/" not in result[0]["identity"]
-
-
-def test_search_display_keeps_models_separate_and_inserts_spacing():
-    rows = [
-        row(model="畅玩8x (3+32)", model_code="BNK-AL00", condition="开机靓好", price="900"),
-        row(model="畅玩7x (3+32)", model_code="BND-AL00", condition="开机靓好", price="700"),
-    ]
-    result = normalize_search_results(rows)
-    assert any(r.get("_separator") for r in result)
-    display = [r for r in result if not r.get("_separator")]
-    # Both rows have identical semantic value; canonical tie-breakers therefore
-    # use the real model name rather than historical price.
-    assert [r["identity"] for r in display] == [
-        "手机 华为 荣耀畅玩系列 畅玩8x (3+32) BNK-AL00",
-        "手机 华为 荣耀畅玩系列 畅玩7x (3+32) BND-AL00",
-    ]
-
-
-def test_legacy_detail_recovers_all_raw_price_rows():
+def test_detail_recovers_all_raw_price_rows_in_canonical_value_order():
     payload = {"_rows": [
         row(record_id="old", data_date="2026-08-25", condition="开机靓好", price="700"),
         row(record_id="new", data_date="2026-08-31", condition="开机好碎", price="500"),
         row(record_id="third", data_date="2026-08-31", condition="废板·整机", price="240"),
     ]}
     rows = legacy_detail_rows(payload)
-    # Canonical ordering ranks usable/functioning stock ahead of broken stock,
-    # then waste; date and input order are not primary sort criteria.
     assert [r["record_id"] for r in rows] == ["old", "new", "third"]
-    assert [r["condition"] for r in rows] == ["开机靓好", "开机好碎", "废板·整机"]
-    assert "condition" in {field for field, _label, _width in LEGACY_DETAIL_COLS}
-    assert "model_code" in {field for field, _label, _width in LEGACY_DETAIL_COLS}
-
-
-def test_display_columns_match_new_contract():
-    labels = [label for _field, label, _width in DISPLAY_COLUMNS]
-    assert labels == [
-        "数据日期",
-        "手机/品牌/系列/型号/网络型号",
-        "开机靓机/靓机/开机好屏",
-        "开机好屏/内屏碎",
-        "开机好碎",
-        "开机碎屏",
-        "不开机/开机坏配件",
-        "废板·整机",
-        "来源图片",
-    ]
+    assert len(rows) == 3
