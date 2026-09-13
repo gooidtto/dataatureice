@@ -30,7 +30,7 @@ def valid(r):return bool(r.get('model') and r.get('condition') and r.get('price'
 def normalizeContent(r):
  fields=('category','subtype','brand','series','model','model_code','condition','price','unit');return {f:key(r.get(f,'')) for f in fields}
 def generateContentKey(r):return '|'.join(normalizeContent(r)[f] for f in ('category','subtype','brand','series','model','model_code','condition','price','unit'))
-class Store:
+class LegacyCsvStore:
  def __init__(self,d):self.d=d;self.rows=[];self.snapshots={};self.manifest=[];self.errors=[]
  def load(self):
   self.rows=[];self.snapshots={};self.manifest=[];self.errors=[];files=[]
@@ -73,7 +73,7 @@ class Store:
  def search(self,q='',cat='全部'):
   q=key(q);return self._sort([r for r in self.rows if (cat=='全部' or r['category']==cat) and (not q or q in key(' '.join(r.get(x,'') for x in ('brand','series','model','model_code','alias','source_image'))))])
  def history(self,targets):
-  def hk(r):return tuple(key(r.get(x)) for x in ('category','subtype','brand','series','model'))
+  def hk(r):return tuple(key(r.get(x)) for x in ('category','subtype','brand','series','model','model_code'))
   ks={hk(r) for r in targets};return self._sort([r for r in self.rows if hk(r) in ks])
 class JsonList:
  MAX_ITEMS=50
@@ -219,7 +219,6 @@ class App:
   else:self.toast(f'已收藏 {len(added)} 条')
   return added,duplicate
  def _favorite_targets(self):
-  """Use selected result blocks when present; otherwise use the whole search result."""
   selected_iids=list(self.tree.selection()) if hasattr(self,'tree') else []
   matrix=getattr(self,'_matrix_map',{})
   if selected_iids and matrix:
@@ -386,7 +385,7 @@ class Store:
  def latest(self):return self.dates[-1] if self.dates else ''
  def search(self,q='',cat='全部'):return self.search_service.search(q,cat)
  def history(self,targets):
-  def hk(r):return tuple(key(r.get(x)) for x in ('category','subtype','brand','series','model'))
+  def hk(r):return tuple(key(r.get(x)) for x in ('category','subtype','brand','series','model','model_code'))
   ks={hk(r) for r in targets};return self._sort([r for r in self.rows if hk(r) in ks])
  def _sort(self,rs):
   def p(r):
