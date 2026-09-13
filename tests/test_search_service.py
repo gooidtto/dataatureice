@@ -68,3 +68,20 @@ def test_compatibility_cache_can_be_invalidated_after_in_place_mutation():
 def test_brand_detection_requires_query_boundary():
     rows = [row("one", brand="OPPO", model="A59"), row("two", brand="PO", model="A59")]
     assert [r["record_id"] for r in search_rows(rows, "OPPO A59")] == ["one"]
+
+
+def test_chinese_brand_and_network_model_query():
+    rows = [row("huawei", brand="华为", model="畅享 60", model_code="ALT-AL00"), row("honor", brand="荣耀", model="畅享 60", model_code="ALT-AL00")]
+    assert [r["record_id"] for r in search_rows(rows, "华为 ALT-AL00")] == ["huawei"]
+    assert [r["record_id"] for r in search_rows(rows, "ALT-AL00")] == ["huawei", "honor"]
+
+
+def test_alias_exact_fallback_does_not_broaden_model_query():
+    rows = [row("alias-hit", model="Find X9 Ultra", alias="A5"), row("model-hit", model="A5")]
+    assert [r["record_id"] for r in search_rows(rows, "A5")] == ["model-hit", "alias-hit"]
+    assert [r["record_id"] for r in search_rows(rows, "OPPO A5")] == ["model-hit"]
+
+
+def test_short_query_uses_substring_fallback():
+    rows = [row("m1", model="M60"), row("x1", model="X60")]
+    assert [r["record_id"] for r in search_rows(rows, "M")] == ["m1"]
