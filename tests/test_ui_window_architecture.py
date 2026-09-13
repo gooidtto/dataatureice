@@ -22,5 +22,5 @@ def test_app_actions_do_not_bypass_window_factory():
     actions = ACTIONS.read_text(encoding="utf-8")
     assert "def _new_window(self, title, geometry=None, minsize=None):" in actions
     assert "w = tk.Toplevel(self.root)" not in actions
-    assert "w=_new_window(self," in actions
+    assert "_new_window(self," in actions
     assert "setattr(App,name,fn)" in actions
