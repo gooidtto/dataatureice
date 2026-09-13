@@ -3,6 +3,7 @@ import os
 import tkinter as tk
 from tkinter import ttk
 from concurrent.futures import ThreadPoolExecutor
+from queue import Empty, Queue
 import phone_search
 from app_actions import install as install_app_actions
 from search_display import build_display_columns, normalize_search_results
@@ -13,6 +14,7 @@ _EMPTY_HINT = "输入品牌 / 系列 / 型号开始查询\n\n数据来自已验�
 _original_ui = phone_search.App.ui
 _real_toplevel = phone_search.tk.Toplevel
 _SEARCH_EXECUTOR = ThreadPoolExecutor(max_workers=1, thread_name_prefix='search')
+_UI_QUEUE = Queue()
 
 
 def _clear_result_views(self):
@@ -107,7 +109,7 @@ def ui(self):
     for child in host.winfo_children():
         if isinstance(child,ttk.Scrollbar):child.grid_remove()
     self._results_canvas=tk.Canvas(host,highlightthickness=0,borderwidth=0,bg='#ffffff');self._results_inner=tk.Frame(self._results_canvas,bg='#ffffff',borderwidth=0,highlightthickness=0);self._results_window=self._results_canvas.create_window((0,0),window=self._results_inner,anchor='nw');self._results_y=ttk.Scrollbar(host,orient='vertical',command=self._results_canvas.yview);self._results_x=ttk.Scrollbar(host,orient='horizontal',command=self._results_canvas.xview);self._results_canvas.configure(yscrollcommand=self._results_y.set,xscrollcommand=self._results_x.set);self._results_canvas.grid(row=0,column=0,sticky='nsew');self._results_y.grid(row=0,column=1,sticky='ns');self._results_x.grid(row=1,column=0,sticky='ew');host.grid_rowconfigure(0,weight=1);host.grid_columnconfigure(0,weight=1);self._results_inner.bind('<Configure>',lambda _e:self._results_canvas.configure(scrollregion=self._results_canvas.bbox('all')));self._results_canvas.bind('<Configure>',lambda e:self._results_canvas.itemconfigure(self._results_window,width=max(e.width,self._results_inner.winfo_reqwidth())))
-    self._result_trees=[];self._result_tree_map={};self._result_order=[];self.empty_hint=tk.Label(host,text=_EMPTY_HINT,font=('微软雅黑',15),justify='center',fg='#666666',bg='#ffffff',padx=28,pady=22);self.empty_hint.place(relx=0.5,rely=0.5,anchor='center');self._matrix_map={};self._display_columns=();self._search_after_id=None;self._search_query_id=0;self.root.bind_all('<MouseWheel>',lambda e,self=self:_results_mousewheel(self,e),add='+');self.root.bind('<Control-a>',lambda _e:(self.tree.selection_set(self._result_order),_sync_result_selection(self),'break')[-1],add='+');self.root.bind('<Control-A>',lambda _e:(self.tree.selection_set(self._result_order),_sync_result_selection(self),'break')[-1],add='+');self.q.trace_add('write',lambda *_:_schedule_search(self))
+    self._result_trees=[];self._result_tree_map={};self._result_order=[];self.empty_hint=tk.Label(host,text=_EMPTY_HINT,font=('微软雅黑',15),justify='center',fg='#666666',bg='#ffffff',padx=28,pady=22);self.empty_hint.place(relx=0.5,rely=0.5,anchor='center');self._matrix_map={};self._display_columns=();self._search_after_id=None;self._search_query_id=0;self.root.bind_all('<MouseWheel>',lambda e,self=self:_results_mousewheel(self,e),add='+');self.root.bind('<Control-a>',lambda _e:(self.tree.selection_set(self._result_order),_sync_result_selection(self),'break')[-1],add='+');self.root.bind('<Control-A>',lambda _e:(self.tree.selection_set(self._result_order),_sync_result_selection(self),'break')[-1],add='+');self.q.trace_add('write',lambda *_:_schedule_search(self));self.root.after(25,lambda:_poll_async_results(self))
 
 def _schedule_search(self):
     if getattr(self,'_search_after_id',None):
@@ -116,6 +118,19 @@ def _schedule_search(self):
     q=phone_search.clean(self.q.get())
     if not q:self._search_after_id=None;return
     self._search_after_id=self.root.after(180,lambda:_debounced_search(self))
+
+def _queue_async_result(query_id,q,record_history,future):
+    _UI_QUEUE.put((query_id,q,record_history,future))
+
+def _poll_async_results(self):
+    try:
+        while True:
+            query_id,q,record_history,future=_UI_QUEUE.get_nowait()
+            _apply_async_result(self,query_id,q,record_history,future)
+    except Empty:
+        pass
+    try:self.root.after(25,lambda:_poll_async_results(self))
+    except tk.TclError:pass
 
 def _apply_async_result(self,query_id,q,record_history,future):
     if query_id!=getattr(self,'_search_query_id',0) or q!=phone_search.clean(self.q.get()):return
@@ -128,7 +143,7 @@ def _apply_async_result(self,query_id,q,record_history,future):
 def _debounced_search(self):
     self._search_after_id=None;q=phone_search.clean(self.q.get())
     if not q:return
-    self._search_query_id=getattr(self,'_search_query_id',0)+1;query_id=self._search_query_id;future=_SEARCH_EXECUTOR.submit(self.s.search,q,self.cat.get());future.add_done_callback(lambda f:self.root.after(0,lambda:_apply_async_result(self,query_id,q,False,f)))
+    self._search_query_id=getattr(self,'_search_query_id',0)+1;query_id=self._search_query_id;future=_SEARCH_EXECUTOR.submit(self.s.search,q,self.cat.get());future.add_done_callback(lambda f:_queue_async_result(query_id,q,False,f))
 
 def search(self,record_history=True):
     q=phone_search.clean(self.q.get())
@@ -138,7 +153,7 @@ def search(self,record_history=True):
         try:self.root.after_cancel(self._search_after_id)
         except tk.TclError:pass
         self._search_after_id=None
-    self._search_query_id=getattr(self,'_search_query_id',0)+1;query_id=self._search_query_id;future=_SEARCH_EXECUTOR.submit(self.s.search,q,self.cat.get());self.status.config(text='正在搜索…');future.add_done_callback(lambda f:self.root.after(0,lambda:_apply_async_result(self,query_id,q,record_history,f)));return None
+    self._search_query_id=getattr(self,'_search_query_id',0)+1;query_id=self._search_query_id;future=_SEARCH_EXECUTOR.submit(self.s.search,q,self.cat.get());self.status.config(text='正在搜索…');future.add_done_callback(lambda f:_queue_async_result(query_id,q,record_history,f));return None
 
 def load(self):
     self._search_query_id=getattr(self,'_search_query_id',0)+1;self.s.load();self.meta.config(text=f'最新：{self.s.latest or "无"} · 快照 {len(self.s.dates)} · 已验证价格行 {len(self.s.rows)}');q=phone_search.clean(self.q.get())
