@@ -87,10 +87,6 @@ def show_favorites(self):
     def all_rows():
         return [r for r in mapping.values() if r]
 
-    def refresh():
-        w.destroy()
-        self.show_favorites()
-
     bar=ttk.Frame(w,padding=(12,0,12,10)); bar.pack(fill="x")
     ttk.Button(bar,text="查看详情",command=lambda:self.detail_rows(selected_rows() or all_rows())).pack(side="left",padx=4)
     ttk.Button(bar,text="移除收藏",command=lambda:self._remove_favorite_rows(w,selected_rows())).pack(side="left",padx=4)
@@ -232,6 +228,19 @@ def menu(self,event):
 
 
 def install(App):
-    actions={"open_dir":open_dir,"sources":sources,"show_favorites":show_favorites,"stats":stats,"quote":quote,"compare":compare,"show_compare":show_compare,"detail":detail,"detail_rows":detail_rows,"menu":menu}
+    actions={
+        "open_dir":open_dir,
+        "sources":sources,
+        "show_favorites":show_favorites,
+        "stats":stats,
+        "quote":quote,
+        "compare":compare,
+        "show_compare":show_compare,
+        "detail":detail,
+        "detail_rows":detail_rows,
+        "menu":menu,
+        "_remove_favorite_rows":_remove_favorite_rows,
+        "_favorite_popup_menu":_favorite_popup_menu,
+    }
     for name,fn in actions.items():
         setattr(App,name,fn)
