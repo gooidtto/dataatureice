@@ -12,7 +12,10 @@ if p.exists():
  with p.open(encoding='utf-8-sig',newline='') as f: rows=list(csv.DictReader(f))
 for date,cat,path,img,sha,size in items:
  if not any(r.get('data_date')==date and r.get('source_image')==img for r in rows):
-  rows.append(dict(zip(h,('1',date,cat,'verified',path,img,sha,size,'visual_verified_from_uploaded_image','图片内容可可靠识别；手机配件.jpg与废手机主板.jpg为同表内容，避免重复计价记录'))))
+  include='0' if img=='手机配件.jpg' else '1'
+  status='verified_no_callable_rows' if img=='手机配件.jpg' else 'verified'
+  note='图片内容可可靠识别；手机配件.jpg与废手机主板.jpg为同表内容，不重复计价记录；当前不生成可调用价格行' if img=='手机配件.jpg' else '图片内容可可靠识别；已结构化入日期快照'
+  rows.append(dict(zip(h,(include,date,cat,status,path,img,sha,size,'visual_verified_from_uploaded_image',note))))
 with p.open('w',encoding='utf-8-sig',newline='') as f:
  w=csv.DictWriter(f,fieldnames=h);w.writeheader();w.writerows(rows)
 print('SOURCE_MANIFEST_NINTH_PASS total=%d'%len(rows))
