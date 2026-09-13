@@ -21,7 +21,7 @@ def test_result_double_click_selects_matrix_iid_before_detail():
 
 def test_app_actions_do_not_bypass_window_factory():
     actions = ACTIONS.read_text(encoding="utf-8")
-    assert "def _new_window(self, title, geometry=None, minsize=None):" in actions
+    assert "def _new_window(self, title, geometry=None,minsize=None):" in actions or "def _new_window(self, title, geometry=None, minsize=None):" in actions
     assert "w = tk.Toplevel(self.root)" not in actions
     assert "_new_window(self," in actions
     assert "setattr(App,name,fn)" in actions
@@ -36,3 +36,20 @@ def test_favorite_popup_actions_match_app_helpers():
     assert "def export_popup(self,rs,xlsx):" in phone
     assert "self.fav.remove(rows)" in actions
     assert "def remove(self,rows):" in phone
+
+
+def test_main_window_is_withdrawn_during_app_initialization():
+    actions = ACTIONS.read_text(encoding="utf-8")
+    assert "def _install_window_lifecycle(App):" in actions
+    assert "root.withdraw()" in actions
+    assert "original_init(self, root, *args, **kwargs)" in actions
+    assert "root.deiconify()" in actions
+    assert "App.__init__ = _init" in actions
+
+
+def test_child_window_is_hidden_until_configuration_finishes():
+    actions = ACTIONS.read_text(encoding="utf-8")
+    assert "w.withdraw()" in actions
+    assert "self.root.after_idle(lambda: _show_window(w))" in actions
+    assert "w.deiconify()" in actions
+    assert "App._window_factory = base_factory" in actions
