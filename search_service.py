@@ -140,6 +140,14 @@ class SearchService:
     @staticmethod
     def _network_prefix_exists(index, key): return len(key) >= 3 and any(index._prefix_keys("network", key))
 
+    @staticmethod
+    def _price_sort_key(row):
+        value = clean(row.get("price", ""))
+        if not value or "/" in value or value in {"-", "—", "/"}: return float("inf")
+        match = re.search(r"[-+]?(?:\d+(?:\.\d+)?|\.\d+)", value)
+        try: return -float(match.group(0)) if match else float("inf")
+        except (TypeError, ValueError): return float("inf")
+
     def search(self, query, category="全部"):
         q = clean(query)
         if not q: return []
@@ -160,8 +168,8 @@ class SearchService:
             candidates &= (term_candidates or set())
         if category != "全部": candidates &= index.exact("category", clean(category))
         if not candidates: return []
-        ranked = [ (self._score(index, i, brand_key, terms, query_key), index.rows[i]) for i in candidates ]
-        ranked.sort(key=lambda item: (-item[0], -int(str(item[1].get("data_date", "0000-00-00")).replace("-", "") or 0), item[1].get("brand", ""), item[1].get("series", ""), item[1].get("model", ""), item[1].get("record_id", "")))
+        ranked = [(self._score(index, i, brand_key, terms, query_key), index.rows[i]) for i in candidates]
+        ranked.sort(key=lambda item: (-item[0], -int(str(item[1].get("data_date", "0000-00-00")).replace("-", "") or 0), self._price_sort_key(item[1]), item[1].get("brand", ""), item[1].get("series", ""), item[1].get("model", ""), item[1].get("condition", ""), item[1].get("record_id", "")))
         return [row for _, row in ranked]
 
 
