@@ -21,3 +21,13 @@ def test_fts_is_rebuilt_after_replace(tmp_path):
     db.replace_rows([row("r2", model="X7", brand="Realme")])
     assert db.fts_search("A59")==[]
     assert [r["record_id"] for r in db.fts_search("X7")]==["r2"]
+
+
+def test_same_record_id_can_exist_in_multiple_dates(tmp_path):
+    db=SQLiteFTSEngine(tmp_path/"prices.sqlite3")
+    db.replace_rows([
+        row("same", model="A59", data_date="2026-08-30"),
+        row("same", model="A59", data_date="2026-08-31"),
+    ])
+    assert db.count()==2
+    assert [r["data_date"] for r in db.all_rows()]==["2026-08-30","2026-08-31"]
