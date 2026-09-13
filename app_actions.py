@@ -6,6 +6,13 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 
 
+def _new_window(self, title, geometry=None, minsize=None):
+    factory = getattr(self, "_new_window", None)
+    if not callable(factory) or factory is _new_window:
+        raise RuntimeError("SearchApp must provide _new_window()")
+    return factory(title=title, geometry=geometry, minsize=minsize)
+
+
 def open_dir(self):
     path = os.path.abspath(self.d)
     os.makedirs(path, exist_ok=True)
@@ -21,10 +28,7 @@ def open_dir(self):
 
 
 def sources(self):
-    w = tk.Toplevel(self.root)
-    w.title("来源图片结构")
-    w.geometry("1100x620")
-    w.minsize(800, 480)
+    w = _new_window(self, "来源图片结构", "1100x620", (800, 480))
     cols = ("date", "image", "path", "include", "note")
     tree = ttk.Treeview(w, columns=cols, show="headings")
     headings = {"date":"日期", "image":"来源图片", "path":"来源路径", "include":"纳入", "note":"备注"}
@@ -44,16 +48,11 @@ def sources(self):
         tree.insert("", "end", values=(r.get("data_date",""), r.get("source_image",""), r.get("source_path",""), r.get("include",""), r.get("note", "")))
     ttk.Button(w, text="关闭", command=w.destroy).grid(row=2,column=0,pady=8)
     w.bind("<Escape>", lambda _e: w.destroy())
-    w.transient(self.root)
-    w.focus_set()
 
 
 def show_favorites(self):
     rows = self.fav.dedupe()
-    w = tk.Toplevel(self.root)
-    w.title("⭐ 我的收藏")
-    w.geometry("1500x760")
-    w.minsize(1050,560)
+    w = _new_window(self, "⭐ 我的收藏", "1500x760", (1050, 560))
     ttk.Label(w, text=f"收藏内容 · {len(rows)} 条 · 按型号分组，日期倒序", font=("微软雅黑",12,"bold")).pack(anchor="w", padx=12, pady=10)
     f=ttk.Frame(w,padding=(12,0,12,10)); f.pack(fill="both",expand=True)
     cols=[c[0] for c in __import__("phone_search").COLS]
@@ -77,7 +76,6 @@ def show_favorites(self):
             tree.insert("","end",values=[""]*len(cols)); tree.insert("","end",values=[""]*len(cols))
     ttk.Button(w,text="关闭",command=w.destroy).pack(pady=8)
     w.bind("<Escape>",lambda _e:w.destroy())
-    w.transient(self.root); w.focus_set()
 
 
 def stats(self):
@@ -109,7 +107,7 @@ def compare(self):
     if not rows:
         return messagebox.showinfo("历史价格对比","请先选择或查询记录",parent=self.root)
     history=self.s.history(rows)
-    w=tk.Toplevel(self.root); w.title("历史价格对比"); w.geometry("1650x760"); w.minsize(1100,600)
+    w=_new_window(self,"历史价格对比","1650x760",(1100,600))
     cols=("date","model","condition","price","unit")
     tree=ttk.Treeview(w,columns=cols,show="headings")
     for c,h,wd in (("date","日期",120),("model","型号",320),("condition","价格条件",300),("price","价格",100),("unit","单位",100)):
@@ -117,7 +115,7 @@ def compare(self):
     for r in history:
         tree.insert("","end",values=(r.get("data_date",""),r.get("model",""),r.get("condition",""),r.get("price",""),r.get("unit","")))
     tree.pack(fill="both",expand=True,padx=12,pady=12)
-    ttk.Button(w,text="关闭",command=w.destroy).pack(pady=(0,8)); w.bind("<Escape>",lambda _e:w.destroy()); w.transient(self.root); w.focus_set()
+    ttk.Button(w,text="关闭",command=w.destroy).pack(pady=(0,8))
 
 
 def detail(self,event=None):
@@ -125,12 +123,12 @@ def detail(self,event=None):
     row=self.map.get(iid) if iid else None
     if not row:
         return
-    w=tk.Toplevel(self.root); w.title("记录详情"); w.geometry("760x560"); w.minsize(600,420)
+    w=_new_window(self,"记录详情","760x560",(600,420))
     text=tk.Text(w,wrap="none",font=("微软雅黑",10)); text.pack(fill="both",expand=True,padx=12,pady=12)
     for f in __import__('phone_search').FIELDS:
         text.insert("end",f"{f}: {row.get(f,'')}\n")
     text.configure(state="disabled")
-    ttk.Button(w,text="关闭",command=w.destroy).pack(pady=(0,8)); w.bind("<Escape>",lambda _e:w.destroy()); w.transient(self.root); w.focus_set()
+    ttk.Button(w,text="关闭",command=w.destroy).pack(pady=(0,8))
 
 
 def menu(self,event):
@@ -148,5 +146,4 @@ def menu(self,event):
 def install(App):
     actions={"open_dir":open_dir,"sources":sources,"show_favorites":show_favorites,"stats":stats,"quote":quote,"compare":compare,"detail":detail,"menu":menu}
     for name,fn in actions.items():
-        if not hasattr(App,name):
-            setattr(App,name,fn)
+        setattr(App,name,fn)
