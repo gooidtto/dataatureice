@@ -4,8 +4,8 @@ from pathlib import Path
 import sys
 
 # Running ``python tools/build_sqlite.py`` sets sys.path[0] to tools/ rather
-# than the repository root. Add the root explicitly so the legacy source
-# parser can be reused without making the build depend on the caller's cwd.
+# than the repository root. Add the root explicitly so the build does not
+# depend on the caller's cwd.
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
@@ -30,14 +30,15 @@ def main() -> int:
         read_csv=read_csv,
         valid=valid,
     )
-    rows, _snapshots, errors = repository.load()
+    pipeline = StoragePipeline(SQLiteFTSEngine(DB))
+    rows, _snapshots, errors = pipeline.run(repository)
     if errors:
         raise SystemExit("; ".join(errors[:10]))
     if len(rows) != EXPECTED_ROWS:
         raise SystemExit(
             f"canonical row count mismatch: expected {EXPECTED_ROWS}, got {len(rows)}"
         )
-    count = StoragePipeline(SQLiteFTSEngine(DB)).persist(rows)
+    count = pipeline.engine.count()
     if count != EXPECTED_ROWS:
         raise SystemExit(
             f"SQLite row count mismatch: expected {EXPECTED_ROWS}, got {count}"
