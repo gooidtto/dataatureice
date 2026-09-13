@@ -72,9 +72,7 @@ class LegacyCsvStore:
    n=num(r['price']);return -n if n is not None else float('inf')
   return sorted(rs,key=lambda r:(-int(r['data_date'].replace('-','')),p(r),r['brand'],r['series'],r['model'],r['condition'],r['record_id']))
  def search(self,q='',cat='全部'):return self._sort([r for r in self.rows if (cat=='全部' or r['category']==cat) and (not key(q) or key(q) in key(' '.join(r.get(x,'') for x in ('brand','series','model','model_code','alias','source_image'))))])
- def history(self,targets):
-  def hk(r):return tuple(key(r.get(x)) for x in ('category','subtype','brand','series','model'))
-  ks={hk(r) for r in targets};return self._sort([r for r in self.rows if hk(r) in ks])
+ def history(self,targets):return self._sort([r for r in self.rows if tuple(key(r.get(x)) for x in ('category','subtype','brand','series','model')) in {tuple(key(t.get(x)) for x in ('category','subtype','brand','series','model')) for t in targets}])
 class JsonList:
  MAX_ITEMS=50
  def __init__(self,p):self.p=p;self.items=[];self.load()
@@ -356,8 +354,18 @@ class Store:
  def latest(self):return self.dates[-1] if self.dates else ''
  def search(self,q='',cat='全部'):return self.search_service.search(q,cat)
  def history(self,targets):
-  def hk(r):return tuple(key(r.get(x)) for x in ('category','subtype','brand','series','model'))
-  ks={hk(r) for r in targets};return self._sort([r for r in self.rows if hk(r) in ks])
+  def base(r):return tuple(key(r.get(x)) for x in ('category','subtype','brand','series','model'))
+  def code(r):return key(r.get('model_code',''))
+  target_bases={base(r) for r in targets}
+  target_dates={b:{r.get('data_date','') for r in targets if base(r)==b} for b in target_bases}
+  target_codes={b:{code(r) for r in targets if base(r)==b} for b in target_bases}
+  selected=[]
+  for r in self.rows:
+   b=base(r)
+   if b not in target_bases:continue
+   if r.get('data_date','') in target_dates[b] and code(r) not in target_codes[b]:continue
+   selected.append(r)
+  return self._sort(selected)
  def _sort(self,rs):
   def p(r):
    n=num(r.get('price',''));return -n if n is not None else float('inf')
