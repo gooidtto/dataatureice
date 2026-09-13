@@ -31,9 +31,10 @@ def test_network_model_exact_match_ranks_first():
     assert result[0]["record_id"] == "exact"
 
 
-def test_network_model_display_column_is_visible():
+def test_network_model_is_part_of_canonical_identity_column():
     columns = build_display_columns([row()])
     fields = [field for field, _label, _width in columns]
     labels = {field: label for field, label, _width in columns}
     assert "identity" in fields
-    assert "网络型号" in labels.values()
+    assert labels["identity"] == "手机/品牌/系列/型号/网络型号"
+    assert "model_code" not in fields
