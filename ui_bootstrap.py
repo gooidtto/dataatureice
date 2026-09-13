@@ -12,7 +12,6 @@ from value_order import sort_rows
 phone_search.CAT["手机配件"] = "手机配件"
 _EMPTY_HINT = "输入品牌 / 系列 / 型号开始查询\n\n数据来自已验证的图片事实价格库"
 _original_ui = phone_search.App.ui
-_real_toplevel = phone_search.tk.Toplevel
 _SEARCH_EXECUTOR = ThreadPoolExecutor(max_workers=1, thread_name_prefix='search')
 _UI_QUEUE = Queue()
 
@@ -82,7 +81,7 @@ def _result_click(self,event):
 def _result_double_click(self,event):
     tree=event.widget;iid=tree.identify_row(event.y)
     if not iid or iid not in self._result_tree_map:return 'break'
-    self._active_result_tree=tree;self._active_result_iid=iid;self.detail(event);return 'break'
+    self._active_result_tree=tree;self._active_result_iid=iid;_select_result_iid(self,iid);self.detail();return 'break'
 
 def _result_context_menu(self,event):
     tree=event.widget;iid=tree.identify_row(event.y)
@@ -179,8 +178,18 @@ def _standardize_window(w):
         parent=w.master if getattr(w,'master',None) is not None else w.winfo_toplevel();parent.update_idletasks();pw,ph=parent.winfo_width(),parent.winfo_height();px,py=parent.winfo_rootx(),parent.winfo_rooty();w.minsize(min_w,min_h);x=max(12,px+(pw-width)//2);y=max(12,py+12);w.geometry(f'{width}x{height}+{x}+{y}');w.transient(parent.winfo_toplevel());w.bind('<Escape>',lambda _e:w.destroy(),add='+');w.protocol('WM_DELETE_WINDOW',w.destroy);w.focus_set()
     except tk.TclError:pass
 
-def standardized_toplevel(*args,**kwargs):
-    w=_real_toplevel(*args,**kwargs);w.after_idle(lambda:_standardize_window(w));return w
+def _new_window(self,title,geometry=None,minsize=None):
+    w=tk.Toplevel(self.root);w.title(title)
+    if geometry:w.geometry(geometry)
+    if minsize:w.minsize(*minsize)
+    self.root.after_idle(lambda:_standardize_window(w))
+    return w
+
+def _search_history_popup(self):
+    if not self.h.items:return self.hide_suggestions()
+    if self.suggest_popup is None or not self.suggest_popup.winfo_exists():
+        self.suggest_popup=tk.Toplevel(self.root);self.suggest_popup.overrideredirect(True);self.suggest_popup.transient(self.root);self.suggest_popup.configure(bg='#d9d9d9')
+    self.refresh_suggestions()
 
 class SearchApp(phone_search.App):
     """Production application with explicit UI overrides instead of monkey-patching."""
@@ -191,9 +200,10 @@ class SearchApp(phone_search.App):
     clear_search=clear_search
     on_tree_click=_result_click
     favorite_groups=favorite_groups
+    _new_window=_new_window
+    show_suggestions=_search_history_popup
 
 install_app_actions(SearchApp)
-phone_search.tk.Toplevel=standardized_toplevel
 
 def main():
     root=tk.Tk();SearchApp(root);root.mainloop()
