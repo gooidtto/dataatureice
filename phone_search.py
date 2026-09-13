@@ -5,6 +5,8 @@ try:
  from openpyxl.styles import Font
  from openpyxl.utils import get_column_letter
 except ImportError: Workbook=None
+from search_service import SearchService
+from storage.csv_repository import CsvRepository
 FIELDS=['record_id','data_date','category','subtype','brand','series','model','model_code','alias','condition','price','unit','note','origin','source_image','source_path','verified','confidence','verification']
 COLS=[('data_date','数据日期',105),('category','分类',70),('subtype','子类型',75),('brand','品牌',110),('series','系列',110),('model','型号',250),('condition','价格条件',175),('price','价格',85),('unit','单位',85),('note','备注',260),('source_image','来源图片',150)]
 TRUE={'1','true','yes','verified'};CAT={'phone':'手机','tablet':'平板','computer':'电脑','other':'其它','手机':'手机','平板':'平板','电脑':'电脑','其它':'其它','手机配件':'手机配件'}
@@ -372,4 +374,22 @@ class App:
   for c in cols:tr.heading(c,text=heads[c]);tr.column(c,width=130 if c!='verification_note' else 360)
   for r in self.s.manifest:tr.insert('', 'end',values=tuple(r.get(c,'') for c in cols))
   tr.pack(fill='both',expand=True)
+
+class Store:
+ def __init__(self,d,repository=None,search_service=None):
+  self.d=d;self.repository=repository or CsvRepository(d,fields=tuple(FIELDS),category_map=CAT,clean=clean,read_csv=read_csv,valid=valid);self.search_service=search_service or SearchService([]);self.rows=[];self.snapshots={};self.manifest=[];self.errors=[]
+ def load(self):
+  self.rows,self.snapshots,self.errors=self.repository.load();self.manifest=list(getattr(self.repository,'manifest',[]) or []);self.search_service.replace_rows(self.rows)
+ @property
+ def dates(self):return sorted(self.snapshots)
+ @property
+ def latest(self):return self.dates[-1] if self.dates else ''
+ def search(self,q='',cat='全部'):return self.search_service.search(q,cat)
+ def history(self,targets):
+  def hk(r):return tuple(key(r.get(x)) for x in ('category','subtype','brand','series','model'))
+  ks={hk(r) for r in targets};return self._sort([r for r in self.rows if hk(r) in ks])
+ def _sort(self,rs):
+  def p(r):
+   n=num(r.get('price',''));return -n if n is not None else float('inf')
+  return sorted(rs,key=lambda r:(-int(r['data_date'].replace('-','')),p(r),r.get('brand',''),r.get('series',''),r.get('model',''),r.get('condition',''),r.get('record_id','')))
 if __name__=='__main__':root=tk.Tk();App(root);root.mainloop()
