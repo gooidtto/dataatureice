@@ -145,15 +145,20 @@ class SearchService:
         term = normalize(term)
         if not term:
             return set()
-        candidates = index.exact("model", term) | index.exact("series", term)
-        candidates |= index.prefix("model", term)
-        candidates |= index.prefix("series", term)
-        # Alias is an identifier, not a fuzzy model-family field.
-        candidates |= index.exact("alias", term)
+        # Model/series/network are the primary identity fields. If any of them
+        # match, aliases must not broaden the candidate set and leak an
+        # unrelated model family into an otherwise exact model query.
+        primary = index.exact("model", term) | index.exact("series", term)
+        primary |= index.prefix("model", term)
+        primary |= index.prefix("series", term)
         if len(term) >= 3:
-            candidates |= index.exact("network", term)
-            candidates |= index.prefix("network", term)
-        return candidates
+            primary |= index.exact("network", term)
+            primary |= index.prefix("network", term)
+        if primary:
+            return primary
+        # Alias remains available as an exact fallback only when no primary
+        # identity field can satisfy the term.
+        return index.exact("alias", term)
 
     @staticmethod
     def _score(index, row_index, brand_key, terms, query_key):
