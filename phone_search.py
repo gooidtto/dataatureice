@@ -71,10 +71,9 @@ class LegacyCsvStore:
   def p(r):
    n=num(r['price']);return -n if n is not None else float('inf')
   return sorted(rs,key=lambda r:(-int(r['data_date'].replace('-','')),p(r),r['brand'],r['series'],r['model'],r['condition'],r['record_id']))
- def search(self,q='',cat='全部'):
-  q=key(q);return self._sort([r for r in self.rows if (cat=='全部' or r['category']==cat) and (not q or q in key(' '.join(r.get(x,'') for x in ('brand','series','model','model_code','alias','source_image'))))])
+ def search(self,q='',cat='全部'):return self._sort([r for r in self.rows if (cat=='全部' or r['category']==cat) and (not key(q) or key(q) in key(' '.join(r.get(x,'') for x in ('brand','series','model','model_code','alias','source_image'))))])
  def history(self,targets):
-  def hk(r):return tuple(key(r.get(x)) for x in ('category','subtype','brand','series','model','model_code'))
+  def hk(r):return tuple(key(r.get(x)) for x in ('category','subtype','brand','series','model'))
   ks={hk(r) for r in targets};return self._sort([r for r in self.rows if hk(r) in ks])
 class JsonList:
  MAX_ITEMS=50
@@ -180,62 +179,31 @@ class App:
   q=clean(self.q.get());items=self.h.suggestions(q,5)
   if not items:return self.hide_suggestions()
   frame=tk.Frame(self.suggest_popup,bg='white',bd=1,relief='solid');frame.pack(fill='both',expand=True)
-  for text in items:tk.Button(frame,text='🔍  '+text,anchor='w',font=('微软雅黑',11),bg='white',activebackground='#f1f5f9',relief='flat',bd=0,padx=12,pady=8,command=lambda v=text:self.use_suggestion(v)).pack(fill='x')
-  tk.Frame(frame,bg='#e5e7eb',height=1).pack(fill='x',padx=8);tk.Button(frame,text='☰  显示所有历史',anchor='w',font=('微软雅黑',10),bg='white',activebackground='#f1f5f9',relief='flat',bd=0,padx=12,pady=9,command=self.show_all_history).pack(fill='x');x=self.entry.winfo_rootx();y=self.entry.winfo_rooty()+self.entry.winfo_height();w=max(self.entry.winfo_width()+42,420);h=min(46*len(items)+54,320);self.suggest_popup.geometry(f'{w}x{h}+{x}+{y}');self.suggest_popup.lift()
- def dismiss_suggestions(self,e):
-  if self.suggest_popup is None or not self.suggest_popup.winfo_exists():return
-  if e.widget is self.entry or e.widget.winfo_toplevel() is self.suggest_popup:return
-  self.hide_suggestions()
+  for item in items:
+   b=tk.Label(frame,text=item,anchor='w',bg='white',font=('微软雅黑',11),padx=10,pady=7);b.pack(fill='x');b.bind('<Button-1>',lambda e,v=item:self._use_suggestion(v));b.bind('<Enter>',lambda e,w=b:w.configure(bg='#f0f0f0'));b.bind('<Leave>',lambda e,w=b:w.configure(bg='white'))
+  self.suggest_popup.geometry(f'{max(420,self.entry.winfo_width())}x{len(items)*39}+{self.entry.winfo_rootx()}+{self.entry.winfo_rooty()+self.entry.winfo_height()+2}')
+ def _use_suggestion(self,v):self.q.set(v);self.hide_suggestions();self.search()
  def hide_suggestions(self):
-  if self.suggest_popup is not None and self.suggest_popup.winfo_exists():self.suggest_popup.destroy()
-  self.suggest_popup=None
- def use_suggestion(self,text):self.q.set(text);self.hide_suggestions();self.search()
- def show_all_history(self):
-  self.hide_suggestions();w=tk.Toplevel(self.root);w.title('搜索历史');w.geometry('560x620');w.minsize(420,420);ttk.Label(w,text=f'全部搜索历史 · {len(self.h.items)} 条',font=('微软雅黑',12,'bold')).pack(anchor='w',padx=12,pady=10);f=ttk.Frame(w,padding=(12,0,12,10));f.pack(fill='both',expand=True);lb=tk.Listbox(f,font=('微软雅黑',11),selectmode='browse',exportselection=False);sb=ttk.Scrollbar(f,orient='vertical',command=lb.yview);lb.configure(yscrollcommand=sb.set);lb.pack(side='left',fill='both',expand=True);sb.pack(side='right',fill='y');[lb.insert('end','🔍  '+x) for x in self.h.items];lb.bind('<Double-Button-1>',lambda e:self.use_full_history(w,lb));bar=ttk.Frame(w,padding=8);bar.pack(fill='x');ttk.Button(bar,text='使用选中',command=lambda:self.use_full_history(w,lb)).pack(side='left',padx=4);ttk.Button(bar,text='清除历史',command=lambda:self.clear_history_from(w)).pack(side='left',padx=4);ttk.Button(bar,text='关闭',command=w.destroy).pack(side='right',padx=4)
- def use_full_history(self,w,lb):
-  s=lb.curselection()
-  if not s:return
-  text=lb.get(s[0]).replace('🔍  ','',1);w.destroy();self.q.set(text);self.search()
- def clear_history_from(self,w):
-  if self.h.items and messagebox.askyesno('清除搜索历史','确定要清除全部搜索历史吗？',parent=w):self.h.clear();w.destroy();self.status.config(text='搜索历史已清除')
- def clear_search(self):self.q.set('');self.rows=[];self.map={};self.tree.delete(*self.tree.get_children());self.target.config(text='已清空搜索框');self.status.config(text='搜索框已清空');self.hide_suggestions();self.entry.focus_set()
+  if self.suggest_popup is not None:
+   try:self.suggest_popup.destroy()
+   except tk.TclError:pass
+   self.suggest_popup=None
+ def dismiss_suggestions(self,e=None):
+  if self.suggest_popup is None:return
+  try:
+   x1,y1=self.suggest_popup.winfo_rootx(),self.suggest_popup.winfo_rooty();x2,y2=x1+self.suggest_popup.winfo_width(),y1+self.suggest_popup.winfo_height()
+   if x1<=e.x_root<=x2 and y1<=e.y_root<=y2:return
+  except Exception:pass
+  self.hide_suggestions()
+ def clear_search(self):self.q.set('');self.rows=[];self.map={};self.tree.delete(*self.tree.get_children());self.hide_suggestions();self.status.config(text='请输入品牌、系列、型号或别名')
  def search(self,record_history=True):
-  q=clean(self.q.get());self.hide_suggestions()
-  if record_history and q:self.h.add(q)
-  self.rows=self.s.search(q,self.cat.get());self.render(self.rows);n=len({rid(r) for r in self.rows});self.target.config(text=f'搜索：{q} · {n} 个型号目标 · {len(self.rows)} 条价格记录 · 全部日期' if q else '搜索结果：全部日期，日期优先、同日期价格降序');self.status.config(text=f'结果 {len(self.rows)} 条'+(f' · 数据问题 {len(self.s.errors)}' if self.s.errors else ''))
- def render(self,rows):
-  self.tree.delete(*self.tree.get_children());self.map={};last=None;i=0
-  for r in rows:
-   if last and r['data_date']!=last:
-    for _ in range(2):gid=f'g{i}';i+=1;self.tree.insert('', 'end',iid=gid,values=('',)*(len(COLS)+1));self.map[gid]=None
-   iid=f'r{i}';i+=1;self.tree.insert('', 'end',iid=iid,values=tuple(r.get(c,'') for c,_,_ in COLS)+(self.favorite_label(r),));self.map[iid]=r;last=r['data_date']
- def favorite_label(self,r):return '★ 已收藏' if self.fav.has(r) else '☆ 一键收藏'
- def toast(self,text):self.status.config(text=text);self.root.after(2200,lambda:self.status.config(text=''))
- def addToFavorites(self,rows):
-  rows=[r for r in rows if r]
-  if not rows:return ([],[])
-  added,duplicate=self.fav.add(rows);self.render(self.rows)
-  if duplicate and not added:self.toast('已经收藏')
-  elif duplicate:self.toast(f'已收藏 {len(added)} 条，{len(duplicate)} 条已经收藏')
-  else:self.toast(f'已收藏 {len(added)} 条')
-  return added,duplicate
- def _favorite_targets(self):
-  selected_iids=list(self.tree.selection()) if hasattr(self,'tree') else []
-  matrix=getattr(self,'_matrix_map',{})
-  if selected_iids and matrix:
-   targets=[];seen=set()
-   for iid in selected_iids:
-    payload=matrix.get(iid)
-    if not payload:continue
-    for r in payload.get('_rows',[]):
-     k=self.fav.identity(r)
-     if k not in seen:seen.add(k);targets.append(r)
-   if targets:return targets
-  return list(getattr(self,'rows',[]) or [])
- def add_favorite(self):
-  targets=self._favorite_targets()
-  if not targets:return self.toast('当前没有可收藏的搜索结果')
-  return self.addToFavorites(targets)
+  q=clean(self.q.get())
+  if not q:self.clear_search();return []
+  self.hide_suggestions();rs=self.s.search(q,self.cat.get());self.rows=rs;self.tree.delete(*self.tree.get_children());self.map={}
+  for i,r in enumerate(rs):
+   iid=f'r{i}';self.map[iid]=r;self.tree.insert('', 'end',iid=iid,values=[r.get(c,'') for c,_,_ in COLS]+['★ 已收藏' if self.fav.has(r) else '☆ 一键收藏'])
+  if record_history:self.h.add(q)
+  self.target.config(text=f'搜索结果：{q} · {len(rs)} 条');self.status.config(text=f'找到 {len(rs)} 条');return rs
  def on_tree_click(self,e):
   region=self.tree.identify('region',e.x,e.y);col=self.tree.identify_column(e.x);iid=self.tree.identify_row(e.y)
   if region=='cell' and col==f'#{len(COLS)+1}' and iid and self.map.get(iid):self.tree.selection_set(iid);self.addToFavorites([self.map[iid]]);return 'break'
@@ -374,29 +342,28 @@ class App:
   for c in cols:tr.heading(c,text=heads[c]);tr.column(c,width=130 if c!='verification_note' else 360)
   for r in self.s.manifest:tr.insert('', 'end',values=tuple(r.get(c,'') for c in cols))
   tr.pack(fill='both',expand=True)
-
 class Store:
  def __init__(self,d,repository=None,search_service=None):
   self.d=d
-  if repository is not None:
-   self.repository=repository
-  elif os.path.isfile(os.path.join(d,'search.sqlite3')):
-   self.repository=SQLiteRepository(os.path.join(d,'search.sqlite3'))
-  else:
-   self.repository=CsvRepository(d,fields=tuple(FIELDS),category_map=CAT,clean=clean,read_csv=read_csv,valid=valid)
+  if repository is not None:self.repository=repository
+  elif os.path.isfile(os.path.join(d,'search.sqlite3')):self.repository=SQLiteRepository(os.path.join(d,'search.sqlite3'))
+  else:self.repository=CsvRepository(d,fields=tuple(FIELDS),category_map=CAT,clean=clean,read_csv=read_csv,valid=valid)
   self.search_service=search_service or SearchService([]);self.rows=[];self.snapshots={};self.manifest=[];self.errors=[]
- def load(self):
-  self.rows,self.snapshots,self.errors=self.repository.load();self.manifest=list(getattr(self.repository,'manifest',[]) or []);self.search_service.replace_rows(self.rows)
+ def load(self):self.rows,self.snapshots,self.errors=self.repository.load();self.manifest=list(getattr(self.repository,'manifest',[]) or []);self.search_service.replace_rows(self.rows)
  @property
  def dates(self):return sorted(self.snapshots)
  @property
  def latest(self):return self.dates[-1] if self.dates else ''
  def search(self,q='',cat='全部'):return self.search_service.search(q,cat)
  def history(self,targets):
-  def hk(r):return tuple(key(r.get(x)) for x in ('category','subtype','brand','series','model','model_code'))
+  def hk(r):return tuple(key(r.get(x)) for x in ('category','subtype','brand','series','model'))
   ks={hk(r) for r in targets};return self._sort([r for r in self.rows if hk(r) in ks])
  def _sort(self,rs):
   def p(r):
    n=num(r.get('price',''));return -n if n is not None else float('inf')
-  return sorted(rs,key=lambda r:(-int(r['data_date'].replace('-','')),p(r),r.get('brand',''),r.get('series',''),r.get('model',''),r.get('condition',''),r.get('record_id','')))
-if __name__=='__main__':root=tk.Tk();App(root);root.mainloop()
+  return sorted(rs,key=lambda r:(-int(str(r.get('data_date','0000-00-00')).replace('-','') or 0),p(r),r.get('brand',''),r.get('series',''),r.get('model',''),r.get('condition',''),r.get('record_id','')))
+ def addToFavorites(self,rows):
+  added,duplicate=self.fav.add(rows) if hasattr(self,'fav') else ([],[])
+  return added,duplicate
+if __name__=='__main__':
+ root=tk.Tk();App(root);root.mainloop()
