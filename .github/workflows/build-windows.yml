@@ -2,7 +2,7 @@ name: Build Windows EXE
 on:
   workflow_dispatch:
   push:
-    branches: [main, release-image-first-windows, data-database-structure]
+    branches: [main, release-image-first-windows, data-database-structure, search-architecture-v2]
     tags: ['v*']
 permissions: {contents: write}
 env: {PYTHONUTF8: '1'}
@@ -71,7 +71,7 @@ jobs:
       - name: Validate source and callable data
         shell: pwsh
         run: |
-          python -X utf8 -m py_compile phone_search.py ui_bootstrap.py data_validator.py tools/date_database.py tools/materialize_data.py tools/organize_date_database.py tools/materialize_2026_07.py tools/materialize_2026_07_safe.py tools/materialize_2026_07_extra.py tools/materialize_2026_07_reviewed.py tools/materialize_2026_07_reviewed2.py tools/materialize_2026_07_reviewed3.py tools/materialize_2026_07_reviewed4.py tools/materialize_2026_07_reviewed5.py tools/materialize_2026_07_reviewed6.py tools/materialize_2026_07_reviewed7.py tools/materialize_2026_07_reviewed8.py tools/materialize_2026_07_reviewed9.py tools/materialize_2026_07_manifest.py tools/materialize_2026_07_manifest_extra.py tools/materialize_2026_07_manifest3.py tools/materialize_2026_07_manifest4.py tools/materialize_2026_07_manifest5.py tools/materialize_2026_07_manifest6.py tools/materialize_2026_07_manifest7.py tools/materialize_2026_07_manifest8.py tools/materialize_2026_07_manifest9.py tools/materialize_2026_07_manifest10.py
+          python -X utf8 -m py_compile phone_search.py ui_bootstrap.py search_service.py search_core.py data_validator.py tools/date_database.py tools/materialize_data.py tools/organize_date_database.py tools/materialize_2026_07.py tools/materialize_2026_07_safe.py tools/materialize_2026_07_extra.py tools/materialize_2026_07_reviewed.py tools/materialize_2026_07_reviewed2.py tools/materialize_2026_07_reviewed3.py tools/materialize_2026_07_reviewed4.py tools/materialize_2026_07_reviewed5.py tools/materialize_2026_07_reviewed6.py tools/materialize_2026_07_reviewed7.py tools/materialize_2026_07_reviewed8.py tools/materialize_2026_07_reviewed9.py tools/materialize_2026_07_manifest.py tools/materialize_2026_07_manifest_extra.py tools/materialize_2026_07_manifest3.py tools/materialize_2026_07_manifest4.py tools/materialize_2026_07_manifest5.py tools/materialize_2026_07_manifest6.py tools/materialize_2026_07_manifest7.py tools/materialize_2026_07_manifest8.py tools/materialize_2026_07_manifest9.py tools/materialize_2026_07_manifest10.py
           python -X utf8 data_validator.py data
           if ($LASTEXITCODE -ne 0) { throw "data validation failed" }
           python -X utf8 -m pytest -q
@@ -90,11 +90,8 @@ jobs:
               git fetch origin "${env:GITHUB_REF_NAME}"
               $remoteDb = git show "origin/${env:GITHUB_REF_NAME}:data/database/2026-08-31/price.csv" 2>$null
               $localDb = Get-Content "data/database/2026-08-31/price.csv" -Raw
-              if ($remoteDb -eq $localDb) {
-                Write-Warning "canonical database push raced with another build; identical database is already on remote"
-              } else {
-                throw "canonical database push rejected and remote database differs"
-              }
+              if ($remoteDb -eq $localDb) { Write-Warning "canonical database push raced with another build; identical database is already on remote" }
+              else { throw "canonical database push rejected and remote database differs" }
             }
           }
       - name: Build EXE
