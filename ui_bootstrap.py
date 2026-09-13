@@ -5,53 +5,13 @@ import tkinter as tk
 from tkinter import ttk
 import phone_search
 from app_actions import install as install_app_actions
-from app_actions_fix import install_fix as install_app_action_fixes
 from search_display import build_display_columns, normalize_search_results
 from value_order import sort_rows
 
 phone_search.CAT["手机配件"] = "手机配件"
 _EMPTY_HINT = "输入品牌 / 系列 / 型号开始查询\n\n数据来自已验证的图片事实价格库"
 _original_ui = phone_search.App.ui
-_original_tree_click = getattr(phone_search.App, "on_tree_click", None)
 _real_toplevel = phone_search.tk.Toplevel
-
-
-def _canonical_store_load(self):
-    self.rows = []; self.snapshots = {}; self.manifest = []; self.errors = []
-    db = os.path.join(self.d, 'database'); loaded_dates = set()
-    def load_paths(date, paths):
-        data = []; seen = set()
-        for p in paths:
-            try: rows = phone_search.read_csv(p)
-            except Exception as e: self.errors.append(f'{date}: {e}'); continue
-            for raw in rows:
-                r = {k: phone_search.clean(raw.get(k, '')) for k in phone_search.FIELDS}; r['category'] = phone_search.CAT.get(r['category'], r['category'])
-                if r['data_date'] != date: self.errors.append(f'{date}: data_date不一致')
-                if r['category'] not in phone_search.CAT.values(): self.errors.append(f'{date}: 非标准分类 {r["category"]}')
-                if not phone_search.valid(r): continue
-                rid = r['record_id']
-                if rid in seen: self.errors.append(f'{date}: 重复 record_id {rid}'); continue
-                seen.add(rid); data.append(r)
-        self.snapshots[date] = data; self.rows.extend(data)
-    if os.path.isdir(db):
-        for date in sorted(os.listdir(db)):
-            if not re.fullmatch(r'\d{4}-\d{2}-\d{2}', date): continue
-            folder = os.path.join(db, date)
-            if not os.path.isdir(folder): continue
-            paths = [os.path.join(folder, n) for n in sorted(os.listdir(folder)) if n.lower().endswith('.csv') and os.path.isfile(os.path.join(folder, n))]
-            if paths: load_paths(date, paths); loaded_dates.add(date)
-    sd = os.path.join(self.d, 'snapshots')
-    if os.path.isdir(sd):
-        for date in sorted(os.listdir(sd)):
-            if date in loaded_dates or not re.fullmatch(r'\d{4}-\d{2}-\d{2}', date): continue
-            folder = os.path.join(sd, date)
-            if not os.path.isdir(folder): continue
-            paths = [os.path.join(folder, n) for n in sorted(os.listdir(folder)) if n.lower().endswith('.csv')]
-            if paths: load_paths(date, paths)
-    mp = os.path.join(self.d, 'source_image_manifest.csv')
-    if os.path.isfile(mp):
-        try: self.manifest = phone_search.read_csv(mp)
-        except Exception as e: self.errors.append(f'来源清单: {e}')
 
 
 def _clear_result_views(self):
@@ -180,6 +140,7 @@ def ui(self):
         if isinstance(child, ttk.Scrollbar): child.grid_remove()
     self._results_canvas = tk.Canvas(host, highlightthickness=0, borderwidth=0, bg='#ffffff'); self._results_inner = tk.Frame(self._results_canvas, bg='#ffffff', borderwidth=0, highlightthickness=0); self._results_window = self._results_canvas.create_window((0, 0), window=self._results_inner, anchor='nw'); self._results_y = ttk.Scrollbar(host, orient='vertical', command=self._results_canvas.yview); self._results_x = ttk.Scrollbar(host, orient='horizontal', command=self._results_canvas.xview); self._results_canvas.configure(yscrollcommand=self._results_y.set, xscrollcommand=self._results_x.set); self._results_canvas.grid(row=0, column=0, sticky='nsew'); self._results_y.grid(row=0, column=1, sticky='ns'); self._results_x.grid(row=1, column=0, sticky='ew'); host.grid_rowconfigure(0, weight=1); host.grid_columnconfigure(0, weight=1); self._results_inner.bind('<Configure>', lambda _e: self._results_canvas.configure(scrollregion=self._results_canvas.bbox('all'))); self._results_canvas.bind('<Configure>', lambda e: self._results_canvas.itemconfigure(self._results_window, width=max(e.width, self._results_inner.winfo_reqwidth())))
     self._result_trees = []; self._result_tree_map = {}; self._result_order = []; self.empty_hint = tk.Label(host, text=_EMPTY_HINT, font=('微软雅黑', 15), justify='center', fg='#666666', bg='#ffffff', padx=28, pady=22); self.empty_hint.place(relx=0.5, rely=0.5, anchor='center'); self._matrix_map = {}; self._display_columns = (); self._search_after_id = None; self.root.bind_all('<MouseWheel>', lambda e, self=self: _results_mousewheel(self, e), add='+'); self.root.bind('<Control-a>', lambda _e: (self.tree.selection_set(self._result_order), _sync_result_selection(self), 'break')[-1], add='+'); self.root.bind('<Control-A>', lambda _e: (self.tree.selection_set(self._result_order), _sync_result_selection(self), 'break')[-1], add='+')
+    self.q.trace_add('write', lambda *_: _schedule_search(self))
 
 
 def _schedule_search(self):
@@ -188,7 +149,7 @@ def _schedule_search(self):
         except tk.TclError: pass
     q = phone_search.clean(self.q.get())
     if not q: self._search_after_id = None; return
-    self._search_after_id = self.root.after(2000, lambda: _debounced_search(self))
+    self._search_after_id = self.root.after(180, lambda: _debounced_search(self))
 
 
 def _debounced_search(self):
@@ -221,8 +182,9 @@ def _toggle_matrix_favorite(self, iid, payload):
     if not rows: return
     selected_all = all(self.fav.has(r) for r in rows)
     if selected_all:
-        for row in rows: self.fav.remove([row])
-    else: self.fav.add(rows)
+        self.fav.remove(rows)
+    else:
+        self.fav.add(rows)
     _render_search_matrix(self, self.rows)
 
 
@@ -242,8 +204,7 @@ def _standardize_window(w):
 def standardized_toplevel(*args, **kwargs):
     w = _real_toplevel(*args, **kwargs); w.after_idle(lambda: _standardize_window(w)); return w
 
-install_app_actions(phone_search.App); install_app_action_fixes(phone_search.App)
-phone_search.Store.load = _canonical_store_load
+install_app_actions(phone_search.App)
 phone_search.App.ui = ui; phone_search.App.search = search; phone_search.App.render = _render_search_matrix; phone_search.App.load = load; phone_search.App.clear_search = clear_search; phone_search.App.on_tree_click = _result_click; phone_search.App.favorite_groups = favorite_groups; phone_search.tk.Toplevel = standardized_toplevel
 
 def main():
