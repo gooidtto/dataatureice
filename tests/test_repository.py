@@ -1,4 +1,5 @@
 from pathlib import Path
+import csv
 
 from storage.csv_repository import CsvRepository
 
@@ -8,12 +9,16 @@ CATEGORY_MAP = {"phone": "手机", "手机": "手机"}
 
 
 def _repo(tmp_path: Path) -> CsvRepository:
+    def read_csv(path: str) -> list[dict]:
+        with open(path, encoding="utf-8-sig", newline="") as handle:
+            return list(csv.DictReader(handle))
+
     return CsvRepository(
         str(tmp_path),
         fields=FIELDS,
         category_map=CATEGORY_MAP,
         clean=lambda value: "" if value is None else str(value).strip(),
-        read_csv=lambda path: __import__("csv").DictReader(open(path, encoding="utf-8-sig", newline="")),
+        read_csv=read_csv,
         valid=lambda row: bool(row.get("model") and row.get("condition") and row.get("price") and row.get("verified") == "1"),
     )
 
