@@ -1,8 +1,10 @@
 import csv
 import importlib.util
 from pathlib import Path
+from types import SimpleNamespace
 HERE=Path(__file__).resolve().parents[1]
 spec=importlib.util.spec_from_file_location('phone_search',HERE/'phone_search.py');mod=importlib.util.module_from_spec(spec);spec.loader.exec_module(mod)
+app_actions_spec=importlib.util.spec_from_file_location('app_actions',HERE/'app_actions.py');app_actions=importlib.util.module_from_spec(app_actions_spec);app_actions_spec.loader.exec_module(app_actions)
 def row(**kw):
  r={k:'' for k in mod.FIELDS};r.update({'data_date':'2026-08-31','category':'手机','subtype':'device','brand':'A','series':'S','model':'M','condition':'好','price':'100','unit':'CNY/台','verified':'1','source_path':'x.csv','source_image':'x.jpg'});r.update(kw);return r
 def write_snapshot(root,r):
@@ -35,3 +37,9 @@ def test_history_persists_deduped_at_least_twenty_capacity(tmp_path):
  h.clear();assert not (tmp_path/'history.json').exists();h.load();assert h.items==[]
 def test_favorites_persist_and_dedupe(tmp_path):
  f=mod.Favorites(str(tmp_path/'favorites.json'));r=row(record_id='r1',condition='好',price='100');f.add([r,r]);assert len(f.items)==1;f2=mod.Favorites(str(tmp_path/'favorites.json'));assert len(f2.items)==1;f2.remove([r]);assert f2.items==[]
+def test_add_favorite_delegates_to_canonical_favorite_service():
+ expected=[row(record_id='r1')]
+ calls=[]
+ app=SimpleNamespace(rows=expected,selected=lambda: [],addToFavorites=lambda rows: calls.append(rows) or 'ok')
+ assert app_actions.add_favorite(app)=='ok'
+ assert calls==[expected]
