@@ -78,7 +78,7 @@ def test_chinese_brand_and_network_model_query():
 
 def test_alias_exact_fallback_does_not_broaden_model_query():
     rows = [row("alias-hit", model="Find X9 Ultra", alias="A5"), row("model-hit", model="A5")]
-    assert [r["record_id"] for r in search_rows(rows, "A5")] == ["model-hit", "alias-hit"]
+    assert [r["record_id"] for r in search_rows(rows, "A5")] == ["model-hit"]
     assert [r["record_id"] for r in search_rows(rows, "OPPO A5")] == ["model-hit"]
 
 
