@@ -29,6 +29,7 @@ class CsvRepository:
         self.clean = clean
         self.read_csv = read_csv
         self.valid = valid
+        self.manifest: list[dict] = []
 
     def discover(self) -> list[tuple[str, list[str]]]:
         """Return one deterministic list of CSV paths per discovered date."""
@@ -67,6 +68,7 @@ class CsvRepository:
         all_rows: list[dict] = []
         snapshots: dict[str, list[dict]] = {}
         errors: list[str] = []
+        self.manifest = []
 
         for date, paths in self.discover():
             rows_for_date: list[dict] = []
@@ -94,5 +96,12 @@ class CsvRepository:
                     rows_for_date.append(row)
             snapshots[date] = rows_for_date
             all_rows.extend(rows_for_date)
+
+        manifest_path = os.path.join(self.root, "source_image_manifest.csv")
+        if os.path.isfile(manifest_path):
+            try:
+                self.manifest = self.read_csv(manifest_path)
+            except Exception as exc:
+                errors.append(f"来源清单: {exc}")
 
         return all_rows, snapshots, errors
