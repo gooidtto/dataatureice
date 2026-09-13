@@ -29,6 +29,20 @@ def _show_window(w):
         pass
 
 
+def addToFavorites(self, rows):
+    rows = list(rows or [])
+    if not rows:
+        return messagebox.showinfo("收藏", "请先选择要收藏的记录", parent=self.root)
+    added, duplicate = self.fav.add(rows)
+    if added and duplicate:
+        messagebox.showinfo("收藏", f"已收藏 {len(added)} 条，{len(duplicate)} 条已经收藏", parent=self.root)
+    elif added:
+        messagebox.showinfo("收藏", f"已收藏 {len(added)} 条", parent=self.root)
+    else:
+        messagebox.showinfo("收藏", "已经收藏", parent=self.root)
+    return added, duplicate
+
+
 def _install_window_lifecycle(App):
     original_init = App.__init__
     base_factory = getattr(App, "_new_window", None)
@@ -280,6 +294,7 @@ def install(App):
         "detail":detail,
         "detail_rows":detail_rows,
         "menu":menu,
+        "addToFavorites":addToFavorites,
         "_remove_favorite_rows":_remove_favorite_rows,
         "_favorite_popup_menu":_favorite_popup_menu,
     }
