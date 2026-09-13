@@ -2,7 +2,7 @@
 
 New code should depend on :class:`search_service.SearchService`. This module
 keeps the existing ``search_rows`` API stable for tests and older callers.
-It deliberately has no UI imports and performs no monkey patching.
+It contains no UI imports and performs no monkey patching.
 """
 from search_service import (
     ALIAS_FIELD,
@@ -11,6 +11,7 @@ from search_service import (
     SearchIndex,
     SearchService,
     clean,
+    invalidate_search_cache,
     normalize,
     search_rows,
     tokenize,
@@ -23,6 +24,7 @@ __all__ = [
     "SearchIndex",
     "SearchService",
     "clean",
+    "invalidate_search_cache",
     "normalize",
     "search_rows",
     "tokenize",
