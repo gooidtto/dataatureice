@@ -38,6 +38,14 @@ def test_favorite_popup_actions_match_app_helpers():
     assert "def remove(self,rows):" in phone
 
 
+def test_favorite_action_is_installed_on_search_app():
+    actions = ACTIONS.read_text(encoding="utf-8")
+    assert "def addToFavorites(self, rows):" in actions
+    assert '"addToFavorites":addToFavorites' in actions
+    assert "added, duplicate = self.fav.add(rows)" in actions
+    assert "已经收藏" in actions
+
+
 def test_main_window_is_withdrawn_during_app_initialization():
     actions = ACTIONS.read_text(encoding="utf-8")
     assert "def _install_window_lifecycle(App):" in actions
