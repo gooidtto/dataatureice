@@ -1,4 +1,4 @@
-from phone_search import FIELDS, CAT, Store, clean, read_csv, valid
+from phone_search import Store
 from search_service import SearchService
 from storage.repository import InMemoryRepository
 
@@ -31,19 +31,18 @@ def test_store_load_updates_search_service_and_uses_repository():
     rows = [
         row("1", "OPPO A59"),
         row("2", "OPPO A59 5G", date="2026-08-25", condition="开机碎屏", price="300"),
-        row("3", "vivo Y100", brand="vivo", series="Y", alias="不要命中", date="2026-08-31"),
+        row("3", "vivo Y100", brand="vivo", series="Y", alias="Y100青春版", date="2026-08-31"),
     ]
     repo = InMemoryRepository(rows, {"2026-08-31": [rows[0], rows[2]], "2026-08-25": [rows[1]]})
     store = Store("unused", repository=repo)
 
-    loaded = store.load()
-
-    assert loaded is None
+    assert store.load() is None
     assert len(store.rows) == 3
     assert store.snapshots["2026-08-25"][0]["model"] == "OPPO A59 5G"
     assert [r["model"] for r in store.search("OPPO A59")] == ["OPPO A59", "OPPO A59 5G"]
     assert [r["model"] for r in store.search("vivo", "手机")] == ["vivo Y100"]
-    assert store.search("不要命中", "手机") == []
+    assert [r["model"] for r in store.search("Y100青春版", "手机")] == ["vivo Y100"]
+    assert store.search("Y100青春版", "平板") == []
 
 
 def test_store_accepts_search_service_injection_and_replaces_index_on_reload():
