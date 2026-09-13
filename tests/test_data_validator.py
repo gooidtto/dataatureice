@@ -25,3 +25,11 @@ def test_duplicate_id_across_shards_fails(tmp_path):
             w=csv.DictWriter(f,fieldnames=FIELDS); w.writeheader(); w.writerows(rows)
     (tmp_path/'source_image_manifest.csv').write_text('include,data_date,category,status,source_path,source_image\n1,2026-08-31,手机,verified,x/手机.jpg,手机.jpg\n',encoding='utf-8-sig')
     e,_,_=validate(str(tmp_path)); assert any('跨分片' in x for x in e),e
+def test_non_callable_manifest_entry_is_not_reported_as_missing_price_rows(tmp_path):
+    write_snapshot(tmp_path,[base()])
+    with open(tmp_path/'source_image_manifest.csv','w',encoding='utf-8-sig',newline='') as f:
+        w=csv.DictWriter(f,fieldnames=['include','data_date','category','status','source_path','source_image']); w.writeheader(); w.writerows([
+            {'include':'1','data_date':'2026-08-31','category':'手机','status':'verified','source_path':'x/手机.jpg','source_image':'手机.jpg'},
+            {'include':'0','data_date':'2026-08-31','category':'手机配件','status':'verified_no_callable_rows','source_path':'x/重复表.jpg','source_image':'重复表.jpg'},
+        ])
+    e,w,_=validate(str(tmp_path)); assert not e; assert not any('重复表.jpg' in x for x in w),w
