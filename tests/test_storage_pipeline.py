@@ -65,3 +65,36 @@ def test_pipeline_preserves_same_record_id_across_dates(tmp_path):
         ("same", "2026-08-31"),
         ("same", "2026-08-25"),
     }
+
+
+def test_run_does_not_persist_when_repository_reports_errors(tmp_path):
+    engine = SQLiteFTSEngine(tmp_path / "search.sqlite3")
+    pipeline = StoragePipeline(engine)
+    pipeline.persist([row("existing", "2026-08-31", "OPPO A59")])
+
+    class BrokenRepository:
+        def load(self):
+            return [row("new", "2026-08-31", "OPPO A60")], {}, ["2026-08-31: bad source"]
+
+    rows, snapshots, errors = pipeline.run(BrokenRepository())
+    assert rows == []
+    assert snapshots == {}
+    assert errors == ["2026-08-31: bad source"]
+    assert engine.count() == 1
+    assert engine.all_rows()[0]["record_id"] == "existing"
+
+
+def test_run_returns_exactly_the_normalized_rows_it_persists(tmp_path):
+    engine = SQLiteFTSEngine(tmp_path / "search.sqlite3")
+    pipeline = StoragePipeline(engine)
+
+    class Repository:
+        def load(self):
+            rows = [row("same", "2026-08-31", " OPPO A59 "), row("same", "2026-08-31", "duplicate")]
+            return rows, {"2026-08-31": rows}, []
+
+    rows, snapshots, errors = pipeline.run(Repository())
+    assert errors == []
+    assert rows == [row("same", "2026-08-31", "OPPO A59")]
+    assert snapshots == {"2026-08-31": [row("same", "2026-08-31", "OPPO A59")]}
+    assert engine.all_rows() == rows
