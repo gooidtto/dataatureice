@@ -1,6 +1,14 @@
 #!/usr/bin/env python3
 """Build the canonical SQLite/FTS5 database from the prepared date data."""
 from pathlib import Path
+import sys
+
+# Running ``python tools/build_sqlite.py`` sets sys.path[0] to tools/ rather
+# than the repository root. Add the root explicitly so the legacy source
+# parser can be reused without making the build depend on the caller's cwd.
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 from phone_search import CAT, FIELDS, clean, read_csv, valid
 from storage.csv_repository import CsvRepository
@@ -8,9 +16,9 @@ from storage.db_engine import SQLiteFTSEngine
 from storage.pipeline import StoragePipeline
 
 
-ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data"
 DB = DATA / "search.sqlite3"
+EXPECTED_ROWS = 31446
 
 
 def main() -> int:
@@ -25,7 +33,15 @@ def main() -> int:
     rows, _snapshots, errors = repository.load()
     if errors:
         raise SystemExit("; ".join(errors[:10]))
+    if len(rows) != EXPECTED_ROWS:
+        raise SystemExit(
+            f"canonical row count mismatch: expected {EXPECTED_ROWS}, got {len(rows)}"
+        )
     count = StoragePipeline(SQLiteFTSEngine(DB)).persist(rows)
+    if count != EXPECTED_ROWS:
+        raise SystemExit(
+            f"SQLite row count mismatch: expected {EXPECTED_ROWS}, got {count}"
+        )
     print(f"SQLITE_CANONICAL_ROWS={count}")
     return 0
 
