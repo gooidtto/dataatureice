@@ -1,14 +1,9 @@
 """Indexed search service for the verified device price database.
 
-The service separates four concerns:
-1. query parsing and normalization;
-2. indexed candidate retrieval;
-3. strict semantic matching;
-4. relevance ordering.
-
-It deliberately does not use price to decide whether a record matches or is a
-better real-world product. Canonical product-value ordering remains the job of
-value_order.py at the presentation/domain boundary.
+The service separates query parsing, indexed candidate retrieval, strict semantic
+matching, and relevance ordering. It never uses price to decide whether a record
+matches or whether a product is more valuable; canonical real-world value
+ordering remains the responsibility of value_order.py.
 """
 from bisect import bisect_left
 import re
@@ -42,7 +37,7 @@ def _brand_parts(value):
 
 
 class SearchIndex:
-    """Immutable-after-build postings index for one Store row snapshot."""
+    """Postings index built once for one Store row snapshot."""
 
     def __init__(self, rows):
         self.rows = list(rows or [])
@@ -53,7 +48,6 @@ class SearchIndex:
         self.alias = {}
         self.network = {}
         self.category = {}
-        self._keys = {}
         for index, row in enumerate(self.rows):
             values = {
                 "brand": normalize(row.get("brand", "")),
@@ -69,8 +63,6 @@ class SearchIndex:
                 self._add(self.brand, normalize(part), index)
             self._add(self.model, values["model"], index)
             self._add(self.series, values["series"], index)
-            # Alias is intentionally exact-only. Prefix expansion here would
-            # reintroduce unrelated model-family leaks.
             self._add(self.alias, values["alias"], index)
             self._add(self.network, values["network"], index)
             self._add(self.category, values["category"], index)
@@ -98,48 +90,30 @@ class SearchIndex:
             pos += 1
 
     def exact(self, name, key):
-        return set(self._mapping(name).get(key, ()))
+        return set(getattr(self, name).get(key, ()))
 
     def prefix(self, name, key):
         out = set()
         for matched in self._prefix_keys(name, key):
-            out.update(self._mapping(name).get(matched, ()))
+            out.update(getattr(self, name).get(matched, ()))
         return out
-
-    def _mapping(self, name):
-        return getattr(self, name)
-
-    def brands(self):
-        return self.brand
 
 
 class SearchService:
-    """Reusable indexed search service owned by a data Store."""
+    """Reusable indexed search service for one loaded Store snapshot."""
 
     def __init__(self, rows=None):
         self.index = SearchIndex(rows or [])
-        self._row_signature = None
-        if rows is not None:
-            self._row_signature = id(rows), len(rows)
 
     def replace_rows(self, rows):
-        rows = list(rows or [])
-        self.index = SearchIndex(rows)
-        self._row_signature = id(rows), len(rows)
-
-    @staticmethod
-    def _brand_matches(index, row_index, brand_key):
-        return row_index in index.exact("brand", brand_key)
+        self.index = SearchIndex(rows or [])
 
     @staticmethod
     def _detect_brand(index, query):
         q_key = normalize(query)
         if not q_key:
             return "", q_key
-        # Longest-first prevents a short brand alias from stealing a composite
-        # brand. Matching against the indexed brand keys is O(number of brands),
-        # not O(number of data rows).
-        for brand_key in sorted(index.brands(), key=len, reverse=True):
+        for brand_key in sorted(index.brand, key=len, reverse=True):
             if brand_key and brand_key in q_key:
                 pos = q_key.find(brand_key)
                 return brand_key, q_key[:pos] + q_key[pos + len(brand_key):]
@@ -153,7 +127,7 @@ class SearchService:
         candidates = index.exact("model", term) | index.exact("series", term)
         candidates |= index.prefix("model", term)
         candidates |= index.prefix("series", term)
-        # Verified alias is an exact identifier, never a prefix family match.
+        # Verified aliases are exact identifiers only. Never use alias prefixes.
         candidates |= index.exact("alias", term)
         if len(term) >= 3:
             candidates |= index.exact("network", term)
@@ -163,9 +137,7 @@ class SearchService:
     @staticmethod
     def _score(index, row_index, brand_key, terms, query_key):
         values = index.normalized[row_index]
-        score = 0
-        if brand_key:
-            score += 1000
+        score = 1000 if brand_key else 0
         network_key = values["network"]
         model_key = values["model"]
         series_key = values["series"]
@@ -202,45 +174,35 @@ class SearchService:
                 score += 135
         return score
 
+    @staticmethod
+    def _network_prefix_exists(index, key):
+        if len(key) < 3:
+            return False
+        return any(index._prefix_keys("network", key))
+
     def search(self, query, category="全部"):
         q = clean(query)
         if not q:
             return []
         index = self.index
         brand_key, remainder = self._detect_brand(index, q)
-        remainder_key = normalize(remainder)
+        query_key = normalize(remainder if brand_key else q)
         if brand_key:
-            base = index.exact("brand", brand_key)
-            if not remainder_key:
-                candidates = base
-                terms = []
-            else:
-                terms = [remainder_key] if self._network_prefix_exists(index, remainder_key) else tokenize(remainder)
-                candidates = base
+            candidates = index.exact("brand", brand_key)
+            terms = ([query_key] if self._network_prefix_exists(index, query_key) else tokenize(remainder)) if query_key else []
         else:
-            query_key = normalize(q)
-            terms = [query_key] if self._network_prefix_exists(index, query_key) else tokenize(q)
+            terms = ([query_key] if self._network_prefix_exists(index, query_key) else tokenize(q))
             candidates = set(range(len(index.rows)))
-            remainder_key = query_key
-
-        if brand_key:
-            for term in terms:
-                candidates &= self._term_candidates(index, term)
-        else:
-            for term in terms:
-                candidates &= self._term_candidates(index, term)
-
+        for term in terms:
+            candidates &= self._term_candidates(index, term)
         if category != "全部":
             candidates &= index.exact("category", clean(category))
         if not candidates:
             return []
-
-        query_key = remainder_key
-        ranked = []
-        for row_index in candidates:
-            row = index.rows[row_index]
-            score = self._score(index, row_index, brand_key, terms, query_key)
-            ranked.append((score, row))
+        ranked = [
+            (self._score(index, row_index, brand_key, terms, query_key), index.rows[row_index])
+            for row_index in candidates
+        ]
         ranked.sort(key=lambda item: (
             -item[0],
             -int(str(item[1].get("data_date", "0000-00-00")).replace("-", "") or 0),
@@ -249,11 +211,27 @@ class SearchService:
         ))
         return [row for _, row in ranked]
 
-    @staticmethod
-    def _network_prefix_exists(index, key):
-        return len(key) >= 3 and bool(tuple(index._prefix_keys("network", key)))
+
+_SERVICE_CACHE = {}
+_CACHE_LIMIT = 4
+
+
+def _rows_signature(rows):
+    rows = list(rows or [])
+    if not rows:
+        return (id(rows), 0, "", "")
+    first = rows[0].get("record_id", "") if isinstance(rows[0], dict) else ""
+    last = rows[-1].get("record_id", "") if isinstance(rows[-1], dict) else ""
+    return (id(rows), len(rows), first, last)
 
 
 def search_rows(rows, query, category="全部"):
-    """Compatibility API backed by the indexed SearchService."""
-    return SearchService(rows).search(query, category)
+    """Compatibility API backed by a cached indexed SearchService."""
+    key = _rows_signature(rows)
+    service = _SERVICE_CACHE.get(key)
+    if service is None:
+        service = SearchService(rows)
+        _SERVICE_CACHE[key] = service
+        while len(_SERVICE_CACHE) > _CACHE_LIMIT:
+            _SERVICE_CACHE.pop(next(iter(_SERVICE_CACHE)))
+    return service.search(query, category)
