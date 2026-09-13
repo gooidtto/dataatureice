@@ -102,20 +102,65 @@ def quote(self):
     messagebox.showinfo("批量报价",f"记录：{len(rows)} 条\n最低：{min(prices):g}\n最高：{max(prices):g}\n平均：{sum(prices)/len(prices):.2f}",parent=self.root)
 
 
+def show_compare(self, rows, targets=None):
+    """Render comparison without constructing a Toplevel directly."""
+    rows = list(rows or [])
+    targets = list(targets or rows)
+    if not rows:
+        return
+    history = self.s.history(targets)
+    w = _new_window(self, "历史价格对比 · 同型号跨日期", "1650x760", (1100, 600))
+    cols = ("date", "model", "condition", "price", "unit")
+    frame = ttk.Frame(w, padding=12)
+    frame.pack(fill="both", expand=True)
+    tree = ttk.Treeview(frame, columns=cols, show="headings", selectmode="extended")
+    for c,h,wd in (("date","日期",120),("model","型号",320),("condition","价格条件",300),("price","价格",100),("unit","单位",100)):
+        tree.heading(c,text=h); tree.column(c,width=wd,anchor="w")
+    previous_date = None
+    for r in history:
+        date = r.get("data_date","")
+        if previous_date is not None and date != previous_date:
+            tree.insert("","end",values=("","","","",""))
+            tree.insert("","end",values=("","","","",""))
+        tree.insert("","end",values=(date,r.get("model",""),r.get("condition",""),r.get("price",""),r.get("unit","")))
+        previous_date = date
+    y=ttk.Scrollbar(frame,orient="vertical",command=tree.yview)
+    x=ttk.Scrollbar(frame,orient="horizontal",command=tree.xview)
+    tree.configure(yscrollcommand=y.set,xscrollcommand=x.set)
+    tree.grid(row=0,column=0,sticky="nsew"); y.grid(row=0,column=1,sticky="ns"); x.grid(row=1,column=0,sticky="ew")
+    frame.grid_rowconfigure(0,weight=1); frame.grid_columnconfigure(0,weight=1)
+    buttons=ttk.Frame(w); buttons.pack(pady=(0,8))
+    copy_fn=getattr(self,"copy_popup",None)
+    export_fn=getattr(self,"export_popup",None)
+    if callable(copy_fn):
+        ttk.Button(buttons,text="复制",command=lambda:copy_fn(tree)).pack(side="left",padx=4)
+    if callable(export_fn):
+        ttk.Button(buttons,text="导出",command=lambda:export_fn(tree)).pack(side="left",padx=4)
+    ttk.Button(buttons,text="关闭",command=w.destroy).pack(side="left",padx=4)
+    w.bind("<Escape>",lambda _e:w.destroy())
+
+
+def detail_rows(self, rs):
+    """Show raw fields for the first selected result using the window factory."""
+    rows = list(rs or [])
+    if not rows:
+        return
+    row = rows[0]
+    w = _new_window(self, "记录详情", "760x560", (600, 420))
+    text=tk.Text(w,wrap="none",font=("微软雅黑",10))
+    text.pack(fill="both",expand=True,padx=12,pady=12)
+    for field in __import__('phone_search').FIELDS:
+        text.insert("end",f"{field}: {row.get(field,'')}\n")
+    text.configure(state="disabled")
+    ttk.Button(w,text="关闭",command=w.destroy).pack(pady=(0,8))
+    w.bind("<Escape>",lambda _e:w.destroy())
+
+
 def compare(self):
     rows=self.selected() or self.rows
     if not rows:
         return messagebox.showinfo("历史价格对比","请先选择或查询记录",parent=self.root)
-    history=self.s.history(rows)
-    w=_new_window(self,"历史价格对比","1650x760",(1100,600))
-    cols=("date","model","condition","price","unit")
-    tree=ttk.Treeview(w,columns=cols,show="headings")
-    for c,h,wd in (("date","日期",120),("model","型号",320),("condition","价格条件",300),("price","价格",100),("unit","单位",100)):
-        tree.heading(c,text=h); tree.column(c,width=wd,anchor="w")
-    for r in history:
-        tree.insert("","end",values=(r.get("data_date",""),r.get("model",""),r.get("condition",""),r.get("price",""),r.get("unit","")))
-    tree.pack(fill="both",expand=True,padx=12,pady=12)
-    ttk.Button(w,text="关闭",command=w.destroy).pack(pady=(0,8))
+    return show_compare(self, rows, rows)
 
 
 def detail(self,event=None):
@@ -123,12 +168,7 @@ def detail(self,event=None):
     row=self.map.get(iid) if iid else None
     if not row:
         return
-    w=_new_window(self,"记录详情","760x560",(600,420))
-    text=tk.Text(w,wrap="none",font=("微软雅黑",10)); text.pack(fill="both",expand=True,padx=12,pady=12)
-    for f in __import__('phone_search').FIELDS:
-        text.insert("end",f"{f}: {row.get(f,'')}\n")
-    text.configure(state="disabled")
-    ttk.Button(w,text="关闭",command=w.destroy).pack(pady=(0,8))
+    return detail_rows(self,[row])
 
 
 def menu(self,event):
@@ -144,6 +184,6 @@ def menu(self,event):
 
 
 def install(App):
-    actions={"open_dir":open_dir,"sources":sources,"show_favorites":show_favorites,"stats":stats,"quote":quote,"compare":compare,"detail":detail,"menu":menu}
+    actions={"open_dir":open_dir,"sources":sources,"show_favorites":show_favorites,"stats":stats,"quote":quote,"compare":compare,"show_compare":show_compare,"detail":detail,"detail_rows":detail_rows,"menu":menu}
     for name,fn in actions.items():
         setattr(App,name,fn)
