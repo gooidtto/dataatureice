@@ -182,9 +182,19 @@ def _standardize_window(w):
 def standardized_toplevel(*args,**kwargs):
     w=_real_toplevel(*args,**kwargs);w.after_idle(lambda:_standardize_window(w));return w
 
-install_app_actions(phone_search.App)
-phone_search.App.ui=ui;phone_search.App.search=search;phone_search.App.render=_render_search_matrix;phone_search.App.load=load;phone_search.App.clear_search=clear_search;phone_search.App.on_tree_click=_result_click;phone_search.App.favorite_groups=favorite_groups;phone_search.tk.Toplevel=standardized_toplevel
+class SearchApp(phone_search.App):
+    """Production application with explicit UI overrides instead of monkey-patching."""
+    ui=ui
+    search=search
+    render=_render_search_matrix
+    load=load
+    clear_search=clear_search
+    on_tree_click=_result_click
+    favorite_groups=favorite_groups
+
+install_app_actions(SearchApp)
+phone_search.tk.Toplevel=standardized_toplevel
 
 def main():
-    root=tk.Tk();phone_search.App(root);root.mainloop()
+    root=tk.Tk();SearchApp(root);root.mainloop()
 if __name__=='__main__':main()
