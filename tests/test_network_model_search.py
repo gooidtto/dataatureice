@@ -1,5 +1,5 @@
 from search_core import search_rows
-import app_actions_fix
+from search_display import build_display_columns
 
 
 def row(**kw):
@@ -32,7 +32,8 @@ def test_network_model_exact_match_ranks_first():
 
 
 def test_network_model_display_column_is_visible():
-    fields = [field for field, _label, _width in app_actions_fix.DISPLAY_COLS]
-    labels = {field: label for field, label, _width in app_actions_fix.DISPLAY_COLS}
-    assert "model_code" in fields
-    assert labels["model_code"] == "网络型号"
+    columns = build_display_columns([row()])
+    fields = [field for field, _label, _width in columns]
+    labels = {field: label for field, label, _width in columns}
+    assert "identity" in fields
+    assert "网络型号" in labels.values()
