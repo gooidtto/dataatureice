@@ -43,6 +43,12 @@ def addToFavorites(self, rows):
     return added, duplicate
 
 
+def add_favorite(self):
+    """Compatibility handler for the main-window one-click favorite button."""
+    rows = self.selected() or self.rows
+    return self.addToFavorites(rows)
+
+
 def _install_window_lifecycle(App):
     original_init = App.__init__
     base_factory = getattr(App, "_new_window", None)
@@ -295,6 +301,7 @@ def install(App):
         "detail_rows":detail_rows,
         "menu":menu,
         "addToFavorites":addToFavorites,
+        "add_favorite":add_favorite,
         "_remove_favorite_rows":_remove_favorite_rows,
         "_favorite_popup_menu":_favorite_popup_menu,
     }
