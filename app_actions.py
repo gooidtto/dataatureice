@@ -65,17 +65,64 @@ def show_favorites(self):
     tree.configure(yscrollcommand=y.set,xscrollcommand=x.set)
     tree.grid(row=0,column=0,sticky="nsew"); y.grid(row=0,column=1,sticky="ns"); x.grid(row=1,column=0,sticky="ew")
     f.grid_rowconfigure(0,weight=1); f.grid_columnconfigure(0,weight=1)
+    mapping={}
+    index=0
     groups=self.favorite_groups()
     for gi,(_,blocks) in enumerate(groups):
         for bi,block in enumerate(blocks):
             for r in block:
-                tree.insert("","end",values=[r.get(c,"") for c in cols])
+                iid=f"r{index}"; index+=1
+                tree.insert("","end",iid=iid,values=[r.get(c,"") for c in cols]); mapping[iid]=r
             if bi<len(blocks)-1:
-                tree.insert("","end",values=[""]*len(cols))
+                iid=f"g{index}"; index+=1
+                tree.insert("","end",iid=iid,values=[""]*len(cols)); mapping[iid]=None
         if gi<len(groups)-1:
-            tree.insert("","end",values=[""]*len(cols)); tree.insert("","end",values=[""]*len(cols))
-    ttk.Button(w,text="关闭",command=w.destroy).pack(pady=8)
+            for _ in range(2):
+                iid=f"g{index}"; index+=1
+                tree.insert("","end",iid=iid,values=[""]*len(cols)); mapping[iid]=None
+
+    def selected_rows():
+        return [mapping[iid] for iid in tree.selection() if mapping.get(iid)]
+
+    def all_rows():
+        return [r for r in mapping.values() if r]
+
+    def refresh():
+        w.destroy()
+        self.show_favorites()
+
+    bar=ttk.Frame(w,padding=(12,0,12,10)); bar.pack(fill="x")
+    ttk.Button(bar,text="查看详情",command=lambda:self.detail_rows(selected_rows() or all_rows())).pack(side="left",padx=4)
+    ttk.Button(bar,text="移除收藏",command=lambda:self._remove_favorite_rows(w,selected_rows())).pack(side="left",padx=4)
+    ttk.Button(bar,text="复制",command=lambda:self.copy_popup(selected_rows() or all_rows())).pack(side="left",padx=4)
+    ttk.Button(bar,text="导出CSV",command=lambda:self.export_popup(selected_rows() or all_rows(),False)).pack(side="left",padx=4)
+    ttk.Button(bar,text="导出Excel",command=lambda:self.export_popup(selected_rows() or all_rows(),True)).pack(side="left",padx=4)
+    ttk.Button(bar,text="关闭",command=w.destroy).pack(side="right",padx=4)
+    tree.bind("<Double-1>",lambda _e:self.detail_rows(selected_rows()))
+    tree.bind("<Button-3>",lambda e:self._favorite_popup_menu(e,tree,mapping,w))
     w.bind("<Escape>",lambda _e:w.destroy())
+
+
+def _remove_favorite_rows(self, window, rows):
+    if not rows:
+        return messagebox.showinfo("我的收藏","请先选择要移除的收藏",parent=window)
+    self.fav.remove(rows)
+    window.destroy()
+    self.show_favorites()
+    self.status.config(text=f"已移除收藏 {len(rows)} 条")
+
+
+def _favorite_popup_menu(self, event, tree, mapping, window):
+    iid=tree.identify_row(event.y)
+    row=mapping.get(iid) if iid else None
+    if not row:
+        return
+    tree.selection_set(iid)
+    menu=tk.Menu(tree,tearoff=False)
+    menu.add_command(label="查看详情",command=lambda:self.detail_rows([row]))
+    menu.add_command(label="移除收藏",command=lambda:self._remove_favorite_rows(window,[row]))
+    menu.add_command(label="复制",command=lambda:self.copy_popup([row]))
+    menu.tk_popup(event.x_root,event.y_root)
 
 
 def stats(self):
@@ -133,9 +180,10 @@ def show_compare(self, rows, targets=None):
     copy_fn=getattr(self,"copy_popup",None)
     export_fn=getattr(self,"export_popup",None)
     if callable(copy_fn):
-        ttk.Button(buttons,text="复制",command=lambda:copy_fn(tree)).pack(side="left",padx=4)
+        ttk.Button(buttons,text="复制",command=lambda:copy_fn(history)).pack(side="left",padx=4)
     if callable(export_fn):
-        ttk.Button(buttons,text="导出",command=lambda:export_fn(tree)).pack(side="left",padx=4)
+        ttk.Button(buttons,text="导出CSV",command=lambda:export_fn(history,False)).pack(side="left",padx=4)
+        ttk.Button(buttons,text="导出Excel",command=lambda:export_fn(history,True)).pack(side="left",padx=4)
     ttk.Button(buttons,text="关闭",command=w.destroy).pack(side="left",padx=4)
     w.bind("<Escape>",lambda _e:w.destroy())
 
