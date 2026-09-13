@@ -1,9 +1,10 @@
-"""Storage boundary for the price database.
+"""Repository boundary for the canonical price database.
 
 The application talks to a repository instead of depending on a particular
-on-disk representation. CSV remains the source of truth for now; SQLite/FTS5
-can be introduced behind this boundary later without changing search, display,
-favorites, or export semantics.
+on-disk representation. SQLite/FTS5 is the canonical production store;
+CSV-backed loading remains an ingestion and compatibility path behind this
+boundary. Search, display, favorites, and export semantics stay independent
+of either representation.
 """
 from __future__ import annotations
 
