@@ -32,7 +32,7 @@ def clear_search(self):
         try:self.root.after_cancel(self._search_after_id)
         except tk.TclError:pass
         self._search_after_id=None
-    self._search_query_id=getattr(self,'_search_query_id',0)+1; self.q.set(''); self.hide_suggestions(); self.rows=[]; self.map={}; self._matrix_map={}; self._display_columns=(); self.tree.delete(*self.tree.get_children()); _clear_result_views(self); self.target.config(text='输入品牌 / 系列 / 型号开始查询')
+    self._search_query_id=getattr(self,'_search_query_id',0)+1; self.q.set(''); self.hide_suggestions(); self.rows=[]; self.map={}; self._matrix_map={}; self._display_columns=(); self.tree.delete(*self.tree.get_children()); _clear_result_views(self); self.target.config(text='输入品牌、系列、型号开始查询')
     if hasattr(self,'empty_hint'):self.empty_hint.place(relx=0.5,rely=0.5,anchor='center')
     self.status.config(text='请输入品牌、系列、型号或别名'); self.entry.focus_set()
 
@@ -50,7 +50,7 @@ def _configure_result_tree(tree,columns,iid,display,favorite):
     fields=[c[0] for c in columns]+['favorite']; tree.configure(columns=fields,show='headings',height=1,selectmode='browse')
     for field,title,width in columns:tree.heading(field,text=title);tree.column(field,width=width,minwidth=max(60,min(width,90)),anchor='center' if field=='data_date' else 'w',stretch=False)
     tree.heading('favorite',text='收藏');tree.column('favorite',width=110,minwidth=90,anchor='center',stretch=False); values=[display.get(field,'') for field,_,_ in columns]; tag=_row_tag(display['_model_index'],display['_period_index'])[0]
-    tree.insert('', 'end',iid=iid,values=values+['★ 已收藏' if favorite else '☆ 一键收藏'],tags=(tag,));tree.tag_configure(tag,background=_MODEL_PALETTE[display['_model_index']%len(_MODEL_PALETTE)]);tree.configure(width=max(20,(sum(max(70,int(width)) for _,_,width in columns)+110)//8))
+    tree.insert('', 'end',iid=iid,values=values+['★ 已收藏' if favorite else '☆ 一键收藏'],tags=(tag,));tree.tag_configure(tag,background=_MODEL_PALETTE[display['_model_index']%len(_MODEL_PALETTE)])
 
 def _sync_result_selection(self):
     selected=set(self.tree.selection())
@@ -124,10 +124,8 @@ def _queue_async_result(query_id,q,record_history,future):
 def _poll_async_results(self):
     try:
         while True:
-            query_id,q,record_history,future=_UI_QUEUE.get_nowait()
-            _apply_async_result(self,query_id,q,record_history,future)
-    except Empty:
-        pass
+            query_id,q,record_history,future=_UI_QUEUE.get_nowait();_apply_async_result(self,query_id,q,record_history,future)
+    except Empty:pass
     try:self.root.after(25,lambda:_poll_async_results(self))
     except tk.TclError:pass
 
@@ -147,7 +145,7 @@ def _debounced_search(self):
 def search(self,record_history=True):
     q=phone_search.clean(self.q.get())
     if not q:
-        self._search_query_id=getattr(self,'_search_query_id',0)+1;self.hide_suggestions();self.rows=[];self.map={};self._matrix_map={};self._display_columns=();self.tree.delete(*self.tree.get_children());_clear_result_views(self);self.target.config(text='输入品牌 / 系列 / 型号开始查询');self.empty_hint.place(relx=0.5,rely=0.5,anchor='center');self.status.config(text='请输入品牌、系列、型号或别名');return []
+        self._search_query_id=getattr(self,'_search_query_id',0)+1;self.hide_suggestions();self.rows=[];self.map={};self._matrix_map={};self._display_columns=();self.tree.delete(*self.tree.get_children());_clear_result_views(self);self.target.config(text='输入品牌、系列、型号开始查询');self.empty_hint.place(relx=0.5,rely=0.5,anchor='center');self.status.config(text='请输入品牌、系列、型号或别名');return []
     if getattr(self,'_search_after_id',None):
         try:self.root.after_cancel(self._search_after_id)
         except tk.TclError:pass
@@ -167,7 +165,17 @@ def _toggle_matrix_favorite(self,iid,payload):
     else:self.fav.add(rows)
     _render_search_matrix(self,self.rows)
 
-def favorite_groups(self):return normalize_search_results(sort_rows(self.fav.dedupe()))
+def favorite_groups(self):
+    rows=sort_rows(self.fav.dedupe())
+    grouped={}
+    for row in rows:
+        key=tuple(phone_search.clean(row.get(field,'')) for field in ('category','brand','series','model','model_code'))
+        grouped.setdefault(key,{}).setdefault(phone_search.clean(row.get('data_date','')),[]).append(row)
+    result=[]
+    for key,dates in grouped.items():
+        blocks=[sort_rows(group) for _date,group in sorted(dates.items(),reverse=True)]
+        result.append((key,blocks))
+    return result
 
 def _standardize_window(w):
     try:
