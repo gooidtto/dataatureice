@@ -7,10 +7,51 @@ from tkinter import ttk, messagebox
 
 
 def _new_window(self, title, geometry=None, minsize=None):
-    factory = getattr(self, "_new_window", None)
-    if not callable(factory) or factory is _new_window:
+    factory = getattr(self, "_window_factory", None)
+    if not callable(factory):
         raise RuntimeError("SearchApp must provide _new_window()")
-    return factory(title=title, geometry=geometry, minsize=minsize)
+    w = factory(title=title, geometry=geometry, minsize=minsize)
+    try:
+        w.withdraw()
+        self.root.after_idle(lambda: _show_window(w))
+    except tk.TclError:
+        pass
+    return w
+
+
+def _show_window(w):
+    try:
+        if w.winfo_exists():
+            w.update_idletasks()
+            w.deiconify()
+            w.lift()
+    except tk.TclError:
+        pass
+
+
+def _install_window_lifecycle(App):
+    original_init = App.__init__
+    base_factory = getattr(App, "_new_window", None)
+    if not callable(base_factory):
+        raise RuntimeError("SearchApp must provide _new_window() before lifecycle installation")
+
+    def _init(self, root, *args, **kwargs):
+        root.withdraw()
+        try:
+            original_init(self, root, *args, **kwargs)
+            root.update_idletasks()
+            root.deiconify()
+            root.update_idletasks()
+        except Exception:
+            try:
+                root.deiconify()
+            except tk.TclError:
+                pass
+            raise
+
+    App.__init__ = _init
+    App._window_factory = base_factory
+    App._new_window = _new_window
 
 
 def open_dir(self):
@@ -244,3 +285,4 @@ def install(App):
     }
     for name,fn in actions.items():
         setattr(App,name,fn)
+    _install_window_lifecycle(App)
