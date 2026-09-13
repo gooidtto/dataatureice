@@ -65,3 +65,30 @@ def test_invalid_and_duplicate_records_are_excluded(tmp_path: Path):
     assert len(rows) == 1
     assert rows[0]["record_id"] == "same"
     assert any("重复 record_id same" in error for error in errors)
+
+
+def test_source_manifest_is_loaded_by_repository(tmp_path: Path):
+    manifest = tmp_path / "source_image_manifest.csv"
+    manifest.write_text(
+        "include,data_date,category,status,source_image,verification,verification_note\n"
+        "1,2026-08-31,手机,verified,img-a,verified,ok\n",
+        encoding="utf-8",
+    )
+
+    repo = _repo(tmp_path)
+    rows, snapshots, errors = repo.load()
+
+    assert not errors
+    assert rows == []
+    assert snapshots == {}
+    assert repo.manifest == [
+        {
+            "include": "1",
+            "data_date": "2026-08-31",
+            "category": "手机",
+            "status": "verified",
+            "source_image": "img-a",
+            "verification": "verified",
+            "verification_note": "ok",
+        }
+    ]
