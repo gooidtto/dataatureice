@@ -7,7 +7,7 @@ mod = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(mod)
 
 
-def row(model="M", date="2026-08-31", condition="好", price="100", **extra):
+def row(model="M", date="2026-08-31", condition="新机", price="100", **extra):
     r = {"category": "手机", "subtype": "device", "brand": "A", "series": "S", "model": model,
          "data_date": date, "condition": condition, "price": price}
     r.update(extra)
@@ -15,7 +15,7 @@ def row(model="M", date="2026-08-31", condition="好", price="100", **extra):
 
 
 def test_condition_detail_does_not_rank_by_price():
-    rows = [row(condition="好", price="1"), row(condition="开机屏坏", price="9999")]
+    rows = [row(condition="新机", price="1"), row(condition="不开机", price="9999")]
     ordered = mod._condition_key(rows[0]), mod._condition_key(rows[1])
     assert ordered[0] < ordered[1]
 
