@@ -14,10 +14,12 @@ def row(model="M", date="2026-08-31", condition="新机", price="100", **extra):
     return r
 
 
-def test_condition_detail_does_not_rank_by_price():
-    rows = [row(condition="新机", price="1"), row(condition="不开机", price="9999")]
-    ordered = mod._condition_key(rows[0]), mod._condition_key(rows[1])
-    assert ordered[0] < ordered[1]
+def test_condition_detail_rank_is_independent_of_price():
+    good = row(condition="新机", price="1")
+    bad = row(condition="不开机", price="9999")
+    assert mod.value_rank(good) > mod.value_rank(bad)
+    good["price"], bad["price"] = "999999", "0"
+    assert mod.value_rank(good) > mod.value_rank(bad)
 
 
 def test_condition_compare_source_uses_current_period_without_reordering_input():
