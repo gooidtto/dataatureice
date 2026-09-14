@@ -112,12 +112,9 @@ class Store:
   self.search_service=search_service or SearchService([]);self.rows=[];self.snapshots={};self.manifest=[];self.errors=[]
  def load(self):
   result=self.repository.load()
-  if result is not None:
-   self.rows,self.snapshots,self.errors=result
+  if result is not None:self.rows,self.snapshots,self.errors=result
   else:
-   self.rows=list(getattr(self.repository,'rows',getattr(self.repository,'_rows',[])))
-   self.snapshots=dict(getattr(self.repository,'snapshots',getattr(self.repository,'_snapshots',{})))
-   self.errors=list(getattr(self.repository,'errors',getattr(self.repository,'_errors',[])))
+   self.rows=list(getattr(self.repository,'rows',getattr(self.repository,'_rows',[])));self.snapshots=dict(getattr(self.repository,'snapshots',getattr(self.repository,'_snapshots',{})));self.errors=list(getattr(self.repository,'errors',getattr(self.repository,'_errors',[])))
   self.rows=[dict(r) for r in self.rows];self.snapshots={k:[dict(r) for r in v] for k,v in self.snapshots.items()};self.manifest=list(getattr(self.repository,'manifest',[]) or []);self.search_service.replace_rows(self.rows)
  @property
  def dates(self):return sorted(self.snapshots)
@@ -125,14 +122,16 @@ class Store:
  def latest(self):return self.dates[-1] if self.dates else ''
  def search(self,q='',cat='全部'):return self.search_service.search(q,cat)
  def history(self,targets):
-  targets=list(targets or []);base={tuple(key(t.get(x)) for x in ('category','subtype','brand','series','model')) for t in targets};codes={key(t.get('model_code')) for t in targets if clean(t.get('model_code'))}
+  targets=list(targets or []);base={tuple(key(t.get(x)) for x in ('category','subtype','brand','series','model')) for t in targets};target_by_date={}
+  for t in targets:
+   b=tuple(key(t.get(x)) for x in ('category','subtype','brand','series','model'));d=clean(t.get('data_date'));c=key(t.get('model_code'))
+   if c:target_by_date.setdefault((b,d),set()).add(c)
   out=[]
   for r in self.rows:
-   if tuple(key(r.get(x)) for x in ('category','subtype','brand','series','model')) not in base:continue
-   code=key(r.get('model_code'))
-   if code and codes and code not in codes:
-    same_date=any(tuple(key(t.get(x)) for x in ('category','subtype','brand','series','model'))==tuple(key(r.get(x)) for x in ('category','subtype','brand','series','model')) and clean(t.get('data_date'))==clean(r.get('data_date')) and key(t.get('model_code'))==code for t in targets)
-    if same_date:continue
+   b=tuple(key(r.get(x)) for x in ('category','subtype','brand','series','model'))
+   if b not in base:continue
+   d=clean(r.get('data_date'));c=key(r.get('model_code'));allowed=target_by_date.get((b,d))
+   if allowed and c not in allowed:continue
    out.append(r)
   return sorted(out,key=lambda r:(-int(str(r.get('data_date','0000-00-00')).replace('-','') or 0),-(num(r.get('price')) or float('-inf')),r.get('brand',''),r.get('series',''),r.get('model',''),r.get('condition',''),r.get('record_id','')))
 class App:
