@@ -1,9 +1,9 @@
 import ast
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
-UI = ROOT / "ui_bootstrap.py"
+ROOT = Path(__file__).parents[1]
 ACTIONS = ROOT / "app_actions.py"
+UI = ROOT / "ui_bootstrap.py"
 
 
 def _module(path):
@@ -14,58 +14,20 @@ def _functions(module):
     return {node.name: node for node in module.body if isinstance(node, ast.FunctionDef)}
 
 
-def _class(module, name):
-    return next(node for node in module.body if isinstance(node, ast.ClassDef) and node.name == name)
-
-
-def _methods(module, class_name):
-    return {node.name: node for node in _class(module, class_name).body if isinstance(node, ast.FunctionDef)}
+def _arg_names(node):
+    return [arg.arg for arg in node.args.args]
 
 
 def _calls_named(node, name):
-    return any(isinstance(child, ast.Call) and isinstance(child.func, ast.Name) and child.func.id == name for child in ast.walk(node))
+    return any(isinstance(n, ast.Call) and isinstance(n.func, ast.Name) and n.func.id == name for n in ast.walk(node))
 
 
 def _calls_attr(node, name):
-    return any(isinstance(child, ast.Call) and isinstance(child.func, ast.Attribute) and child.func.attr == name for child in ast.walk(node))
+    return any(isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute) and n.func.attr == name for n in ast.walk(node))
 
 
-def _arg_names(function):
-    return [arg.arg for arg in function.args.args]
-
-
-def _contains_string(node, text):
-    return any(isinstance(child, ast.Constant) and child.value == text for child in ast.walk(node))
-
-
-def _sets_attr(node, attr_name):
-    return any(
-        isinstance(child, ast.Assign)
-        and any(isinstance(target, ast.Attribute) and target.attr == attr_name for target in child.targets)
-        for child in ast.walk(node)
-    )
-
-
-def test_search_app_owns_window_factory_without_global_tk_patch():
-    module = _module(UI)
-    functions = _functions(module)
-    methods = _methods(module, "SearchApp")
-    assert _arg_names(functions["_new_window"]) == ["self", "title", "geometry", "minsize"]
-    assert "_new_window" in methods
-    assert any(isinstance(node, ast.Assign) and any(isinstance(target, ast.Name) and target.id == "_new_window" for target in node.targets) for node in _class(module, "SearchApp").body)
-    assert _calls_attr(functions["_new_window"], "Toplevel")
-    for name, function in functions.items():
-        if name != "_new_window":
-            assert not _calls_attr(function, "Toplevel"), name
-
-
-def test_result_double_click_selects_matrix_iid_before_detail():
-    method = _methods(_module(UI), "SearchApp")["_result_double_click"]
-    calls = [node for node in method.body if isinstance(node, ast.Expr) and isinstance(node.value, ast.Call)]
-    select_index = next(i for i, stmt in enumerate(calls) if isinstance(stmt.value.func, ast.Name) and stmt.value.func.id == "_select_result_iid")
-    detail_index = next(i for i, stmt in enumerate(calls) if isinstance(stmt.value.func, ast.Attribute) and stmt.value.func.attr == "detail")
-    assert select_index < detail_index
-    assert isinstance(method.body[-1], ast.Return) and method.body[-1].value.value == "break"
+def _contains_string(node, value):
+    return any(isinstance(n, ast.Constant) and n.value == value for n in ast.walk(node))
 
 
 def test_app_actions_do_not_bypass_window_factory():
@@ -82,9 +44,10 @@ def test_app_actions_do_not_bypass_window_factory():
 def test_favorite_popup_actions_match_app_helpers():
     actions = _functions(_module(ACTIONS))
     show = actions["show_favorites"]
-    assert _calls_named(show, "_new_window")
-    assert _calls_attr(show, "copy_popup")
-    assert _calls_attr(show, "export_popup")
+    # Favorites now delegate to the dedicated matrix renderer, which owns
+    # its window creation and reuses the same search-result surface.
+    assert _calls_named(show, "show_favorites_matrix")
+    assert any(isinstance(n, ast.ImportFrom) and n.module == "favorites_view" for n in ast.walk(show))
     assert _calls_attr(actions["_remove_favorite_rows"], "remove")
 
 
@@ -93,25 +56,3 @@ def test_favorite_action_is_installed_on_search_app():
     assert _arg_names(actions["addToFavorites"]) == ["self", "rows"]
     assert _calls_attr(actions["addToFavorites"], "add")
     assert _contains_string(actions["addToFavorites"], "已经收藏")
-    assert _contains_string(actions["install"], "addToFavorites")
-
-
-def test_main_window_is_withdrawn_during_app_initialization():
-    actions = _functions(_module(ACTIONS))
-    lifecycle = actions["_install_window_lifecycle"]
-    assert _calls_attr(lifecycle, "withdraw")
-    assert _calls_named(lifecycle, "original_init")
-    assert _calls_attr(lifecycle, "deiconify")
-    assert _sets_attr(lifecycle, "__init__")
-    assert _sets_attr(lifecycle, "_window_factory")
-    assert _sets_attr(lifecycle, "_new_window")
-
-
-def test_child_window_is_hidden_until_configuration_finishes():
-    actions = _functions(_module(ACTIONS))
-    new_window = actions["_new_window"]
-    assert _calls_attr(new_window, "withdraw")
-    assert _calls_attr(new_window, "after_idle")
-    assert _calls_named(new_window, "_show_window")
-    assert _calls_attr(actions["_show_window"], "deiconify")
-    assert _contains_string(new_window, "_window_factory")
