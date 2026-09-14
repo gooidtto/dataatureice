@@ -13,15 +13,9 @@ class _TraceVar(_Var):
         self.traces = []
         self.removed = []
 
-    def trace_info(self):
-        return [("write", "legacy-write")]
-
-    def trace_remove(self, mode, callback):
-        self.removed.append((mode, callback))
-
-    def trace_add(self, mode, callback):
-        self.traces.append((mode, callback))
-        return "new-write"
+    def trace_info(self): return [("write", "legacy-write")]
+    def trace_remove(self, mode, callback): self.removed.append((mode, callback))
+    def trace_add(self, mode, callback): self.traces.append((mode, callback)); return "new-write"
 
 
 class _Widget:
@@ -52,12 +46,10 @@ def test_typing_only_refreshes_suggestions_and_does_not_schedule_search():
     after_calls = []
     root = SimpleNamespace(after=lambda *args: after_calls.append(args))
     app = SimpleNamespace(q=q, root=root, refresh_suggestions=lambda: refreshed.append(True))
-
     _install_search_behavior(app)
     assert q.removed == [("write", "legacy-write")]
     assert len(q.traces) == 1
     assert q.traces[0][0] == "write"
-
     q.traces[0][1]()
     assert refreshed == [True]
     assert after_calls == []
