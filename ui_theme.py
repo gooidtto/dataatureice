@@ -4,6 +4,7 @@ The palette uses a low-contrast, eye-friendly green system. Interactive
 controls share one restrained glass-like surface so buttons remain visually
 consistent while preserving strong text contrast.
 """
+import tkinter as _tk
 
 THEME = {
     "window_bg": "#e8f1e7",
@@ -25,6 +26,10 @@ THEME = {
     "warning": "#806b3d",
     "danger": "#875858",
     "model_bands": ("#eff6ed", "#edf4eb", "#f1f6ef", "#eaf2e8", "#f3f7f1"),
+    # Separator semantics: same model / different period = cyan;
+    # different model group = orange.
+    "period_separator": "#58bcc1",
+    "model_separator": "#d9964a",
     # One shared glass-like button surface for every button family.
     "button_bg": "#e6f0e4",
     "button_hover": "#d9e8d7",
@@ -48,6 +53,25 @@ THEME = {
     "period_gap": 5,
     "model_gap": 10,
 }
+
+# The existing renderers already create dedicated spacer Frames with
+# period_gap/model_gap heights. Keep their layout logic unchanged while
+# applying semantic separator colors only to those frames.
+_OriginalFrame = _tk.Frame
+
+class _SeparatorAwareFrame(_OriginalFrame):
+    def __init__(self, master=None, **kwargs):
+        height = kwargs.get("height")
+        if kwargs.get("highlightthickness") == 1:
+            if height == THEME["period_gap"]:
+                kwargs["background"] = THEME["period_separator"]
+                kwargs["highlightbackground"] = THEME["period_separator"]
+            elif height == THEME["model_gap"]:
+                kwargs["background"] = THEME["model_separator"]
+                kwargs["highlightbackground"] = THEME["model_separator"]
+        super().__init__(master, **kwargs)
+
+_tk.Frame = _SeparatorAwareFrame
 
 FONT_FAMILY = "SimHei"
 FONT_BODY = (FONT_FAMILY, 10)
