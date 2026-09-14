@@ -9,26 +9,22 @@ from search_display import build_result_blocks
 from ui_theme import THEME, FONT_BODY, FONT_LABEL, FONT_TITLE
 
 COLS=(('data_date','数据日期',105),('category','分类',70),('subtype','子类型',75),('brand','品牌',110),('series','系列',110),('model','型号',250),('condition','价格条件',175),('price','价格',85),('unit','单位',85),('note','备注',260),('source_image','来源图片',150))
-
-def _ordered_blocks(rows): return build_result_blocks(list(rows or []))
-
+def _ordered_blocks(rows):return build_result_blocks(list(rows or []))
 def _grouped_text(rows):
     rows=list(rows or []);blocks=_ordered_blocks(rows);lines=['\t'.join(h for _,h,_ in COLS)];last_model=last_date=None
     for b in blocks:
-        model,date=b.get('_model_key'),b.get('_period_key')
+        model,date=b.get('_model_index'),b.get('_period_key')
         if last_model is not None and model!=last_model:lines.extend(['\t'*(len(COLS)-1)]*2)
         elif last_date is not None and date!=last_date:lines.append('\t'*(len(COLS)-1))
         for r in b.get('_rows',[]):lines.append('\t'.join(str(r.get(c,'')) for c,_,_ in COLS))
         last_model,last_date=model,date
     return '\r\n'.join(lines)
-
 def _copy_grouped(self,rows,window=None):
     rows=list(rows or [])
     if not rows:
         if window:messagebox.showinfo('展示收藏','请先选择要复制的收藏',parent=window)
         return
     self.root.clipboard_clear();self.root.clipboard_append(_grouped_text(rows));self.root.update();self.status.config(text=f'已复制 {len(rows)} 条收藏，保留分组与间隔')
-
 def _export_grouped(self,rows,xlsx,window=None):
     rows=list(rows or [])
     if not rows:
@@ -45,7 +41,7 @@ def _export_grouped(self,rows,xlsx,window=None):
             for col,(_,title,_) in enumerate(COLS,1):ws.cell(1,col,title).font=Font(name='SimHei',bold=True)
             ri=2;last_model=last_date=None
             for b in blocks:
-                model,date=b.get('_model_key'),b.get('_period_key')
+                model,date=b.get('_model_index'),b.get('_period_key')
                 if last_model is not None and model!=last_model:ri+=2
                 elif last_date is not None and date!=last_date:ri+=1
                 for r in b.get('_rows',[]):
@@ -58,7 +54,7 @@ def _export_grouped(self,rows,xlsx,window=None):
             with open(path,'w',encoding='utf-8-sig',newline='') as f:
                 writer=csv.writer(f);writer.writerow([h for _,h,_ in COLS]);last_model=last_date=None
                 for b in blocks:
-                    model,date=b.get('_model_key'),b.get('_period_key')
+                    model,date=b.get('_model_index'),b.get('_period_key')
                     if last_model is not None and model!=last_model:writer.writerow([]);writer.writerow([])
                     elif last_date is not None and date!=last_date:writer.writerow([])
                     for r in b.get('_rows',[]):writer.writerow([r.get(c,'') for c,_,_ in COLS])
@@ -95,7 +91,7 @@ def show_favorites_matrix(self):
         lo,hi=sorted((a,b));ids=list(mapping)
         if not add:selected.clear()
         selected.update(ids[lo:hi+1])
-        for idx,iid in enumerate(ids):paint(iid,iid in selected)
+        for iid in ids:paint(iid,iid in selected)
         refresh_title()
     def click(event,iid,index,tree):
         nonlocal anchor_index
@@ -144,7 +140,7 @@ def show_favorites_matrix(self):
         except tk.TclError:pass
     previous_model=None;previous_date=None
     for i,b in enumerate(blocks):
-        model=b.get('_model_key');date=b.get('_period_key')
+        model,date=b.get('_model_index'),b.get('_period_key')
         if i:
             if model!=previous_model:
                 line=tk.Frame(inner,height=THEME['model_gap'],background=THEME['surface'],highlightthickness=1,highlightbackground=THEME['border_soft']);line.pack(fill='x',pady=(THEME['space_xs'],THEME['space_xs']))
@@ -167,6 +163,5 @@ def show_favorites_matrix(self):
     w.bind('<Control-a>',lambda e:(selected.update(mapping.keys()),[paint(i,True) for i in mapping],refresh_title(),'break')[-1]);w.bind('<Escape>',lambda e:w.destroy());return w
 
 def _favorite_menu(self,event,tree,block,window):return
-
 def _remove_block(self,window,rows):
     if rows:self.fav.remove(rows);window.destroy();self.show_favorites()
