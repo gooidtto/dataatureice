@@ -22,6 +22,11 @@ def build_identity(row):
     return " ".join(clean(row.get(field, "")) for field in IDENTITY_FIELDS if clean(row.get(field, "")))
 
 
+def identity_key(row):
+    """Canonical model identity shared by search and favorites."""
+    return tuple(clean(row.get(field, "")) for field in IDENTITY_FIELDS)
+
+
 def _condition_key(value):
     return clean(value).replace(" ", "")
 
@@ -39,13 +44,31 @@ def column_width(title, values=(), minimum=90, maximum=420):
     return max(minimum, min(maximum, occupied * 9 + 22))
 
 
-def _group_rows(rows):
-    groups = {}
-    for row in rows:
-        identity_key = tuple(clean(row.get(field, "")) for field in IDENTITY_FIELDS)
+def group_model_dates(rows):
+    """Return ``[(identity_key, [date_block, ...]), ...]`` in canonical order.
+
+    Identity grouping is shared by search/favorites. Date blocks are always
+    newest first. Historical price is never used for either grouping or order.
+    """
+    grouped = {}
+    for row in list(rows or []):
+        key = identity_key(row)
         date = clean(row.get("data_date", ""))
-        groups.setdefault((identity_key, date), []).append(row)
-    return groups
+        grouped.setdefault(key, {}).setdefault(date, []).append(row)
+
+    def model_sort_key(item):
+        key, dates = item
+        rows_for_model = [row for group in dates.values() for row in group]
+        ordered = sort_rows(rows_for_model)
+        if not ordered:
+            return ((), key)
+        return (tuple(-x for x in value_rank(ordered[0])), key)
+
+    result = []
+    for key, dates in sorted(grouped.items(), key=model_sort_key):
+        blocks = [sort_rows(group) for _date, group in sorted(dates.items(), reverse=True)]
+        result.append((key, blocks))
+    return result
 
 
 def build_display_columns(rows):
@@ -78,24 +101,12 @@ def build_result_columns(rows):
     return build_display_columns(rows)
 
 
-def _model_sort_key(periods):
-    rows = [r for _date, group in periods for r in group]
-    ordered = sort_rows(rows)
-    return () if not ordered else tuple(-x for x in value_rank(ordered[0])) + (build_identity(ordered[0]),)
-
-
 def normalize_search_results(rows):
     """Build model/date result blocks; every block owns an independent column set."""
-    source_rows = list(rows or [])
-    groups = _group_rows(source_rows)
-    model_groups = {}
-    for (identity_key, date), group in groups.items():
-        model_groups.setdefault(identity_key, []).append((date, group))
-    model_groups = sorted(model_groups.items(), key=lambda item: _model_sort_key(item[1]))
+    model_groups = group_model_dates(rows)
     result = []
     for model_index, (_identity_key, periods) in enumerate(model_groups):
-        periods.sort(key=lambda item: item[0], reverse=True)
-        for period_index, (date, group) in enumerate(periods):
+        for period_index, group in enumerate(periods):
             if period_index > 0:
                 result.append({"_separator": "period", "_model_index": model_index, "_period_index": period_index})
             block_rows = sort_rows(group)
@@ -112,12 +123,12 @@ def normalize_search_results(rows):
                 if image and image not in source_images:
                     source_images.append(image)
             out = {
-                "data_date": date,
+                "data_date": clean(block_rows[0].get("data_date", "")) if block_rows else "",
                 "identity": build_identity(block_rows[0]) if block_rows else "",
                 "source_image": " / ".join(source_images),
                 "_rows": block_rows,
-                "_model_key": tuple(clean(block_rows[0].get(field, "")) for field in IDENTITY_FIELDS) if block_rows else (),
-                "_period_key": date,
+                "_model_key": identity_key(block_rows[0]) if block_rows else (),
+                "_period_key": clean(block_rows[0].get("data_date", "")) if block_rows else "",
                 "_model_index": model_index,
                 "_period_index": period_index,
                 "_columns": columns,
