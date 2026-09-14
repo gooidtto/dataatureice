@@ -44,11 +44,6 @@ def _condition_key(row):
     return tuple(-x for x in value_rank(row)) + (_clean(row.get("condition")),)
 
 
-def _ordered(rows):
-    """Order details semantically; price is never used as a ranking signal."""
-    return sorted(list(rows or []), key=lambda r: (_model_key(r), _date_key(r), _condition_key(r)))
-
-
 def _screen_fit(window, geometry, minsize):
     window.update_idletasks()
     sw, sh = window.winfo_screenwidth(), window.winfo_screenheight()
@@ -94,7 +89,7 @@ def _install_styles(style):
 
 
 def _table(window, rows, title, subtitle, sectioned=True):
-    rows = _ordered(rows)
+    rows = list(rows or [])
     style = ttk.Style(window)
     try:
         style.theme_use("clam")
@@ -158,6 +153,11 @@ def show_history_compare(app, rows):
     if not rows:
         return None
     history = app.s.history(rows) or rows
+    allowed = {id(r) for r in history}
+    canonical = [r for r in getattr(app.s, "rows", []) if id(r) in allowed]
+    if canonical:
+        dates = sorted({_date_key(r) for r in canonical if _date_key(r)}, reverse=True)
+        history = [r for date in dates for r in canonical if _date_key(r) == date]
     dates = sorted({_date_key(r) for r in history if _date_key(r)}, reverse=True)
     models = {_model_key(r) for r in history}
     title = "历史对比 · 当前搜索不同时期详细信息"
