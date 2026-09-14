@@ -30,6 +30,14 @@ def test_different_models_get_two_blank_separators():
 def test_same_model_different_periods_have_distinct_period_indexes():
     rows=[row(record_id="a",data_date="2026-08-31",condition="开机靓好",price="700"),row(record_id="b",data_date="2026-08-25",condition="开机靓好",price="800")];result=payloads(normalize_search_results(rows));assert [(r["data_date"],r["_model_index"],r["_period_index"]) for r in result]==[("2026-08-31",0,0),("2026-08-25",0,1)]
 
+def test_same_model_different_network_codes_stay_in_one_model_group():
+    rows=[row(record_id="new",data_date="2026-08-31",model_code="CPH1609",condition="开机好屏",price="500"),row(record_id="old",data_date="2026-08-25",model_code="CPH1701",condition="开机碎屏",price="260")]
+    result=normalize_search_results(rows);blocks=payloads(result)
+    assert len(blocks)==2
+    assert [b["_model_index"] for b in blocks]==[0,0]
+    assert [b["_period_index"] for b in blocks]==[0,1]
+    assert [s["_separator"] for s in result if s.get("_separator")] == ["period"]
+
 def test_build_identity_uses_only_available_fields():
     assert build_identity(row())=="手机 华为 荣耀畅玩系列 畅玩7x (3+32) BND-AL00";assert build_identity(row(series=""))=="手机 华为 畅玩7x (3+32) BND-AL00";assert build_identity(row(model_code=""))=="手机 华为 荣耀畅玩系列 畅玩7x (3+32)";assert build_identity(row(brand="",series=""))=="手机 畅玩7x (3+32) BND-AL00";assert build_identity(row(category="",brand="",series="",model="",model_code=""))==""
 
