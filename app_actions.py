@@ -106,11 +106,9 @@ def _install_search_behavior(self):
         for mode, callback in q.trace_info():
             if mode == "write": q.trace_remove(mode, callback)
     except (AttributeError, tk.TclError): pass
-
     def on_change(*_args):
         refresh = getattr(self, "refresh_suggestions", None)
         if callable(refresh): refresh()
-
     q.trace_add("write", on_change)
     self._sync_search_after_id = None
 
@@ -136,21 +134,8 @@ def sources(self):
 
 
 def show_favorites(self):
-    rows=self.fav.dedupe(); w=_new_window(self,"⭐ 我的收藏","1500x760",(1050,560)); ttk.Label(w,text=f"收藏内容 · {len(rows)} 条 · 按型号分组，日期倒序",font=("微软雅黑",12,"bold")).pack(anchor="w",padx=12,pady=10)
-    f=ttk.Frame(w,padding=(12,0,12,10)); f.pack(fill="both",expand=True); cols=[c[0] for c in __import__("phone_search").COLS]; tree=ttk.Treeview(f,columns=cols,show="headings",selectmode="extended")
-    for c,h,width in __import__("phone_search").COLS: tree.heading(c,text=h); tree.column(c,width=width,anchor="w")
-    y=ttk.Scrollbar(f,orient="vertical",command=tree.yview); x=ttk.Scrollbar(f,orient="horizontal",command=tree.xview); tree.configure(yscrollcommand=y.set,xscrollcommand=x.set); tree.grid(row=0,column=0,sticky="nsew"); y.grid(row=0,column=1,sticky="ns"); x.grid(row=1,column=0,sticky="ew"); f.grid_rowconfigure(0,weight=1); f.grid_columnconfigure(0,weight=1)
-    mapping={}; index=0; groups=self.favorite_groups()
-    for gi,(_,blocks) in enumerate(groups):
-        for bi,block in enumerate(blocks):
-            for r in block: iid=f"r{index}"; index+=1; tree.insert("","end",iid=iid,values=[r.get(c,"") for c in cols]); mapping[iid]=r
-            if bi<len(blocks)-1: iid=f"g{index}"; index+=1; tree.insert("","end",iid=iid,values=[""]*len(cols)); mapping[iid]=None
-        if gi<len(groups)-1:
-            for _ in range(2): iid=f"g{index}"; index+=1; tree.insert("","end",iid=iid,values=[""]*len(cols)); mapping[iid]=None
-    def selected_rows(): return [mapping[iid] for iid in tree.selection() if mapping.get(iid)]
-    def all_rows(): return [r for r in mapping.values() if r]
-    bar=ttk.Frame(w,padding=(12,0,12,10)); bar.pack(fill="x"); ttk.Button(bar,text="查看详情",command=lambda:self.detail_rows(selected_rows() or all_rows())).pack(side="left",padx=4); ttk.Button(bar,text="移除收藏",command=lambda:self._remove_favorite_rows(w,selected_rows())).pack(side="left",padx=4); ttk.Button(bar,text="复制",command=lambda:self.copy_popup(selected_rows() or all_rows())).pack(side="left",padx=4); ttk.Button(bar,text="导出CSV",command=lambda:self.export_popup(selected_rows() or all_rows(),False)).pack(side="left",padx=4); ttk.Button(bar,text="导出Excel",command=lambda:self.export_popup(selected_rows() or all_rows(),True)).pack(side="left",padx=4); ttk.Button(bar,text="关闭",command=w.destroy).pack(side="right",padx=4)
-    tree.bind("<Double-1>",lambda _e:self.detail_rows(selected_rows())); tree.bind("<Button-3>",lambda e:self._favorite_popup_menu(e,tree,mapping,w)); w.bind("<Escape>",lambda _e:w.destroy())
+    from favorites_view import show_favorites_matrix
+    return show_favorites_matrix(self)
 
 
 def _remove_favorite_rows(self,window,rows):
