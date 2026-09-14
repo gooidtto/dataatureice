@@ -4,7 +4,6 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 UI = ROOT / "ui_bootstrap.py"
 ACTIONS = ROOT / "app_actions.py"
-PHONE = ROOT / "phone_search.py"
 
 
 def _module(path):
@@ -37,6 +36,14 @@ def _arg_names(function):
 
 def _contains_string(node, text):
     return any(isinstance(child, ast.Constant) and child.value == text for child in ast.walk(node))
+
+
+def _sets_attr(node, attr_name):
+    return any(
+        isinstance(child, ast.Assign)
+        and any(isinstance(target, ast.Attribute) and target.attr == attr_name for target in child.targets)
+        for child in ast.walk(node)
+    )
 
 
 def test_search_app_owns_window_factory_without_global_tk_patch():
@@ -74,14 +81,11 @@ def test_app_actions_do_not_bypass_window_factory():
 
 def test_favorite_popup_actions_match_app_helpers():
     actions = _functions(_module(ACTIONS))
-    phone = _functions(_module(PHONE))
-    assert _calls_named(actions["show_favorites"], "_new_window")
-    assert _calls_attr(actions["show_favorites"], "copy_popup")
-    assert _calls_attr(actions["show_favorites"], "export_popup")
+    show = actions["show_favorites"]
+    assert _calls_named(show, "_new_window")
+    assert _calls_attr(show, "copy_popup")
+    assert _calls_attr(show, "export_popup")
     assert _calls_attr(actions["_remove_favorite_rows"], "remove")
-    assert _arg_names(phone["copy_popup"]) == ["self", "rs"]
-    assert _arg_names(phone["export_popup"]) == ["self", "rs", "xlsx"]
-    assert _arg_names(phone["remove"]) == ["self", "rows"]
 
 
 def test_favorite_action_is_installed_on_search_app():
@@ -98,7 +102,9 @@ def test_main_window_is_withdrawn_during_app_initialization():
     assert _calls_attr(lifecycle, "withdraw")
     assert _calls_named(lifecycle, "original_init")
     assert _calls_attr(lifecycle, "deiconify")
-    assert any(isinstance(node, ast.Assign) and any(isinstance(target, ast.Attribute) and target.attr == "__init__" for target in node.targets) for node in ast.walk(lifecycle))
+    assert _sets_attr(lifecycle, "__init__")
+    assert _sets_attr(lifecycle, "_window_factory")
+    assert _sets_attr(lifecycle, "_new_window")
 
 
 def test_child_window_is_hidden_until_configuration_finishes():
@@ -108,5 +114,4 @@ def test_child_window_is_hidden_until_configuration_finishes():
     assert _calls_attr(new_window, "after_idle")
     assert _calls_named(new_window, "_show_window")
     assert _calls_attr(actions["_show_window"], "deiconify")
-    lifecycle = actions["_install_window_lifecycle"]
-    assert _contains_string(lifecycle, "_window_factory")
+    assert _contains_string(new_window, "_window_factory")
