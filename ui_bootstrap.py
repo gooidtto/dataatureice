@@ -11,7 +11,6 @@ from matrix_ui_actions import install as install_matrix_actions
 from search_display import build_result_blocks, group_model_dates
 from ui_theme import THEME, FONT_BODY, FONT_LABEL, FONT_TITLE
 
-
 _UI_QUEUE = __import__("queue").Queue()
 
 
@@ -39,6 +38,19 @@ class SearchApp(phone_search.App):
         phone_search.App.ui(self)
         self.tree.grid_remove()
         self.root.configure(background=THEME["window_bg"])
+        style = ttk.Style(self.root)
+        try:
+            style.configure("TFrame", background=THEME["window_bg"])
+            style.configure("TLabel", background=THEME["window_bg"], foreground=THEME["text"], font=FONT_BODY)
+            style.configure("TButton", background=THEME["surface"], foreground=THEME["text"], font=FONT_BODY, padding=(10, 5), relief="flat")
+            style.map("TButton", background=[("active", THEME["surface_subtle"]), ("pressed", THEME["selection"])], foreground=[("disabled", THEME["text_muted"])])
+            style.configure("TCombobox", fieldbackground=THEME["surface"], background=THEME["surface"], foreground=THEME["text"], arrowcolor=THEME["accent"])
+        except tk.TclError:
+            pass
+        try:
+            self.entry.configure(background=THEME["surface"], foreground=THEME["text"], insertbackground=THEME["accent"], relief="flat", highlightthickness=1, highlightbackground=THEME["border"], highlightcolor=THEME["accent"])
+        except tk.TclError:
+            pass
         host = self.tree.master
         self._results_canvas = tk.Canvas(host, highlightthickness=0, bd=0, background=THEME["surface"], relief="flat")
         scrollbar = ttk.Scrollbar(host, orient="vertical", command=self._results_canvas.yview)
