@@ -6,6 +6,7 @@ from openpyxl import Workbook
 from openpyxl.styles import Font
 from openpyxl.utils import get_column_letter
 from search_display import build_result_blocks
+from ui_theme import THEME, FONT_BODY, FONT_LABEL, FONT_TITLE
 
 COLS=(('data_date','数据日期',105),('category','分类',70),('subtype','子类型',75),('brand','品牌',110),('series','系列',110),('model','型号',250),('condition','价格条件',175),('price','价格',85),('unit','单位',85),('note','备注',260),('source_image','来源图片',150))
 
@@ -81,22 +82,31 @@ def _export_grouped(self,rows,xlsx,window=None):
 
 def show_favorites_matrix(self):
     rows=list(self.fav.dedupe());w=self._new_window('⭐ 我的收藏', '1650x760', (1150,560))
+    w.configure(background=THEME['window_bg'])
+    style=ttk.Style(w)
+    try:
+        style.configure('Favorites.Treeview',font=FONT_BODY,rowheight=36,background=THEME['surface'],fieldbackground=THEME['surface'],foreground=THEME['text'],borderwidth=0)
+        style.configure('Favorites.Treeview.Heading',font=FONT_TITLE,background=THEME['table_header'],foreground=THEME['text'],relief='flat')
+        style.map('Favorites.Treeview',background=[('selected',THEME['selection_strong'])])
+    except tk.TclError:
+        pass
     header=ttk.Frame(w);header.pack(fill='x',padx=12,pady=10)
-    title=ttk.Label(header,text='',font=('微软雅黑',12,'bold'));title.pack(side='left')
+    title=ttk.Label(header,text='',font=("微软雅黑",12,"bold"),foreground=THEME['text']);title.pack(side='left')
+    hint=ttk.Label(header,text='点击选择 · Ctrl 多选 · Shift 范围选择 · 拖动选择 · Ctrl+A 全选',font=FONT_LABEL,foreground=THEME['text_muted']);hint.pack(side='right')
     host=ttk.Frame(w,padding=(12,0,12,10));host.pack(fill='both',expand=True)
-    canvas=tk.Canvas(host,highlightthickness=0,bd=0);scroll=ttk.Scrollbar(host,orient='vertical',command=canvas.yview);canvas.configure(yscrollcommand=scroll.set);canvas.grid(row=0,column=0,sticky='nsew');scroll.grid(row=0,column=1,sticky='ns');host.grid_rowconfigure(0,weight=1);host.grid_columnconfigure(0,weight=1)
-    inner=tk.Frame(canvas);window_id=canvas.create_window((0,0),window=inner,anchor='nw');inner.bind('<Configure>',lambda e:canvas.configure(scrollregion=canvas.bbox('all')));canvas.bind('<Configure>',lambda e:canvas.itemconfigure(window_id,width=e.width))
+    canvas=tk.Canvas(host,highlightthickness=0,bd=0,background=THEME['surface'],relief='flat');scroll=ttk.Scrollbar(host,orient='vertical',command=canvas.yview);canvas.configure(yscrollcommand=scroll.set);canvas.grid(row=0,column=0,sticky='nsew');scroll.grid(row=0,column=1,sticky='ns');host.grid_rowconfigure(0,weight=1);host.grid_columnconfigure(0,weight=1)
+    inner=tk.Frame(canvas,background=THEME['surface']);window_id=canvas.create_window((0,0),window=inner,anchor='nw');inner.bind('<Configure>',lambda e:canvas.configure(scrollregion=canvas.bbox('all')));canvas.bind('<Configure>',lambda e:canvas.itemconfigure(window_id,width=e.width))
     blocks=_ordered_blocks(rows);trees=[];mapping={};selected=set();anchor_index=None;dragging=False
 
     def refresh_title():
-        title.config(text=f'我的收藏 · {len(rows)} 条 · 已选择 {sum(len(mapping[i].get("_rows",[])) for i in selected if i in mapping)} 条 · 保持收藏顺序与分组规则')
+        title.config(text=f'我的收藏 · {len(rows)} 条 · 已选择 {sum(len(mapping[i].get("_rows",[])) for i in selected if i in mapping)} 条 · 收藏区可选择与操作')
 
     def paint(iid,on):
         tree=mapping[iid]['_tree']
         try:tree.selection_set(iid) if on else tree.selection_remove(iid)
         except tk.TclError:pass
-        tree.tag_configure('selected',background='#dceeff')
-        tree.tag_configure('normal',background='')
+        tree.tag_configure('selected',background=THEME['selection'])
+        tree.tag_configure('normal',background=THEME['surface'])
         try:tree.item(iid,tags=('selected' if on else 'normal',))
         except tk.TclError:pass
 
@@ -126,10 +136,9 @@ def show_favorites_matrix(self):
 
     def drag_motion(event,tree):
         if not dragging:return
-        y=event.y
         ids=list(mapping)
         try:
-            iid=tree.identify_row(y)
+            iid=tree.identify_row(event.y)
             if iid and iid in mapping:select_range(anchor_index,ids.index(iid))
         except (ValueError,tk.TclError):pass
 
@@ -148,12 +157,12 @@ def show_favorites_matrix(self):
         self.fav.remove(picked);w.destroy();self.show_favorites();self.status.config(text=f'已移除收藏 {len(picked)} 条')
 
     for i,b in enumerate(blocks):
-        if i:tk.Frame(inner,height=8 if b['_model_index']==blocks[i-1]['_model_index'] else 16).pack(fill='x')
-        cols=tuple(b.get('_columns') or ());tree=ttk.Treeview(inner,columns=[c[0] for c in cols]+['favorite'],show='headings',height=1,selectmode='none')
+        if i:tk.Frame(inner,height=8 if b['_model_index']==blocks[i-1]['_model_index'] else 16,background=THEME['surface']).pack(fill='x')
+        cols=tuple(b.get('_columns') or ());tree=ttk.Treeview(inner,columns=[c[0] for c in cols]+['favorite'],show='headings',height=1,selectmode='none',style='Favorites.Treeview')
         for field,t,wid in cols:
             tree.heading(field,text=t);tree.column(field,width=wid,minwidth=60,anchor='center' if field=='data_date' or field.startswith('condition_') else 'w',stretch=False)
         tree.heading('favorite',text='收藏');tree.column('favorite',width=110,anchor='center',stretch=False)
-        iid=f'favorite-{i}';tree.insert('','end',iid=iid,values=[b.get(field,'') for field,_,_ in cols]+['★ 已收藏'],tags=('normal',));tree.tag_configure('normal',background='');tree.tag_configure('selected',background='#dceeff')
+        iid=f'favorite-{i}';tree.insert('','end',iid=iid,values=[b.get(field,'') for field,_,_ in cols]+['★ 已收藏'],tags=('normal',));tree.tag_configure('normal',background=THEME['surface']);tree.tag_configure('selected',background=THEME['selection'])
         mapping[iid]={'_rows':list(b.get('_rows',[])),'_tree':tree,'_block':b,'_index':i}
         tree.bind('<Button-1>',lambda e,ii=iid,idx=i,t=tree:click(e,ii,idx,t),add='+');tree.bind('<B1-Motion>',lambda e,t=tree:drag_motion(e,t),add='+');tree.bind('<ButtonRelease-1>',drag_end,add='+');tree.bind('<Double-1>',lambda e,bb=b:self.detail_rows(bb.get('_rows',[])));tree.pack(fill='x',expand=True)
         trees.append(tree)
@@ -179,6 +188,7 @@ def show_favorites_matrix(self):
 
 def _favorite_menu(self,event,tree,block,window):
     return
+
 
 def _remove_block(self,window,rows):
     if rows:self.fav.remove(rows);window.destroy();self.show_favorites()
