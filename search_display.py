@@ -6,6 +6,10 @@ from value_order import value_rank
 
 FIXED_COLUMNS=(("data_date","数据日期"),("identity","手机/品牌/系列/型号/网络型号"))
 IDENTITY_FIELDS=("category","brand","series","model","model_code")
+# Display grouping identifies the real product/model independently of a network
+# model code. A network code may change between source periods while the user
+# still expects one OPPO A59 product group with multiple historical periods.
+MODEL_GROUP_FIELDS=("category","subtype","brand","series","model")
 SOURCE_COLUMN=("source_image","来源图片")
 
 class ResultBlock(TypedDict):
@@ -22,6 +26,7 @@ class ResultBlock(TypedDict):
 def clean(value):return re.sub(r"\s+"," ",unicodedata.normalize("NFKC","" if value is None else str(value))).strip()
 def build_identity(row):return " ".join(clean(row.get(field,"")) for field in IDENTITY_FIELDS if clean(row.get(field,"")))
 def identity_key(row):return tuple(clean(row.get(field,"")) for field in IDENTITY_FIELDS)
+def model_group_key(row):return tuple(clean(row.get(field,"")) for field in MODEL_GROUP_FIELDS)
 def sort_rows(rows):return list(rows or [])
 def _condition_key(value):return clean(value).replace(" ","")
 def _condition_sort_key(row):return tuple(-x for x in value_rank(row))+(clean(row.get("condition","")),)
@@ -30,10 +35,16 @@ def column_width(title,values=(),minimum=90,maximum=420):
     occupied=max([_char_width(title)]+[_char_width(v) for v in values]);return max(minimum,min(maximum,occupied*9+22))
 
 def group_model_dates(rows):
-    """Group only contiguous model/date runs; never move a supplied row."""
+    """Group contiguous periods of the same real-world model without using model_code.
+
+    Search ordering remains authoritative: rows are never sorted here. The
+    search service already places the same model's periods contiguously; this
+    layer only converts those runs into display blocks. Rows from different
+    network model codes therefore remain in the same model/date presentation.
+    """
     groups=[];current_model=None;current_date=None;current_rows=[];model_index=-1;period_index=0
     for row in list(rows or []):
-        model=identity_key(row);date=clean(row.get("data_date",""))
+        model=model_group_key(row);date=clean(row.get("data_date",""))
         if current_rows and (model!=current_model or date!=current_date):
             groups.append((current_model,current_date,current_rows,model_index,period_index));current_rows=[]
             if model!=current_model:model_index+=1;period_index=0
@@ -76,7 +87,7 @@ def _build_block(model_index,period_index,block_rows):
         if ck and price:condition_values.setdefault(ck,[]).append(price)
         image=clean(row.get("source_image",""))
         if image and image not in source_images:source_images.append(image)
-    first=block_rows[0] if block_rows else {};out={"data_date":clean(first.get("data_date","")),"identity":build_identity(first),"source_image":" / ".join(source_images),"_rows":block_rows,"_model_key":identity_key(first) if first else (),"_period_key":clean(first.get("data_date","")),"_model_index":model_index,"_period_index":period_index,"_columns":columns}
+    first=block_rows[0] if block_rows else {};out={"data_date":clean(first.get("data_date","")),"identity":build_identity(first),"source_image":" / ".join(source_images),"_rows":block_rows,"_model_key":model_group_key(first) if first else (),"_period_key":clean(first.get("data_date","")),"_model_index":model_index,"_period_index":period_index,"_columns":columns}
     for field,title,_ in columns[2:-1]:out[field]=" / ".join(condition_values.get(_condition_key(title),[]))
     return out
 
