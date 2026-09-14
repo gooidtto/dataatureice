@@ -15,6 +15,8 @@ _UI_QUEUE = __import__("queue").Queue()
 
 
 def _new_window(self, title, geometry=None, minsize=None):
+    if "我的收藏" in str(title):
+        title = str(title).replace("我的收藏", "展示收藏")
     w = tk.Toplevel(self.root)
     w.title(title)
     if geometry:
@@ -40,6 +42,7 @@ class SearchApp(phone_search.App):
         self.root.configure(background=THEME["window_bg"])
         style = ttk.Style(self.root)
         try:
+            style.theme_use("clam")
             style.configure("TFrame", background=THEME["window_bg"])
             style.configure("Search.TFrame", background=THEME["surface_alt"], borderwidth=1, relief="solid")
             style.configure("Info.TFrame", background=THEME["surface"], borderwidth=0)
@@ -47,7 +50,7 @@ class SearchApp(phone_search.App):
             style.configure("Results.TFrame", background=THEME["border_soft"], borderwidth=1, relief="solid")
             style.configure("TLabel", background=THEME["window_bg"], foreground=THEME["text"], font=FONT_BODY)
             style.configure("Search.TLabel", background=THEME["surface_alt"], foreground=THEME["text"], font=FONT_LABEL)
-            style.configure("Title.TLabel", background=THEME["surface"], foreground=THEME["text"], font=("微软雅黑", 12, "bold"))
+            style.configure("Title.TLabel", background=THEME["surface"], foreground=THEME["text"], font=FONT_TITLE)
             style.configure("Meta.TLabel", background=THEME["surface"], foreground=THEME["text_secondary"], font=FONT_BODY)
             style.configure("Status.TLabel", background=THEME["surface_alt"], foreground=THEME["text_muted"], font=FONT_BODY)
             style.configure("TButton", background=THEME["surface"], foreground=THEME["text"], font=FONT_BODY,
@@ -59,7 +62,7 @@ class SearchApp(phone_search.App):
             style.map("Primary.TButton", background=[("active", THEME["accent_hover"]), ("pressed", THEME["accent_hover"]),
                                                         ("disabled", THEME["surface_subtle"])],
                       foreground=[("disabled", THEME["text_muted"])])
-            style.configure("Favorite.TButton", background=THEME["selection_strong"], foreground=THEME["accent_hover"],
+            style.configure("Favorite.TButton", background=THEME["selection_strong"], foreground=THEME["text"],
                             font=FONT_TITLE, padding=(THEME["primary_pad_x"], THEME["primary_pad_y"]), relief="flat", borderwidth=0)
             style.map("Favorite.TButton", background=[("active", THEME["selection"]), ("pressed", THEME["selection_strong"])])
             style.configure("TCombobox", fieldbackground=THEME["surface"], background=THEME["surface"],
@@ -67,8 +70,8 @@ class SearchApp(phone_search.App):
             style.configure("Search.Treeview", font=FONT_BODY, rowheight=THEME["table_row_height"],
                             background=THEME["surface"], fieldbackground=THEME["surface"], foreground=THEME["text"],
                             borderwidth=0, relief="flat")
-            style.configure("Search.Treeview.Heading", font=FONT_BODY, background=THEME["table_header"],
-                            foreground=THEME["text_secondary"], relief="flat", borderwidth=0,
+            style.configure("Search.Treeview.Heading", font=FONT_TITLE, background=THEME["table_header"],
+                            foreground=THEME["text"], relief="flat", borderwidth=0,
                             padding=(THEME["space_md"], 3))
         except tk.TclError:
             pass
@@ -88,7 +91,10 @@ class SearchApp(phone_search.App):
             for button in bands[0].winfo_children() if len(bands) >= 1 else []:
                 if isinstance(button, ttk.Button):
                     text = str(button.cget("text"))
-                    button.configure(style="Primary.TButton" if text in {"查询", "🔍"} else "TButton")
+                    if "收藏" in text and text not in {"查询", "🔍"}:
+                        button.pack_forget()
+                    else:
+                        button.configure(style="Primary.TButton" if text in {"查询", "🔍"} else "TButton")
                 elif isinstance(button, ttk.Label):
                     button.configure(style="Search.TLabel")
             for label in bands[1].winfo_children() if len(bands) >= 2 else []:
@@ -100,6 +106,9 @@ class SearchApp(phone_search.App):
                     button.configure(style="Favorite.TButton" if "一键收藏" in str(button.cget("text")) else "TButton")
                 elif isinstance(button, ttk.Label):
                     button.configure(style="Status.TLabel")
+            if len(bands) >= 3:
+                ttk.Button(bands[2], text="展示收藏", style="Favorite.TButton",
+                           command=self.show_favorites).pack(side="left", padx=THEME["space_xs"])
         except (IndexError, tk.TclError):
             pass
 
@@ -122,7 +131,7 @@ class SearchApp(phone_search.App):
         self._results_window = self._results_canvas.create_window((0, 0), window=self._results_inner, anchor="nw")
         self._results_inner.bind("<Configure>", lambda _e: self._results_canvas.configure(scrollregion=self._results_canvas.bbox("all")))
         self._results_canvas.bind("<Configure>", self._resize_results_inner)
-        self.empty_hint = ttk.Label(host, text="输入品牌、系列、型号开始查询", font=("微软雅黑", 12),
+        self.empty_hint = ttk.Label(host, text="输入品牌、系列、型号开始查询", font=FONT_TITLE,
                                     foreground=THEME["text_muted"], background=THEME["surface"])
         self._result_views = []
         self._result_trees = []
