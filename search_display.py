@@ -1,14 +1,9 @@
-"""Canonical search-result model and presentation helpers.
-
-The search pipeline produces raw rows. This module is the single contract layer
-that groups them into model/date ResultBlocks. Renderer, favorites and detail
-must consume those blocks instead of inventing their own grouping semantics.
-"""
+"""Canonical search-result model and presentation helpers."""
 import re
 import unicodedata
 from typing import TypedDict
 
-from value_order import sort_rows, value_rank
+from value_order import value_rank
 
 FIXED_COLUMNS = (("data_date", "数据日期"), ("identity", "手机/品牌/系列/型号/网络型号"))
 IDENTITY_FIELDS = ("category", "brand", "series", "model", "model_code")
@@ -16,7 +11,6 @@ SOURCE_COLUMN = ("source_image", "来源图片")
 
 
 class ResultBlock(TypedDict):
-    """Stable runtime dictionary contract shared by all UI consumers."""
     data_date: str
     identity: str
     source_image: str
@@ -37,7 +31,6 @@ def build_identity(row):
 
 
 def identity_key(row):
-    """Canonical model identity shared by search, renderer and favorites."""
     return tuple(clean(row.get(field, "")) for field in IDENTITY_FIELDS)
 
 
@@ -59,37 +52,35 @@ def column_width(title, values=(), minimum=90, maximum=420):
 
 
 def group_model_dates(rows):
-    """Return ``[(identity_key, [date_block, ...]), ...]`` in canonical order."""
+    """Group rows without changing the relative order supplied by search."""
     grouped = {}
+    model_order = []
+    date_order = {}
     for row in list(rows or []):
         key = identity_key(row)
         date = clean(row.get("data_date", ""))
-        grouped.setdefault(key, {}).setdefault(date, []).append(row)
-
-    def model_sort_key(item):
-        key, dates = item
-        rows_for_model = [row for group in dates.values() for row in group]
-        ordered = sort_rows(rows_for_model)
-        if not ordered:
-            return ((), key)
-        return (tuple(-x for x in value_rank(ordered[0])), key)
-
-    result = []
-    for key, dates in sorted(grouped.items(), key=model_sort_key):
-        blocks = [sort_rows(group) for _date, group in sorted(dates.items(), reverse=True)]
-        result.append((key, blocks))
-    return result
+        if key not in grouped:
+            grouped[key] = {}
+            model_order.append(key)
+            date_order[key] = []
+        if date not in grouped[key]:
+            grouped[key][date] = []
+            date_order[key].append(date)
+        grouped[key][date].append(row)
+    return [(key, [grouped[key][date] for date in date_order[key]]) for key in model_order]
 
 
 def build_display_columns(rows):
-    """Create columns from the exact rows supplied; never borrow another block's columns."""
+    """Create columns from the supplied rows."""
     rows = list(rows or [])
     reps = {}
+    condition_order = []
     for row in rows:
         condition = clean(row.get("condition", ""))
-        if condition:
-            reps.setdefault(_condition_key(condition), row)
-    ordered = sorted(reps.values(), key=_condition_sort_key)
+        if condition and _condition_key(condition) not in reps:
+            reps[_condition_key(condition)] = row
+            condition_order.append(_condition_key(condition))
+    ordered = [reps[k] for k in condition_order]
     columns = [(field, title, 0) for field, title in FIXED_COLUMNS]
     for i, row in enumerate(ordered):
         columns.append((f"condition_{i}", clean(row.get("condition", "")), 0))
@@ -111,7 +102,8 @@ def build_result_columns(rows):
 
 
 def _build_block(model_index, period_index, block_rows):
-    block_rows = sort_rows(block_rows)
+    """Build a block while preserving row order exactly as supplied."""
+    block_rows = list(block_rows or [])
     columns = build_result_columns(block_rows)
     condition_values = {}
     source_images = []
@@ -142,22 +134,24 @@ def _build_block(model_index, period_index, block_rows):
 
 
 def build_result_blocks(rows):
-    """Return the only canonical ResultBlock sequence used by the UI."""
+    """Return ResultBlocks in the exact first-seen model/date order of search rows."""
     blocks = []
     for model_index, (_key, periods) in enumerate(group_model_dates(rows)):
         for period_index, group in enumerate(periods):
             blocks.append(_build_block(model_index, period_index, group))
+    for display_index, block in enumerate(blocks):
+        block["_display_index"] = display_index
     return blocks
 
 
 def normalize_search_results(rows):
-    """Legacy display adapter: add visual separators around canonical ResultBlocks."""
+    """Add visual separators without changing ResultBlock order."""
     blocks = build_result_blocks(rows)
     result = []
     for index, block in enumerate(blocks):
-        if index and block["_period_index"] > 0:
+        if index and block["_model_index"] == blocks[index - 1]["_model_index"]:
             result.append({"_separator": "period", "_model_index": block["_model_index"], "_period_index": block["_period_index"]})
-        if index and block["_model_index"] != blocks[index - 1]["_model_index"]:
+        elif index:
             result.extend((
                 {"_separator": "model", "_model_index": blocks[index - 1]["_model_index"]},
                 {"_separator": "model", "_model_index": blocks[index - 1]["_model_index"]},
@@ -166,5 +160,4 @@ def normalize_search_results(rows):
     return result
 
 
-# Legacy import compatibility only. Runtime rendering does not use this fixed schema.
 DISPLAY_COLUMNS = (("data_date", "数据日期", 105), ("identity", "手机/品牌/系列/型号/网络型号", 420), ("condition_0", "开机靓机/靓机/开机好屏", 145), ("condition_1", "开机好屏/内屏碎", 145), ("condition_2", "开机好碎", 145), ("condition_3", "开机碎屏", 145), ("condition_4", "不开机/开机坏配件", 145), ("condition_5", "废板·整机", 145), ("source_image", "来源图片", 150))
