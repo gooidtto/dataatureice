@@ -1,44 +1,38 @@
 """Unified visual theme for the data-search desktop UI.
 
-The palette is intentionally restrained: search is presentation-first, while
-favorites carries the stronger interaction/selection emphasis.
+The palette prioritizes legibility: light surfaces, dark text, restrained
+accent colors, and stronger contrast for interactive controls.
 """
 
 THEME = {
-    # Window / surfaces
-    "window_bg": "#f2f4f7",
+    "window_bg": "#eef1f4",
     "surface": "#ffffff",
-    "surface_alt": "#f7f9fb",
-    "surface_subtle": "#edf1f5",
+    "surface_alt": "#f6f7f9",
+    "surface_subtle": "#e9edf1",
     "table_bg": "#ffffff",
-    "table_header": "#e8edf2",
-    # Lines / typography
-    "border": "#d4dce4",
-    "border_soft": "#e3e8ed",
-    "text": "#26323d",
-    "text_secondary": "#596774",
-    "text_muted": "#82909d",
-    # Brand / interaction
-    "accent": "#3f6f8f",
-    "accent_hover": "#345f7c",
-    "selection": "#dcecf6",
-    "selection_strong": "#c9e1ef",
-    # Semantic states
-    "success": "#4f7f68",
-    "warning": "#9a7740",
-    "danger": "#a65d5d",
-    # Search model grouping: deliberately low saturation
-    "model_bands": ("#f3f7fa", "#f6f3f9", "#f2f7f4", "#faf7f0", "#f4f5f6"),
-    # Spacing / density tokens
+    "table_header": "#dfe4e9",
+    "border": "#aeb8c2",
+    "border_soft": "#d2d8de",
+    "text": "#111820",
+    "text_secondary": "#26333f",
+    "text_muted": "#52616d",
+    "accent": "#245f8a",
+    "accent_hover": "#174d74",
+    "selection": "#cfe4f3",
+    "selection_strong": "#b9d8ec",
+    "success": "#276749",
+    "warning": "#8a5a00",
+    "danger": "#a52a2a",
+    "model_bands": ("#f1f6fa", "#f5f1f8", "#f0f7f3", "#f8f5ed", "#f1f3f5"),
     "space_xs": 3,
     "space_sm": 6,
     "space_md": 10,
     "space_lg": 14,
     "space_xl": 18,
-    "button_pad_x": 9,
-    "button_pad_y": 4,
-    "primary_pad_x": 12,
-    "primary_pad_y": 5,
+    "button_pad_x": 10,
+    "button_pad_y": 5,
+    "primary_pad_x": 13,
+    "primary_pad_y": 6,
     "table_row_height": 34,
     "table_header_height": 30,
     "result_gap": 2,
@@ -46,7 +40,10 @@ THEME = {
     "model_gap": 10,
 }
 
-FONT_FAMILY = "微软雅黑"
+# Windows Tk installations reliably provide SimHei (黑体); use it consistently
+# for visible UI text so labels, buttons, headings, and tables share one glyph
+# system and remain visually crisp.
+FONT_FAMILY = "SimHei"
 FONT_BODY = (FONT_FAMILY, 10)
 FONT_LABEL = (FONT_FAMILY, 11)
 FONT_TITLE = (FONT_FAMILY, 11, "bold")
