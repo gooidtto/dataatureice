@@ -26,8 +26,7 @@ def _grouped_text(rows):
             lines.extend(['\t'*(len(COLS)-1)]*2)
         elif last_date is not None and date!=last_date:
             lines.append('\t'*(len(COLS)-1))
-        for r in b.get('_rows',[]):
-            lines.append('\t'.join(str(r.get(c,'')) for c,_,_ in COLS))
+        for r in b.get('_rows',[]):lines.append('\t'.join(str(r.get(c,'')) for c,_,_ in COLS))
         last_model,last_date=model,date
     return '\r\n'.join(lines)
 
@@ -85,21 +84,34 @@ def show_favorites_matrix(self):
     w.configure(background=THEME['window_bg'])
     style=ttk.Style(w)
     try:
+        style.configure('FavoritesHeader.TFrame',background=THEME['surface_alt'],borderwidth=1,relief='solid')
+        style.configure('FavoritesAction.TFrame',background=THEME['surface_alt'],borderwidth=0)
+        style.configure('FavoritesResults.TFrame',background=THEME['border_soft'],borderwidth=1,relief='solid')
+        style.configure('FavoritesTitle.TLabel',background=THEME['surface_alt'],foreground=THEME['text'],font=("微软雅黑",13,"bold"))
+        style.configure('FavoritesHint.TLabel',background=THEME['surface_alt'],foreground=THEME['text_secondary'],font=FONT_LABEL)
+        style.configure('FavoritesStatus.TLabel',background=THEME['surface_alt'],foreground=THEME['text_muted'],font=FONT_BODY)
         style.configure('Favorites.Treeview',font=FONT_BODY,rowheight=36,background=THEME['surface'],fieldbackground=THEME['surface'],foreground=THEME['text'],borderwidth=0)
         style.configure('Favorites.Treeview.Heading',font=FONT_TITLE,background=THEME['table_header'],foreground=THEME['text'],relief='flat')
+        style.configure('FavoritesPrimary.TButton',background=THEME['accent'],foreground='#ffffff',font=FONT_TITLE,padding=(11,5),relief='flat',borderwidth=0)
+        style.configure('FavoritesDanger.TButton',background=THEME['surface'],foreground=THEME['danger'],font=FONT_BODY,padding=(10,5),relief='flat',borderwidth=0)
+        style.configure('FavoritesSecondary.TButton',background=THEME['surface'],foreground=THEME['text'],font=FONT_BODY,padding=(10,5),relief='flat',borderwidth=0)
+        style.map('FavoritesPrimary.TButton',background=[('active',THEME['accent_hover']),('pressed',THEME['accent_hover'])])
+        style.map('FavoritesDanger.TButton',background=[('active',THEME['surface_subtle']),('pressed',THEME['selection'])])
+        style.map('FavoritesSecondary.TButton',background=[('active',THEME['surface_subtle']),('pressed',THEME['selection'])])
         style.map('Favorites.Treeview',background=[('selected',THEME['selection_strong'])])
     except tk.TclError:
         pass
-    header=ttk.Frame(w);header.pack(fill='x',padx=12,pady=10)
-    title=ttk.Label(header,text='',font=("微软雅黑",12,"bold"),foreground=THEME['text']);title.pack(side='left')
-    hint=ttk.Label(header,text='点击选择 · Ctrl 多选 · Shift 范围选择 · 拖动选择 · Ctrl+A 全选',font=FONT_LABEL,foreground=THEME['text_muted']);hint.pack(side='right')
-    host=ttk.Frame(w,padding=(12,0,12,10));host.pack(fill='both',expand=True)
+
+    header=ttk.Frame(w,style='FavoritesHeader.TFrame',padding=(14,9));header.pack(fill='x',padx=12,pady=(12,8))
+    title=ttk.Label(header,text='',style='FavoritesTitle.TLabel');title.pack(side='left')
+    hint=ttk.Label(header,text='点击选择 · Ctrl 多选 · Shift 范围选择 · 拖动选择 · Ctrl+A 全选',style='FavoritesHint.TLabel');hint.pack(side='right')
+    host=ttk.Frame(w,style='FavoritesResults.TFrame',padding=1);host.pack(fill='both',expand=True,padx=12,pady=(0,8))
     canvas=tk.Canvas(host,highlightthickness=0,bd=0,background=THEME['surface'],relief='flat');scroll=ttk.Scrollbar(host,orient='vertical',command=canvas.yview);canvas.configure(yscrollcommand=scroll.set);canvas.grid(row=0,column=0,sticky='nsew');scroll.grid(row=0,column=1,sticky='ns');host.grid_rowconfigure(0,weight=1);host.grid_columnconfigure(0,weight=1)
     inner=tk.Frame(canvas,background=THEME['surface']);window_id=canvas.create_window((0,0),window=inner,anchor='nw');inner.bind('<Configure>',lambda e:canvas.configure(scrollregion=canvas.bbox('all')));canvas.bind('<Configure>',lambda e:canvas.itemconfigure(window_id,width=e.width))
     blocks=_ordered_blocks(rows);trees=[];mapping={};selected=set();anchor_index=None;dragging=False
 
     def refresh_title():
-        title.config(text=f'我的收藏 · {len(rows)} 条 · 已选择 {sum(len(mapping[i].get("_rows",[])) for i in selected if i in mapping)} 条 · 收藏区可选择与操作')
+        title.config(text=f'我的收藏 · {len(rows)} 条 · 已选择 {sum(len(mapping[i].get("_rows",[])) for i in selected if i in mapping)} 条')
 
     def paint(iid,on):
         tree=mapping[iid]['_tree']
@@ -172,17 +184,17 @@ def show_favorites_matrix(self):
     def export_selected(xlsx):_export_grouped(self,selected_rows(),xlsx,w)
     def copy_all():_copy_grouped(self,all_rows(),w)
     def export_all(xlsx):_export_grouped(self,all_rows(),xlsx,w)
-    bar=ttk.Frame(w,padding=(12,0,12,10));bar.pack(fill='x')
-    ttk.Button(bar,text='查看选中',command=lambda:self.detail_rows(selected_rows()) if selected_rows() else messagebox.showinfo('我的收藏','请先选择收藏',parent=w)).pack(side='left',padx=4)
-    ttk.Button(bar,text='移除选中',command=remove_selected).pack(side='left',padx=4)
-    ttk.Button(bar,text='复制选中',command=copy_selected).pack(side='left',padx=4)
-    ttk.Button(bar,text='导出选中 CSV',command=lambda:export_selected(False)).pack(side='left',padx=4)
-    ttk.Button(bar,text='导出选中 Excel',command=lambda:export_selected(True)).pack(side='left',padx=4)
+    bar=ttk.Frame(w,style='FavoritesAction.TFrame',padding=(12,0,12,10));bar.pack(fill='x')
+    ttk.Button(bar,text='查看选中',style='FavoritesPrimary.TButton',command=lambda:self.detail_rows(selected_rows()) if selected_rows() else messagebox.showinfo('我的收藏','请先选择收藏',parent=w)).pack(side='left',padx=4)
+    ttk.Button(bar,text='移除选中',style='FavoritesDanger.TButton',command=remove_selected).pack(side='left',padx=4)
+    ttk.Button(bar,text='复制选中',style='FavoritesSecondary.TButton',command=copy_selected).pack(side='left',padx=4)
+    ttk.Button(bar,text='导出选中 CSV',style='FavoritesSecondary.TButton',command=lambda:export_selected(False)).pack(side='left',padx=4)
+    ttk.Button(bar,text='导出选中 Excel',style='FavoritesSecondary.TButton',command=lambda:export_selected(True)).pack(side='left',padx=4)
     ttk.Separator(bar,orient='vertical').pack(side='left',fill='y',padx=8)
-    ttk.Button(bar,text='复制全部',command=copy_all).pack(side='left',padx=4)
-    ttk.Button(bar,text='导出全部 CSV',command=lambda:export_all(False)).pack(side='left',padx=4)
-    ttk.Button(bar,text='导出全部 Excel',command=lambda:export_all(True)).pack(side='left',padx=4)
-    ttk.Button(bar,text='关闭',command=w.destroy).pack(side='right',padx=4)
+    ttk.Button(bar,text='复制全部',style='FavoritesSecondary.TButton',command=copy_all).pack(side='left',padx=4)
+    ttk.Button(bar,text='导出全部 CSV',style='FavoritesSecondary.TButton',command=lambda:export_all(False)).pack(side='left',padx=4)
+    ttk.Button(bar,text='导出全部 Excel',style='FavoritesSecondary.TButton',command=lambda:export_all(True)).pack(side='left',padx=4)
+    ttk.Button(bar,text='关闭',style='FavoritesSecondary.TButton',command=w.destroy).pack(side='right',padx=4)
     w.bind('<Control-a>',lambda e:(selected.update(mapping.keys()),[paint(i,True) for i in mapping],refresh_title(),'break')[-1]);w.bind('<Escape>',lambda e:w.destroy());return w
 
 
