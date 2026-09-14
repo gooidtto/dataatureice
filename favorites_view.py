@@ -87,7 +87,7 @@ def show_favorites_matrix(self):
         style.configure('FavoritesStatus.TLabel',background=THEME['surface_alt'],foreground=THEME['text_muted'],font=FONT_BODY)
         style.configure('Favorites.Treeview',font=FONT_BODY,rowheight=THEME['table_row_height'],background=THEME['surface'],fieldbackground=THEME['surface'],foreground=THEME['text'],borderwidth=0,relief='flat')
         style.configure('Favorites.Treeview.Heading',font=FONT_BODY,background=THEME['table_header'],foreground=THEME['text_secondary'],relief='flat',borderwidth=0,padding=(THEME['space_md'],3))
-        style.configure('FavoritesPrimary.TButton',background=THEME['accent'],foreground='#ffffff',font=FONT_TITLE,padding=(THEME['primary_pad_x'],THEME['primary_pad_y']),relief='flat',borderwidth=0)
+        style.configure('FavoritesPrimary.TButton',background=THEME['accent'],foreground='#ffffff',font=FONT_BODY,padding=(THEME['button_pad_x'],THEME['button_pad_y']),relief='flat',borderwidth=0)
         style.configure('FavoritesDanger.TButton',background=THEME['surface'],foreground=THEME['danger'],font=FONT_BODY,padding=(THEME['button_pad_x'],THEME['button_pad_y']),relief='flat',borderwidth=0)
         style.configure('FavoritesSecondary.TButton',background=THEME['surface'],foreground=THEME['text'],font=FONT_BODY,padding=(THEME['button_pad_x'],THEME['button_pad_y']),relief='flat',borderwidth=0)
         style.map('FavoritesPrimary.TButton',background=[('active',THEME['accent_hover']),('pressed',THEME['accent_hover'])])
@@ -157,6 +157,32 @@ def show_favorites_matrix(self):
         if not picked:return messagebox.showinfo('展示收藏','请先选择要移除的收藏',parent=w)
         self.fav.remove(picked);w.destroy();self.show_favorites();self.status.config(text=f'已移除收藏 {len(picked)} 条')
 
+    def fit_columns(_event=None):
+        """Scale each secondary-window result block to the current usable width."""
+        try:
+            available=max(640, canvas.winfo_width()-24)
+            specs=tuple(blocks[0].get('_columns') or ()) if blocks else ()
+            if not specs:return
+            base=[max(60,int(width)) for _,_,width in specs]+[110]
+            total=sum(base)
+            if total <= available:
+                widths=base[:]
+                extra=available-total
+                flexible=[i for i,(field,_,_) in enumerate(list(specs)+[('favorite','收藏',110)]) if field in {'model','series','condition','note','source_image'} or field.startswith('condition_')]
+                if flexible:
+                    add=extra//len(flexible)
+                    for i in flexible:widths[i]+=add
+                    widths[flexible[-1]]+=extra-add*len(flexible)
+            else:
+                scale=available/float(total)
+                widths=[max(60,int(v*scale)) for v in base]
+                used=sum(widths)
+                if used>available:widths[-1]=max(60,widths[-1]-(used-available))
+            for tree in trees:
+                for i,(field,_,_) in enumerate(specs):tree.column(field,width=widths[i],minwidth=60,stretch=False)
+                tree.column('favorite',width=widths[-1],minwidth=70,stretch=False)
+        except tk.TclError:pass
+
     previous_model=None
     previous_date=None
     for i,b in enumerate(blocks):
@@ -180,13 +206,15 @@ def show_favorites_matrix(self):
         cols=tuple(b.get('_columns') or ());tree=ttk.Treeview(inner,columns=[c[0] for c in cols]+['favorite'],show='headings',height=1,selectmode='none',style='Favorites.Treeview')
         for field,t,wid in cols:
             tree.heading(field,text=t);tree.column(field,width=wid,minwidth=60,anchor='center' if field=='data_date' or field.startswith('condition_') else 'w',stretch=False)
-        tree.heading('favorite',text='收藏');tree.column('favorite',width=110,anchor='center',stretch=False)
+        tree.heading('favorite',text='收藏');tree.column('favorite',width=110,minwidth=70,anchor='center',stretch=False)
         iid=f'favorite-{i}';tree.insert('','end',iid=iid,values=[b.get(field,'') for field,_,_ in cols]+['★ 已收藏'],tags=('normal',));tree.tag_configure('normal',background=THEME['surface']);tree.tag_configure('selected',background=THEME['selection'])
         mapping[iid]={'_rows':list(b.get('_rows',[])),'_tree':tree,'_block':b,'_index':i}
         tree.bind('<Button-1>',lambda e,ii=iid,idx=i,t=tree:click(e,ii,idx,t),add='+');tree.bind('<B1-Motion>',lambda e,t=tree:drag_motion(e,t),add='+');tree.bind('<ButtonRelease-1>',drag_end,add='+');tree.bind('<Double-1>',lambda e,bb=b:self.detail_rows(bb.get('_rows',[])));tree.pack(fill='x',expand=True)
         trees.append(tree)
         previous_model=model
         previous_date=date
+    canvas.bind('<Configure>',lambda e:(canvas.itemconfigure(window_id,width=e.width),fit_columns(e)),add='+')
+    w.after_idle(fit_columns)
     refresh_title()
 
     def copy_selected():_copy_grouped(self,selected_rows(),w)
