@@ -24,35 +24,28 @@ def _methods(module, class_name):
 
 
 def _calls_named(node, name):
-    return any(
-        isinstance(child, ast.Call)
-        and isinstance(child.func, ast.Name)
-        and child.func.id == name
-        for child in ast.walk(node)
-    )
+    return any(isinstance(child, ast.Call) and isinstance(child.func, ast.Name) and child.func.id == name for child in ast.walk(node))
 
 
 def _calls_attr(node, name):
-    return any(
-        isinstance(child, ast.Call)
-        and isinstance(child.func, ast.Attribute)
-        and child.func.attr == name
-        for child in ast.walk(node)
-    )
+    return any(isinstance(child, ast.Call) and isinstance(child.func, ast.Attribute) and child.func.attr == name for child in ast.walk(node))
+
+
+def _arg_names(function):
+    return [arg.arg for arg in function.args.args]
+
+
+def _contains_string(node, text):
+    return any(isinstance(child, ast.Constant) and child.value == text for child in ast.walk(node))
 
 
 def test_search_app_owns_window_factory_without_global_tk_patch():
     module = _module(UI)
     functions = _functions(module)
     methods = _methods(module, "SearchApp")
-    assert "_new_window" in functions
-    assert [arg.arg for arg in functions["_new_window"].args.args] == ["self", "title", "geometry", "minsize"]
+    assert _arg_names(functions["_new_window"]) == ["self", "title", "geometry", "minsize"]
     assert "_new_window" in methods
-    assert any(
-        isinstance(node, ast.Assign)
-        and any(isinstance(target, ast.Name) and target.id == "_new_window" for target in node.targets)
-        for node in _class(module, "SearchApp").body
-    )
+    assert any(isinstance(node, ast.Assign) and any(isinstance(target, ast.Name) and target.id == "_new_window" for target in node.targets) for node in _class(module, "SearchApp").body)
     assert _calls_attr(functions["_new_window"], "Toplevel")
     for name, function in functions.items():
         if name != "_new_window":
@@ -61,78 +54,60 @@ def test_search_app_owns_window_factory_without_global_tk_patch():
 
 def test_result_double_click_selects_matrix_iid_before_detail():
     method = _methods(_module(UI), "SearchApp")["_result_double_click"]
-    statements = method.body
-    select_index = next(
-        i for i, stmt in enumerate(statements)
-        if isinstance(stmt, ast.Expr)
-        and isinstance(stmt.value, ast.Call)
-        and isinstance(stmt.value.func, ast.Name)
-        and stmt.value.func.id == "_select_result_iid"
-    )
-    detail_index = next(
-        i for i, stmt in enumerate(statements)
-        if isinstance(stmt, ast.Expr)
-        and isinstance(stmt.value, ast.Call)
-        and isinstance(stmt.value.func, ast.Attribute)
-        and stmt.value.func.attr == "detail"
-    )
+    calls = [node for node in method.body if isinstance(node, ast.Expr) and isinstance(node.value, ast.Call)]
+    select_index = next(i for i, stmt in enumerate(calls) if isinstance(stmt.value.func, ast.Name) and stmt.value.func.id == "_select_result_iid")
+    detail_index = next(i for i, stmt in enumerate(calls) if isinstance(stmt.value.func, ast.Attribute) and stmt.value.func.attr == "detail")
     assert select_index < detail_index
-    assert isinstance(statements[-1], ast.Return)
-    assert isinstance(statements[-1].value, ast.Constant)
-    assert statements[-1].value.value == "break"
+    assert isinstance(method.body[-1], ast.Return) and method.body[-1].value.value == "break"
 
 
 def test_app_actions_do_not_bypass_window_factory():
     module = _module(ACTIONS)
     functions = _functions(module)
-    assert [arg.arg for arg in functions["_new_window"].args.args] == ["self", "title", "geometry", "minsize"]
-    assert not any(
-        isinstance(node, ast.Call)
-        and isinstance(node.func, ast.Attribute)
-        and node.func.attr == "Toplevel"
-        for node in ast.walk(module)
-    )
+    assert _arg_names(functions["_new_window"]) == ["self", "title", "geometry", "minsize"]
+    assert not any(isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute) and node.func.attr == "Toplevel" for node in ast.walk(module))
     assert _calls_named(functions["sources"], "_new_window")
-    install = functions["install"]
-    assert any(
-        isinstance(node, ast.Call)
-        and isinstance(node.func, ast.Name)
-        and node.func.id == "setattr"
-        for node in ast.walk(install)
-    )
+    assert _calls_named(functions["show_compare"], "_new_window")
+    assert _calls_named(functions["detail_rows"], "_new_window")
+    assert "setattr" in {node.func.id for node in ast.walk(functions["install"]) if isinstance(node, ast.Call) and isinstance(node.func, ast.Name)}
 
 
 def test_favorite_popup_actions_match_app_helpers():
-    actions = ACTIONS.read_text(encoding="utf-8")
-    phone = PHONE.read_text(encoding="utf-8")
-    assert "self.copy_popup(selected_rows() or all_rows())" in actions
-    assert "self.export_popup(selected_rows() or all_rows(),False)" in actions
-    assert "def copy_popup(self,rs):" in phone
-    assert "def export_popup(self,rs,xlsx):" in phone
-    assert "self.fav.remove(rows)" in actions
-    assert "def remove(self,rows):" in phone
+    actions = _functions(_module(ACTIONS))
+    phone = _functions(_module(PHONE))
+    assert _calls_named(actions["show_favorites"], "_new_window")
+    assert _calls_attr(actions["show_favorites"], "copy_popup")
+    assert _calls_attr(actions["show_favorites"], "export_popup")
+    assert _calls_attr(actions["_remove_favorite_rows"], "remove")
+    assert _arg_names(phone["copy_popup"]) == ["self", "rs"]
+    assert _arg_names(phone["export_popup"]) == ["self", "rs", "xlsx"]
+    assert _arg_names(phone["remove"]) == ["self", "rows"]
 
 
 def test_favorite_action_is_installed_on_search_app():
-    actions = ACTIONS.read_text(encoding="utf-8")
-    assert "def addToFavorites(self, rows):" in actions
-    assert '"addToFavorites":addToFavorites' in actions
-    assert "added, duplicate = self.fav.add(rows)" in actions
-    assert "已经收藏" in actions
+    actions = _functions(_module(ACTIONS))
+    assert _arg_names(actions["addToFavorites"]) == ["self", "rows"]
+    assert _calls_attr(actions["addToFavorites"], "add")
+    assert _contains_string(actions["addToFavorites"], "已经收藏")
+    install = actions["install"]
+    assert _contains_string(install, "addToFavorites")
 
 
 def test_main_window_is_withdrawn_during_app_initialization():
-    actions = ACTIONS.read_text(encoding="utf-8")
-    assert "def _install_window_lifecycle(App):" in actions
-    assert "root.withdraw()" in actions
-    assert "original_init(self, root, *args, **kwargs)" in actions
-    assert "root.deiconify()" in actions
-    assert "App.__init__ = _init" in actions
+    actions = _functions(_module(ACTIONS))
+    lifecycle = actions["_install_window_lifecycle"]
+    assert _calls_attr(lifecycle, "withdraw")
+    assert _calls_named(lifecycle, "original_init")
+    assert _calls_attr(lifecycle, "deiconify")
+    assert any(isinstance(node, ast.Assign) and any(isinstance(target, ast.Attribute) and target.attr == "__init__" for target in node.targets) for node in ast.walk(lifecycle))
 
 
 def test_child_window_is_hidden_until_configuration_finishes():
-    actions = ACTIONS.read_text(encoding="utf-8")
-    assert "w.withdraw()" in actions
-    assert "self.root.after_idle(lambda: _show_window(w))" in actions
-    assert "w.deiconify()" in actions
-    assert "App._window_factory = base_factory" in actions
+    actions = _functions(_module(ACTIONS))
+    new_window = actions["_new_window"]
+    assert _calls_attr(new_window, "withdraw")
+    assert _contains_string(new_window, "_show_window")
+    assert _contains_string(actions["_show_window"], "")
+    assert _calls_attr(actions["_show_window"], "deiconify")
+    lifecycle = actions["_install_window_lifecycle"]
+    assert _contains_string(lifecycle, "_window_factory")
