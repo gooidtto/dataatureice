@@ -40,10 +40,10 @@ def test_favorite_groups_share_canonical_model_date_contract():
     app.fav = mod.Favorites("unused")
     app.fav.items = [row(record_id="m2-old", model="M2", data_date="2026-08-20", price="80"), row(record_id="m1-old", model="M1", data_date="2026-08-20", price="70"), row(record_id="m1-new", model="M1", data_date="2026-08-31", price="100"), row(record_id="m2-new", model="M2", data_date="2026-08-31", price="110")]
     groups = ui.favorite_groups(app)
-    assert [key[3] for key, _ in groups] == ["M1", "M2"]
-    assert all(len(blocks) == 2 for _, blocks in groups)
-    assert [blocks[0][0]["data_date"] for _, blocks in groups] == ["2026-08-31", "2026-08-31"]
-    assert [blocks[1][0]["data_date"] for _, blocks in groups] == ["2026-08-20", "2026-08-20"]
+    assert len(groups) == 4
+    assert [key[3] for key, _, _, _, _ in groups] == ["M2", "M1", "M1", "M2"]
+    assert [date for _, date, _, _, _ in groups] == ["2026-08-20", "2026-08-20", "2026-08-31", "2026-08-31"]
+    assert all(len(blocks) == 1 for _, _, blocks, _, _ in groups)
 
 
 def test_search_and_favorites_use_the_same_identity_grouping():
@@ -51,9 +51,9 @@ def test_search_and_favorites_use_the_same_identity_grouping():
     rows = [row(record_id="a1", model="M1", data_date="2026-08-20", condition="开机屏坏", price="999"), row(record_id="a2", model="M1", data_date="2026-08-31", condition="开机屏好", price="1"), row(record_id="b1", model="M2", data_date="2026-08-31", condition="不开机", price="9999")]
     grouped = ui.group_model_dates(rows)
     blocks = ui.build_result_blocks(rows)
-    assert [key[3] for key, _ in grouped] == ["M1", "M2"]
+    assert [key[3] for key, _, _, _, _ in grouped] == ["M1", "M1", "M2"]
     assert [block["_model_key"][3] for block in blocks] == ["M1", "M1", "M2"]
-    assert [block["_period_key"] for block in blocks] == ["2026-08-31", "2026-08-20", "2026-08-31"]
+    assert [block["_period_key"] for block in blocks] == ["2026-08-20", "2026-08-31", "2026-08-31"]
     assert all("_rows" in block and "_columns" in block for block in blocks)
 
 
