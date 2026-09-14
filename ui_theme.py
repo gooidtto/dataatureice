@@ -6,15 +6,15 @@ favorites carries the stronger interaction/selection emphasis.
 
 THEME = {
     # Window / surfaces
-    "window_bg": "#f4f6f8",
+    "window_bg": "#f2f4f7",
     "surface": "#ffffff",
-    "surface_alt": "#f8fafc",
-    "surface_subtle": "#eef2f5",
+    "surface_alt": "#f7f9fb",
+    "surface_subtle": "#edf1f5",
     "table_bg": "#ffffff",
-    "table_header": "#e9eef3",
+    "table_header": "#e8edf2",
     # Lines / typography
-    "border": "#d7dee5",
-    "border_soft": "#e5eaf0",
+    "border": "#d4dce4",
+    "border_soft": "#e3e8ed",
     "text": "#26323d",
     "text_secondary": "#596774",
     "text_muted": "#82909d",
