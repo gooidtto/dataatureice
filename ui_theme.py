@@ -1,29 +1,38 @@
 """Unified visual theme for the data-search desktop UI.
 
-The palette prioritizes legibility: light surfaces, dark text, restrained
-accent colors, and stronger contrast for interactive controls.
+The palette uses a low-contrast, eye-friendly green system. Interactive
+controls share one restrained glass-like surface so buttons remain visually
+consistent while preserving strong text contrast.
 """
 
 THEME = {
-    "window_bg": "#eef1f4",
-    "surface": "#ffffff",
-    "surface_alt": "#f6f7f9",
-    "surface_subtle": "#e9edf1",
-    "table_bg": "#ffffff",
-    "table_header": "#dfe4e9",
-    "border": "#aeb8c2",
-    "border_soft": "#d2d8de",
-    "text": "#111820",
-    "text_secondary": "#26333f",
-    "text_muted": "#52616d",
-    "accent": "#245f8a",
-    "accent_hover": "#174d74",
-    "selection": "#cfe4f3",
-    "selection_strong": "#b9d8ec",
-    "success": "#276749",
-    "warning": "#8a5a00",
-    "danger": "#a52a2a",
-    "model_bands": ("#f1f6fa", "#f5f1f8", "#f0f7f3", "#f8f5ed", "#f1f3f5"),
+    "window_bg": "#e8f1e7",
+    "surface": "#f4f8f2",
+    "surface_alt": "#eaf3e8",
+    "surface_subtle": "#dfeadd",
+    "table_bg": "#f7faf5",
+    "table_header": "#d9e7d6",
+    "border": "#b5c8b2",
+    "border_soft": "#cad9c7",
+    "text": "#18251b",
+    "text_secondary": "#304536",
+    "text_muted": "#5b6d5e",
+    "accent": "#557b5b",
+    "accent_hover": "#466b4d",
+    "selection": "#d4e6d2",
+    "selection_strong": "#c2dcc0",
+    "success": "#4f7656",
+    "warning": "#806b3d",
+    "danger": "#875858",
+    "model_bands": ("#eff6ed", "#edf4eb", "#f1f6ef", "#eaf2e8", "#f3f7f1"),
+    # One shared glass-like button surface for every button family.
+    "button_bg": "#e6f0e4",
+    "button_hover": "#d9e8d7",
+    "button_pressed": "#c9ddc7",
+    "button_border": "#aec3aa",
+    "button_text": "#203226",
+    "button_accent_text": "#3f6847",
+    "button_disabled": "#cfdacf",
     "space_xs": 3,
     "space_sm": 6,
     "space_md": 10,
@@ -40,9 +49,6 @@ THEME = {
     "model_gap": 10,
 }
 
-# Windows Tk installations reliably provide SimHei (黑体); use it consistently
-# for visible UI text so labels, buttons, headings, and tables share one glyph
-# system and remain visually crisp.
 FONT_FAMILY = "SimHei"
 FONT_BODY = (FONT_FAMILY, 10)
 FONT_LABEL = (FONT_FAMILY, 11)
