@@ -1,5 +1,4 @@
 """Unified visual theme and shared UI safeguards for the desktop search app."""
-import tkinter as _tk
 
 THEME = {
     "window_bg": "#e8f1e7",
@@ -21,8 +20,9 @@ THEME = {
     "warning": "#806b3d",
     "danger": "#875858",
     "model_bands": ("#eff6ed", "#edf4eb", "#f1f6ef", "#eaf2e8", "#f3f7f1"),
-    "period_separator": "#9bbfc0",
-    "model_separator": "#c9a77a",
+    # Quiet Japanese-style separators: cool mist for date breaks, warm sand for model breaks.
+    "period_separator": "#a9c3c5",
+    "model_separator": "#d6c1a5",
     "button_bg": "#e6f0e4",
     "button_hover": "#d9e8d7",
     "button_pressed": "#c9ddc7",
