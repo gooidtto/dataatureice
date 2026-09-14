@@ -1,9 +1,28 @@
 from types import SimpleNamespace
-from app_actions import _reliable_search
+from app_actions import _install_search_behavior, _reliable_search
+
 
 class _Var:
     def __init__(self, value): self.value = value
     def get(self): return self.value
+
+
+class _TraceVar(_Var):
+    def __init__(self, value):
+        super().__init__(value)
+        self.traces = []
+        self.removed = []
+
+    def trace_info(self):
+        return [("write", "legacy-write")]
+
+    def trace_remove(self, mode, callback):
+        self.removed.append((mode, callback))
+
+    def trace_add(self, mode, callback):
+        self.traces.append((mode, callback))
+        return "new-write"
+
 
 class _Widget:
     def __init__(self): self.value = ""
@@ -11,8 +30,10 @@ class _Widget:
     def place(self, **kwargs): self.value = kwargs
     def place_forget(self): self.value = None
 
+
 class _Root:
     def after_cancel(self, _ident): pass
+
 
 def test_confirmed_search_renders_results_without_async_queue():
     row = {"record_id": "a59", "model": "A59", "brand": "OPPO"}
@@ -23,3 +44,21 @@ def test_confirmed_search_renders_results_without_async_queue():
     assert rendered == [row]
     assert app.status.value == "找到 1 个结果块"
     assert app.target.value == "搜索结果：OPPO A59 · 1 个结果块"
+
+
+def test_typing_only_refreshes_suggestions_and_does_not_schedule_search():
+    q = _TraceVar("OPPO A59")
+    refreshed = []
+    after_calls = []
+    root = SimpleNamespace(after=lambda *args: after_calls.append(args))
+    app = SimpleNamespace(q=q, root=root, refresh_suggestions=lambda: refreshed.append(True))
+
+    _install_search_behavior(app)
+    assert q.removed == [("write", "legacy-write")]
+    assert len(q.traces) == 1
+    assert q.traces[0][0] == "write"
+
+    q.traces[0][1]()
+    assert refreshed == [True]
+    assert after_calls == []
+    assert app._sync_search_after_id is None
