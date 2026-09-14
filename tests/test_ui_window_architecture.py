@@ -23,11 +23,20 @@ def _methods(module, class_name):
     return {node.name: node for node in _class(module, class_name).body if isinstance(node, ast.FunctionDef)}
 
 
-def _has_method_call(node, attr):
+def _calls_named(node, name):
+    return any(
+        isinstance(child, ast.Call)
+        and isinstance(child.func, ast.Name)
+        and child.func.id == name
+        for child in ast.walk(node)
+    )
+
+
+def _calls_attr(node, name):
     return any(
         isinstance(child, ast.Call)
         and isinstance(child.func, ast.Attribute)
-        and child.func.attr == attr
+        and child.func.attr == name
         for child in ast.walk(node)
     )
 
@@ -44,12 +53,10 @@ def test_search_app_owns_window_factory_without_global_tk_patch():
         and any(isinstance(target, ast.Name) and target.id == "_new_window" for target in node.targets)
         for node in _class(module, "SearchApp").body
     )
-    assert not any(
-        isinstance(node, ast.Call)
-        and isinstance(node.func, ast.Attribute)
-        and node.func.attr == "Toplevel"
-        for node in ast.walk(module)
-    )
+    assert _calls_attr(functions["_new_window"], "Toplevel")
+    for name, function in functions.items():
+        if name != "_new_window":
+            assert not _calls_attr(function, "Toplevel"), name
 
 
 def test_result_double_click_selects_matrix_iid_before_detail():
@@ -85,7 +92,7 @@ def test_app_actions_do_not_bypass_window_factory():
         and node.func.attr == "Toplevel"
         for node in ast.walk(module)
     )
-    assert _has_method_call(functions["sources"], "_new_window")
+    assert _calls_named(functions["sources"], "_new_window")
     install = functions["install"]
     assert any(
         isinstance(node, ast.Call)
