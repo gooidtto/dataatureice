@@ -7,7 +7,7 @@ from tkinter import ttk
 
 import phone_search
 from app_actions import install as install_app_actions
-from search_display import build_result_blocks, group_model_dates, normalize_search_results, sort_rows
+from search_display import build_result_blocks, group_model_dates
 
 
 _MODEL_PALETTE = ("#eef7ff", "#f5efff", "#eefaf2", "#fff7e8", "#f3f3f3")
@@ -66,8 +66,10 @@ class SearchApp(phone_search.App):
         return _new_window(self, title, geometry, minsize)
 
     def _result_double_click(self, iid):
-        _select_result_iid(self, iid)
-        self.detail()
+        payload = self._matrix_map.get(iid) or {}
+        rows = list(payload.get("_rows") or [])
+        if rows:
+            self.detail_rows(rows)
         return "break"
 
 
@@ -89,10 +91,11 @@ def _row_tag(model_index, period_index):
 
 def _configure_result_tree(tree, columns, iid, display, favorite):
     fields = [c[0] for c in columns] + ["favorite"]
-    tree.configure(columns=fields, show="headings", height=1, selectmode="browse")
+    tree.configure(columns=fields, show="headings", height=1, selectmode="none")
     for field, title, width in columns:
         tree.heading(field, text=title)
-        tree.column(field, width=width, minwidth=max(60, min(width, 90)), anchor="center" if field == "data_date" else "w", stretch=False)
+        is_quote = field.startswith("condition_")
+        tree.column(field, width=width, minwidth=max(60, min(width, 90)), anchor="center" if field == "data_date" or is_quote else "w", stretch=False)
     tree.heading("favorite", text="收藏")
     tree.column("favorite", width=110, minwidth=90, anchor="center", stretch=False)
     values = [display.get(field, "") for field, _, _ in columns]
@@ -101,68 +104,13 @@ def _configure_result_tree(tree, columns, iid, display, favorite):
     tree.tag_configure(tag, background=_MODEL_PALETTE[display["_model_index"] % len(_MODEL_PALETTE)])
 
 
-def _sync_result_selection(self):
-    selected = set(self.tree.selection())
-    for iid, tree in getattr(self, "_result_tree_map", {}).items():
-        try:
-            if iid in selected:
-                tree.selection_set(iid)
-            else:
-                tree.selection_remove(iid)
-        except tk.TclError:
-            pass
-
-
-def _select_result_iid(self, iid):
-    try:
-        self.tree.selection_set(iid)
-        self.tree.focus(iid)
-    except tk.TclError:
-        pass
-    _sync_result_selection(self)
-
-
-def _result_click(self, event, iid):
-    tree = self._result_tree_map.get(iid)
-    if tree is None:
-        return
-    _select_result_iid(self, iid)
-    if tree.identify_column(event.x) == f"#{len(self._matrix_map[iid].get('_columns', ())) + 1}":
-        _toggle_matrix_favorite(self, iid, self._matrix_map[iid])
-
-
-def _result_context_menu(self, event, iid):
-    tree = self._result_tree_map.get(iid)
-    payload = self._matrix_map.get(iid)
-    if tree is None or payload is None:
-        return
-    _select_result_iid(self, iid)
-    menu = tk.Menu(tree, tearoff=False)
-    menu.add_command(label="收藏当前结果", command=lambda: self.addToFavorites(payload.get("_rows", [])))
-    menu.add_command(label="查看详情", command=lambda: self.detail_rows(payload.get("_rows", [])))
-    menu.tk_popup(event.x_root, event.y_root)
-
-
-def _toggle_matrix_favorite(self, iid, payload):
-    rows = list(payload.get("_rows") or [])
-    if not rows:
-        return
-    keys = {self.fav.identity(r) for r in rows}
-    existing = {self.fav.identity(r) for r in self.fav.dedupe()}
-    if keys and keys.issubset(existing):
-        self.fav.remove(rows)
-        self.status.config(text="已取消收藏")
-    else:
-        self.addToFavorites(rows)
-    self.render(self.rows)
-
-
 def _render_search_matrix(self, result):
     _clear_result_views(self)
     self.map = {}
     self._matrix_map = {}
     self._display_columns = ()
-    blocks = build_result_blocks(sort_rows(result or []))
+    # SearchService order is authoritative. Rendering only groups contiguous runs.
+    blocks = build_result_blocks(list(result or []))
     parent = getattr(self, "_results_inner", None)
     if parent is None:
         self.rows = list(result or [])
@@ -188,12 +136,10 @@ def _render_search_matrix(self, result):
         favorite_keys = {self.fav.identity(r) for r in self.fav.dedupe()}
         favorite = any(self.fav.identity(r) in favorite_keys for r in rows)
         frame = tk.Frame(parent, bd=0, highlightthickness=0)
-        tree = ttk.Treeview(frame, columns=(), show="headings", height=1, selectmode="browse")
+        tree = ttk.Treeview(frame, columns=(), show="headings", height=1, selectmode="none")
         _configure_result_tree(tree, columns, iid, block, favorite)
-        tree.bind("<Button-1>", lambda event, iid=iid: _result_click(self, event, iid))
-        tree.bind("<Button-3>", lambda event, iid=iid: _result_context_menu(self, event, iid))
+        # Search is display-only: no selection, drag, context menu, or inline favorite action.
         tree.bind("<Double-1>", lambda _event, iid=iid: self._result_double_click(iid))
-        tree.bind("<<TreeviewSelect>>", lambda _event: _sync_result_selection(self))
         tree.pack(fill="x", expand=True)
         frame.pack(fill="x", expand=True, pady=(0, 2))
         self._result_views.append(frame)
@@ -228,7 +174,7 @@ def _render_search_matrix(self, result):
 
 
 def favorite_groups(self):
-    """Return the canonical favorite grouping consumed by show_favorites()."""
+    """Return favorite groups in stored order; grouping never re-sorts records."""
     return group_model_dates(self.fav.dedupe())
 
 
