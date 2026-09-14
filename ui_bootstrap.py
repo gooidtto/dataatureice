@@ -7,7 +7,7 @@ from tkinter import ttk
 
 import phone_search
 from app_actions import install as install_app_actions
-from search_display import group_model_dates, normalize_search_results, sort_rows
+from search_display import build_result_blocks, group_model_dates, normalize_search_results, sort_rows
 
 
 _MODEL_PALETTE = ("#eef7ff", "#f5efff", "#eefaf2", "#fff7e8", "#f3f3f3")
@@ -45,19 +45,10 @@ class SearchApp(phone_search.App):
         host.grid_rowconfigure(0, weight=1)
         host.grid_columnconfigure(0, weight=1)
         self._results_inner = tk.Frame(self._results_canvas, bd=0, highlightthickness=0)
-        self._results_window = self._results_canvas.create_window(
-            (0, 0), window=self._results_inner, anchor="nw"
-        )
-        self._results_inner.bind(
-            "<Configure>",
-            lambda _e: self._results_canvas.configure(
-                scrollregion=self._results_canvas.bbox("all")
-            ),
-        )
+        self._results_window = self._results_canvas.create_window((0, 0), window=self._results_inner, anchor="nw")
+        self._results_inner.bind("<Configure>", lambda _e: self._results_canvas.configure(scrollregion=self._results_canvas.bbox("all")))
         self._results_canvas.bind("<Configure>", self._resize_results_inner)
-        self.empty_hint = ttk.Label(
-            host, text="输入品牌、系列、型号开始查询", font=("微软雅黑", 12)
-        )
+        self.empty_hint = ttk.Label(host, text="输入品牌、系列、型号开始查询", font=("微软雅黑", 12))
         self._result_views = []
         self._result_trees = []
         self._result_tree_map = {}
@@ -101,20 +92,12 @@ def _configure_result_tree(tree, columns, iid, display, favorite):
     tree.configure(columns=fields, show="headings", height=1, selectmode="browse")
     for field, title, width in columns:
         tree.heading(field, text=title)
-        tree.column(
-            field,
-            width=width,
-            minwidth=max(60, min(width, 90)),
-            anchor="center" if field == "data_date" else "w",
-            stretch=False,
-        )
+        tree.column(field, width=width, minwidth=max(60, min(width, 90)), anchor="center" if field == "data_date" else "w", stretch=False)
     tree.heading("favorite", text="收藏")
     tree.column("favorite", width=110, minwidth=90, anchor="center", stretch=False)
     values = [display.get(field, "") for field, _, _ in columns]
     tag = _row_tag(display["_model_index"], display["_period_index"])
-    tree.insert(
-        "", "end", iid=iid, values=values + ["★ 已收藏" if favorite else "☆ 一键收藏"], tags=(tag,)
-    )
+    tree.insert("", "end", iid=iid, values=values + ["★ 已收藏" if favorite else "☆ 一键收藏"], tags=(tag,))
     tree.tag_configure(tag, background=_MODEL_PALETTE[display["_model_index"] % len(_MODEL_PALETTE)])
 
 
@@ -155,14 +138,8 @@ def _result_context_menu(self, event, iid):
         return
     _select_result_iid(self, iid)
     menu = tk.Menu(tree, tearoff=False)
-    menu.add_command(
-        label="收藏当前结果",
-        command=lambda: self.addToFavorites(payload.get("_rows", [])),
-    )
-    menu.add_command(
-        label="查看详情",
-        command=lambda: self.detail_rows(payload.get("_rows", [])),
-    )
+    menu.add_command(label="收藏当前结果", command=lambda: self.addToFavorites(payload.get("_rows", [])))
+    menu.add_command(label="查看详情", command=lambda: self.detail_rows(payload.get("_rows", [])))
     menu.tk_popup(event.x_root, event.y_root)
 
 
@@ -185,27 +162,34 @@ def _render_search_matrix(self, result):
     self.map = {}
     self._matrix_map = {}
     self._display_columns = ()
-    display_rows = normalize_search_results(sort_rows(result or []))
+    blocks = build_result_blocks(sort_rows(result or []))
     parent = getattr(self, "_results_inner", None)
     if parent is None:
         self.rows = list(result or [])
         return
-    for item in display_rows:
-        if item.get("_separator"):
-            self._result_order.append(None if item.get("_separator") == "model" else "")
-            continue
-        columns = tuple(item.get("_columns") or ())
+    previous_model = None
+    for block in blocks:
+        model_index = block["_model_index"]
+        period_index = block["_period_index"]
+        if previous_model is not None and model_index != previous_model:
+            for _ in range(2):
+                spacer = tk.Frame(parent, height=8)
+                spacer.pack(fill="x")
+                self._result_views.append(spacer)
+        elif period_index > 0:
+            spacer = tk.Frame(parent, height=4)
+            spacer.pack(fill="x")
+            self._result_views.append(spacer)
+        columns = tuple(block.get("_columns") or ())
         if columns:
             self._display_columns = columns
         iid = f"result-{len(self._matrix_map)}"
-        rows = list(item.get("_rows") or [])
+        rows = list(block.get("_rows") or [])
         favorite_keys = {self.fav.identity(r) for r in self.fav.dedupe()}
         favorite = any(self.fav.identity(r) in favorite_keys for r in rows)
         frame = tk.Frame(parent, bd=0, highlightthickness=0)
-        tree = ttk.Treeview(
-            frame, columns=(), show="headings", height=1, selectmode="browse"
-        )
-        _configure_result_tree(tree, columns, iid, item, favorite)
+        tree = ttk.Treeview(frame, columns=(), show="headings", height=1, selectmode="browse")
+        _configure_result_tree(tree, columns, iid, block, favorite)
         tree.bind("<Button-1>", lambda event, iid=iid: _result_click(self, event, iid))
         tree.bind("<Button-3>", lambda event, iid=iid: _result_context_menu(self, event, iid))
         tree.bind("<Double-1>", lambda _event, iid=iid: self._result_double_click(iid))
@@ -216,11 +200,9 @@ def _render_search_matrix(self, result):
         self._result_trees.append(tree)
         self._result_tree_map[iid] = tree
         self._result_order.append(iid)
-        self._matrix_map[iid] = item
+        self._matrix_map[iid] = block
         first = rows[0] if rows else {}
-        hidden_values = [first.get(c, "") for c in phone_search.COLS] + [
-            "★ 已收藏" if favorite else "☆ 一键收藏"
-        ]
+        hidden_values = [first.get(c, "") for c in phone_search.COLS] + ["★ 已收藏" if favorite else "☆ 一键收藏"]
         try:
             self.tree.insert("", "end", iid=iid, values=hidden_values)
         except tk.TclError:
@@ -231,6 +213,7 @@ def _render_search_matrix(self, result):
                 rid = phone_search.rid(row)
                 if rid:
                     self.map[rid] = row
+        previous_model = model_index
     try:
         self._results_canvas.configure(scrollregion=self._results_canvas.bbox("all"))
     except (AttributeError, tk.TclError):
