@@ -1,6 +1,8 @@
 from pathlib import Path
 import importlib.util
 
+from value_order import value_rank
+
 ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location("detail_compare_view", ROOT / "detail_compare_view.py")
 mod = importlib.util.module_from_spec(spec)
@@ -17,9 +19,9 @@ def row(model="M", date="2026-08-31", condition="新机", price="100", **extra):
 def test_condition_detail_rank_is_independent_of_price():
     good = row(condition="新机", price="1")
     bad = row(condition="不开机", price="9999")
-    assert mod.value_rank(good) > mod.value_rank(bad)
+    assert value_rank(good) > value_rank(bad)
     good["price"], bad["price"] = "999999", "0"
-    assert mod.value_rank(good) > mod.value_rank(bad)
+    assert value_rank(good) > value_rank(bad)
 
 
 def test_condition_compare_source_uses_current_period_without_reordering_input():
