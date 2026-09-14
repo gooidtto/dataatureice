@@ -1,3 +1,4 @@
+import ast
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -6,25 +7,86 @@ ACTIONS = ROOT / "app_actions.py"
 PHONE = ROOT / "phone_search.py"
 
 
+def _module(path):
+    return ast.parse(path.read_text(encoding="utf-8"))
+
+
+def _functions(module):
+    return {
+        node.name: node
+        for node in module.body
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+    }
+
+
+def _methods(module, class_name):
+    cls = next(node for node in module.body if isinstance(node, ast.ClassDef) and node.name == class_name)
+    return {node.name: node for node in cls.body if isinstance(node, ast.FunctionDef)}
+
+
+def _call_names(node):
+    return {
+        child.func.attr if isinstance(child.func, ast.Attribute) else child.func.id
+        for child in ast.walk(node)
+        if isinstance(child, ast.Call) and isinstance(child.func, (ast.Attribute, ast.Name))
+    }
+
+
 def test_search_app_owns_window_factory_without_global_tk_patch():
-    ui = UI.read_text(encoding="utf-8")
-    assert "def _new_window(self,title,geometry=None,minsize=None):" in ui
-    assert "_new_window=_new_window" in ui
-    assert "phone_search.tk.Toplevel=standardized_toplevel" not in ui
-    assert "_real_toplevel" not in ui
+    module = _module(UI)
+    functions = _functions(module)
+    methods = _methods(module, "SearchApp")
+    assert "_new_window" in functions
+    assert [arg.arg for arg in functions["_new_window"].args.args] == [
+        "self", "title", "geometry", "minsize"
+    ]
+    assert any(
+        isinstance(node, ast.Assign)
+        and any(isinstance(target, ast.Name) and target.id == "_new_window" for target in node.targets)
+        for node in ast.walk(next(node for node in module.body if isinstance(node, ast.ClassDef) and node.name == "SearchApp"))
+    )
+    assert "_new_window" in methods
+    assert not any(
+        isinstance(node, ast.Assign)
+        and isinstance(node.value, ast.Attribute)
+        and node.value.attr == "Toplevel"
+        for node in ast.walk(module)
+    )
 
 
 def test_result_double_click_selects_matrix_iid_before_detail():
-    ui = UI.read_text(encoding="utf-8")
-    assert "_select_result_iid(self,iid);self.detail();return 'break'" in ui
+    methods = _methods(_module(UI), "SearchApp")
+    method = methods["_result_double_click"]
+    calls = [
+        node.func.attr
+        for node in ast.walk(method)
+        if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)
+    ]
+    assert calls.index("detail") > calls.index("_select_result_iid") if "_select_result_iid" in calls else False
+    assert isinstance(method.body[-1], ast.Return)
 
 
 def test_app_actions_do_not_bypass_window_factory():
-    actions = ACTIONS.read_text(encoding="utf-8")
-    assert "def _new_window(self, title, geometry=None,minsize=None):" in actions or "def _new_window(self, title, geometry=None, minsize=None):" in actions
-    assert "w = tk.Toplevel(self.root)" not in actions
-    assert "_new_window(self," in actions
-    assert "setattr(App,name,fn)" in actions
+    module = _module(ACTIONS)
+    functions = _functions(module)
+    assert "_new_window" in functions
+    assert [arg.arg for arg in functions["_new_window"].args.args] == [
+        "self", "title", "geometry", "minsize"
+    ]
+    assert not any(
+        isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Attribute)
+        and node.func.attr == "Toplevel"
+        for node in ast.walk(module)
+    )
+    assert "_new_window" in _call_names(functions["sources"])
+    install = functions["install"]
+    assert any(
+        isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Name)
+        and node.func.id == "setattr"
+        for node in ast.walk(install)
+    )
 
 
 def test_favorite_popup_actions_match_app_helpers():
