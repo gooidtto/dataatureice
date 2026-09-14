@@ -1,4 +1,4 @@
-"""Favorites window: selectable operations with the same grouping/spacing rules as search."""
+"""展示收藏窗口：可选择、可操作，并与搜索结果保持相同的模型/时期展示规则。"""
 import csv
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
@@ -30,7 +30,7 @@ def _grouped_text(rows):
 def _copy_grouped(self,rows,window=None):
     rows=list(rows or [])
     if not rows:
-        if window:messagebox.showinfo('我的收藏','请先选择要复制的收藏',parent=window)
+        if window:messagebox.showinfo('展示收藏','请先选择要复制的收藏',parent=window)
         return
     self.root.clipboard_clear();self.root.clipboard_append(_grouped_text(rows));self.root.update();self.status.config(text=f'已复制 {len(rows)} 条收藏，保留分组与间隔')
 
@@ -38,7 +38,7 @@ def _copy_grouped(self,rows,window=None):
 def _export_grouped(self,rows,xlsx,window=None):
     rows=list(rows or [])
     if not rows:
-        if window:messagebox.showinfo('我的收藏','请先选择要导出的收藏',parent=window)
+        if window:messagebox.showinfo('展示收藏','请先选择要导出的收藏',parent=window)
         return
     ext='.xlsx' if xlsx else '.csv';initial='数码价格收藏.xlsx' if xlsx else '数码价格收藏结果.csv'
     types=[('Excel 文件','*.xlsx')] if xlsx else [('CSV 文件','*.csv'),('所有文件','*.*')]
@@ -49,7 +49,7 @@ def _export_grouped(self,rows,xlsx,window=None):
         blocks=_ordered_blocks(rows)
         if xlsx:
             wb=Workbook();ws=wb.active;ws.title='收藏结果'
-            for col,(_,title,_) in enumerate(COLS,1):ws.cell(1,col,title).font=Font(bold=True)
+            for col,(_,title,_) in enumerate(COLS,1):ws.cell(1,col,title).font=Font(name='SimHei',bold=True)
             ri=2;last_model=last_date=None
             for b in blocks:
                 model,date=b.get('_model_key'),b.get('_period_key')
@@ -76,13 +76,13 @@ def _export_grouped(self,rows,xlsx,window=None):
 
 
 def show_favorites_matrix(self):
-    rows=list(self.fav.dedupe());w=self._new_window('⭐ 我的收藏','1650x760',(1150,560));w.configure(background=THEME['window_bg'])
+    rows=list(self.fav.dedupe());w=self._new_window('⭐ 展示收藏','1650x760',(1150,560));w.configure(background=THEME['window_bg'])
     style=ttk.Style(w)
     try:
         style.configure('FavoritesHeader.TFrame',background=THEME['surface_alt'],borderwidth=1,relief='solid')
         style.configure('FavoritesAction.TFrame',background=THEME['surface_alt'],borderwidth=0)
         style.configure('FavoritesResults.TFrame',background=THEME['border_soft'],borderwidth=1,relief='solid')
-        style.configure('FavoritesTitle.TLabel',background=THEME['surface_alt'],foreground=THEME['text'],font=("微软雅黑",13,"bold"))
+        style.configure('FavoritesTitle.TLabel',background=THEME['surface_alt'],foreground=THEME['text'],font=FONT_TITLE)
         style.configure('FavoritesHint.TLabel',background=THEME['surface_alt'],foreground=THEME['text_secondary'],font=FONT_LABEL)
         style.configure('FavoritesStatus.TLabel',background=THEME['surface_alt'],foreground=THEME['text_muted'],font=FONT_BODY)
         style.configure('Favorites.Treeview',font=FONT_BODY,rowheight=THEME['table_row_height'],background=THEME['surface'],fieldbackground=THEME['surface'],foreground=THEME['text'],borderwidth=0,relief='flat')
@@ -105,7 +105,7 @@ def show_favorites_matrix(self):
     inner=tk.Frame(canvas,background=THEME['surface']);window_id=canvas.create_window((0,0),window=inner,anchor='nw');inner.bind('<Configure>',lambda e:canvas.configure(scrollregion=canvas.bbox('all')));canvas.bind('<Configure>',lambda e:canvas.itemconfigure(window_id,width=e.width))
     blocks=_ordered_blocks(rows);trees=[];mapping={};selected=set();anchor_index=None;dragging=False
 
-    def refresh_title():title.config(text=f'我的收藏 · {len(rows)} 条 · 已选择 {sum(len(mapping[i].get("_rows",[])) for i in selected if i in mapping)} 条')
+    def refresh_title():title.config(text=f'展示收藏 · {len(rows)} 条 · 已选择 {sum(len(mapping[i].get("_rows",[])) for i in selected if i in mapping)} 条')
 
     def paint(iid,on):
         tree=mapping[iid]['_tree']
@@ -154,14 +154,29 @@ def show_favorites_matrix(self):
 
     def remove_selected():
         picked=selected_rows()
-        if not picked:return messagebox.showinfo('我的收藏','请先选择要移除的收藏',parent=w)
+        if not picked:return messagebox.showinfo('展示收藏','请先选择要移除的收藏',parent=w)
         self.fav.remove(picked);w.destroy();self.show_favorites();self.status.config(text=f'已移除收藏 {len(picked)} 条')
 
+    previous_model=None
+    previous_date=None
     for i,b in enumerate(blocks):
+        model=b.get('_model_key');date=b.get('_period_key')
         if i:
-            gap=THEME['model_gap'] if b['_model_index']!=blocks[i-1]['_model_index'] else THEME['period_gap']
-            line=tk.Frame(inner,height=gap,background=THEME['surface'],highlightthickness=1,highlightbackground=THEME['border_soft'])
-            line.pack(fill='x',pady=(THEME['space_xs'],THEME['space_xs']))
+            if model!=previous_model:
+                gap=THEME['model_gap']
+                line=tk.Frame(inner,height=gap,background=THEME['surface'],highlightthickness=1,highlightbackground=THEME['border_soft'])
+                line.pack(fill='x',pady=(THEME['space_xs'],THEME['space_xs']))
+                period_label=ttk.Label(inner,text=f'新商品组 · {date}',style='FavoritesHint.TLabel',padding=(THEME['space_md'],THEME['space_xs']))
+                period_label.pack(fill='x')
+            elif date!=previous_date:
+                gap=THEME['period_gap']
+                line=tk.Frame(inner,height=gap,background=THEME['surface'],highlightthickness=1,highlightbackground=THEME['border_soft'])
+                line.pack(fill='x',pady=(THEME['space_xs'],THEME['space_xs']))
+                period_label=ttk.Label(inner,text=f'历史时期 · {date}',style='FavoritesHint.TLabel',padding=(THEME['space_md'],THEME['space_xs']))
+                period_label.pack(fill='x')
+        else:
+            period_label=ttk.Label(inner,text=f'当前时期 · {date}',style='FavoritesHint.TLabel',padding=(THEME['space_md'],THEME['space_xs']))
+            period_label.pack(fill='x')
         cols=tuple(b.get('_columns') or ());tree=ttk.Treeview(inner,columns=[c[0] for c in cols]+['favorite'],show='headings',height=1,selectmode='none',style='Favorites.Treeview')
         for field,t,wid in cols:
             tree.heading(field,text=t);tree.column(field,width=wid,minwidth=60,anchor='center' if field=='data_date' or field.startswith('condition_') else 'w',stretch=False)
@@ -170,6 +185,8 @@ def show_favorites_matrix(self):
         mapping[iid]={'_rows':list(b.get('_rows',[])),'_tree':tree,'_block':b,'_index':i}
         tree.bind('<Button-1>',lambda e,ii=iid,idx=i,t=tree:click(e,ii,idx,t),add='+');tree.bind('<B1-Motion>',lambda e,t=tree:drag_motion(e,t),add='+');tree.bind('<ButtonRelease-1>',drag_end,add='+');tree.bind('<Double-1>',lambda e,bb=b:self.detail_rows(bb.get('_rows',[])));tree.pack(fill='x',expand=True)
         trees.append(tree)
+        previous_model=model
+        previous_date=date
     refresh_title()
 
     def copy_selected():_copy_grouped(self,selected_rows(),w)
@@ -177,7 +194,7 @@ def show_favorites_matrix(self):
     def copy_all():_copy_grouped(self,all_rows(),w)
     def export_all(xlsx):_export_grouped(self,all_rows(),xlsx,w)
     bar=ttk.Frame(w,style='FavoritesAction.TFrame',padding=(THEME['space_lg'],0,THEME['space_lg'],THEME['space_md']));bar.pack(fill='x')
-    ttk.Button(bar,text='查看选中',style='FavoritesPrimary.TButton',command=lambda:self.detail_rows(selected_rows()) if selected_rows() else messagebox.showinfo('我的收藏','请先选择收藏',parent=w)).pack(side='left',padx=THEME['space_xs'])
+    ttk.Button(bar,text='查看选中',style='FavoritesPrimary.TButton',command=lambda:self.detail_rows(selected_rows()) if selected_rows() else messagebox.showinfo('展示收藏','请先选择收藏',parent=w)).pack(side='left',padx=THEME['space_xs'])
     ttk.Button(bar,text='移除选中',style='FavoritesDanger.TButton',command=remove_selected).pack(side='left',padx=THEME['space_xs'])
     ttk.Button(bar,text='复制选中',style='FavoritesSecondary.TButton',command=copy_selected).pack(side='left',padx=THEME['space_xs'])
     ttk.Button(bar,text='导出选中 CSV',style='FavoritesSecondary.TButton',command=lambda:export_selected(False)).pack(side='left',padx=THEME['space_xs'])
