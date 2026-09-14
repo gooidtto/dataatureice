@@ -157,37 +157,25 @@ class App:
  def _patch_search_history_ui(self):
   try:
    import app_actions
-   app_actions._refresh_suggestions=self._refresh_suggestions
-   app_actions._hide_suggestions=self._hide_suggestions
-   app_actions._show_suggestions=self._refresh_suggestions
-   app_actions._dismiss_suggestions=self._dismiss_suggestions
-  except Exception:
-   pass
+   app_actions._refresh_suggestions=lambda app:self._refresh_suggestions()
+   app_actions._hide_suggestions=lambda app:self._hide_suggestions()
+   app_actions._show_suggestions=lambda app:self._refresh_suggestions()
+   app_actions._dismiss_suggestions=lambda app,event=None:self._dismiss_suggestions(event)
+  except Exception:pass
  def _refresh_suggestions(self):
   items=self.h.suggestions(clean(self.q.get()),5)
-  if not items:
-   self._hide_suggestions();return
+  if not items:self._hide_suggestions();return
   panel=getattr(self,'_history_panel',None)
   try:
    if panel is None or not panel.winfo_exists():
-    panel=tk.Frame(self.search_bar,bg=THEME['surface'],bd=1,relief='solid',highlightthickness=1,highlightbackground=THEME['border'])
-    self._history_panel=panel
+    panel=tk.Frame(self.search_bar,bg=THEME['surface'],bd=1,relief='solid',highlightthickness=1,highlightbackground=THEME['border']);self._history_panel=panel
    for child in panel.winfo_children():child.destroy()
    tk.Label(panel,text='搜索历史',anchor='w',bg=THEME['surface_alt'],fg=THEME['text_secondary'],font=FONT_LABEL,padx=10,pady=5).pack(fill='x')
    for item in items:
-    label=tk.Label(panel,text=item,anchor='w',bg=THEME['surface'],fg=THEME['text'],font=FONT_BODY,padx=10,pady=7,cursor='hand2')
-    label.pack(fill='x')
-    label.bind('<Button-1>',lambda _e,value=item:self._use_suggestion(value))
-    label.bind('<Enter>',lambda _e,w=label:w.configure(bg=THEME['selection']))
-    label.bind('<Leave>',lambda _e,w=label:w.configure(bg=THEME['surface']))
-   panel.update_idletasks()
-   x=self.entry.winfo_x();y=self.entry.winfo_y()+self.entry.winfo_height()+2
-   panel.place(x=x,y=y,width=max(self.entry.winfo_width(),420))
-   panel.lift()
-  except tk.TclError:
-   self._hide_suggestions()
- def _use_suggestion(self,value):
-  self.q.set(value);self._hide_suggestions();self.search()
+    label=tk.Label(panel,text=item,anchor='w',bg=THEME['surface'],fg=THEME['text'],font=FONT_BODY,padx=10,pady=7,cursor='hand2');label.pack(fill='x');label.bind('<Button-1>',lambda _e,value=item:self._use_suggestion(value));label.bind('<Enter>',lambda _e,w=label:w.configure(bg=THEME['selection']));label.bind('<Leave>',lambda _e,w=label:w.configure(bg=THEME['surface']))
+   panel.update_idletasks();panel.place(x=self.entry.winfo_x(),y=self.entry.winfo_y()+self.entry.winfo_height()+2,width=max(self.entry.winfo_width(),420));panel.lift()
+  except tk.TclError:self._hide_suggestions()
+ def _use_suggestion(self,value):self.q.set(value);self._hide_suggestions();self.search()
  def _hide_suggestions(self):
   panel=getattr(self,'_history_panel',None)
   if panel is not None:
@@ -210,7 +198,7 @@ class App:
  def search(self,record_history=True):
   q=clean(self.q.get())
   if not q:return []
-  self._hide_suggestions();self.rows=list(self.s.search(q,self.cat.get()));
+  self._hide_suggestions();self.rows=list(self.s.search(q,self.cat.get()))
   if record_history:self.h.add(q)
   return self.rows
  def clear_search(self):self._hide_suggestions();self.q.set('');self.rows=[];self.map={};self.target.config(text='输入品牌、系列、型号开始查询')
