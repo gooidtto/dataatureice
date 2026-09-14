@@ -1,19 +1,39 @@
+import ast
 from pathlib import Path
 
+ROOT = Path(__file__).resolve().parents[1]
+APP_ACTIONS = ROOT / "app_actions.py"
+UI_BOOTSTRAP = ROOT / "ui_bootstrap.py"
 
-APP_ACTIONS = Path(__file__).resolve().parents[1] / "app_actions.py"
-UI_BOOTSTRAP = Path(__file__).resolve().parents[1] / "ui_bootstrap.py"
+
+def _module(path):
+    return ast.parse(path.read_text(encoding="utf-8"))
+
+
+def _functions(module):
+    return {node.name: node for node in module.body if isinstance(node, ast.FunctionDef)}
+
+
+def _class(module, name):
+    return next(node for node in module.body if isinstance(node, ast.ClassDef) and node.name == name)
 
 
 def test_optional_actions_use_window_factory():
-    source = APP_ACTIONS.read_text(encoding="utf-8")
-    bootstrap = UI_BOOTSTRAP.read_text(encoding="utf-8")
+    actions_module = _module(APP_ACTIONS)
+    ui_module = _module(UI_BOOTSTRAP)
+    actions = _functions(actions_module)
+    ui_functions = _functions(ui_module)
+    ui_methods = {node.name: node for node in _class(ui_module, "SearchApp").body if isinstance(node, ast.FunctionDef)}
 
-    assert "def _new_window(self, title, geometry=None, minsize=None):" in source
-    assert "def show_compare(self, rows, targets=None):" in source or "def show_compare(self,rows,targets=None):" in source
-    assert "def detail_rows(self, rs):" in source or "def detail_rows(self,rs):" in source
-    assert '"show_compare":show_compare' in source
-    assert '"detail_rows":detail_rows' in source
-    assert "tk.Toplevel(" not in source
-    assert "phone_search.tk.Toplevel" not in bootstrap
-    assert "def _new_window(self,title,geometry=None,minsize=None):" in bootstrap
+    assert [arg.arg for arg in actions["_new_window"].args.args] == ["self", "title", "geometry", "minsize"]
+    assert [arg.arg for arg in actions["show_compare"].args.args] == ["self", "rows", "targets"]
+    assert [arg.arg for arg in actions["detail_rows"].args.args] == ["self", "rs"]
+    assert "show_compare" in actions and "detail_rows" in actions
+    assert not any(
+        isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Attribute)
+        and node.func.attr == "Toplevel"
+        for node in ast.walk(actions_module)
+    )
+    assert "_new_window" in ui_functions
+    assert "_new_window" in ui_methods
