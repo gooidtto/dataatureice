@@ -29,6 +29,21 @@ THEME = {
     "danger": "#a65d5d",
     # Search model grouping: deliberately low saturation
     "model_bands": ("#f3f7fa", "#f6f3f9", "#f2f7f4", "#faf7f0", "#f4f5f6"),
+    # Spacing / density tokens
+    "space_xs": 3,
+    "space_sm": 6,
+    "space_md": 10,
+    "space_lg": 14,
+    "space_xl": 18,
+    "button_pad_x": 9,
+    "button_pad_y": 4,
+    "primary_pad_x": 12,
+    "primary_pad_y": 5,
+    "table_row_height": 34,
+    "table_header_height": 30,
+    "result_gap": 2,
+    "period_gap": 5,
+    "model_gap": 10,
 }
 
 FONT_FAMILY = "微软雅黑"
