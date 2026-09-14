@@ -1,17 +1,31 @@
-"""Unified search-result presentation.
+"""Canonical search-result model and presentation helpers.
 
-Each result block is built independently from its own source rows. Fixed identity
-columns are followed only by the actual price-condition names found in that
-block, then source image. This prevents one result's dynamic columns from
-shifting or borrowing columns from another result.
+The search pipeline produces raw rows. This module is the single contract layer
+that groups them into model/date ResultBlocks. Renderer, favorites and detail
+must consume those blocks instead of inventing their own grouping semantics.
 """
 import re
 import unicodedata
+from typing import TypedDict
+
 from value_order import sort_rows, value_rank
 
 FIXED_COLUMNS = (("data_date", "数据日期"), ("identity", "手机/品牌/系列/型号/网络型号"))
 IDENTITY_FIELDS = ("category", "brand", "series", "model", "model_code")
 SOURCE_COLUMN = ("source_image", "来源图片")
+
+
+class ResultBlock(TypedDict):
+    """Stable runtime dictionary contract shared by all UI consumers."""
+    data_date: str
+    identity: str
+    source_image: str
+    _rows: list
+    _model_key: tuple
+    _period_key: str
+    _model_index: int
+    _period_index: int
+    _columns: tuple
 
 
 def clean(value):
@@ -23,7 +37,7 @@ def build_identity(row):
 
 
 def identity_key(row):
-    """Canonical model identity shared by search and favorites."""
+    """Canonical model identity shared by search, renderer and favorites."""
     return tuple(clean(row.get(field, "")) for field in IDENTITY_FIELDS)
 
 
@@ -45,11 +59,7 @@ def column_width(title, values=(), minimum=90, maximum=420):
 
 
 def group_model_dates(rows):
-    """Return ``[(identity_key, [date_block, ...]), ...]`` in canonical order.
-
-    Identity grouping is shared by search/favorites. Date blocks are always
-    newest first. Historical price is never used for either grouping or order.
-    """
+    """Return ``[(identity_key, [date_block, ...]), ...]`` in canonical order."""
     grouped = {}
     for row in list(rows or []):
         key = identity_key(row)
@@ -72,7 +82,7 @@ def group_model_dates(rows):
 
 
 def build_display_columns(rows):
-    """Create columns from the exact rows supplied; used for one result block."""
+    """Create columns from the exact rows supplied; never borrow another block's columns."""
     rows = list(rows or [])
     reps = {}
     for row in rows:
@@ -97,51 +107,64 @@ def build_display_columns(rows):
 
 
 def build_result_columns(rows):
-    """Return dynamic columns strictly for one result block."""
     return build_display_columns(rows)
 
 
-def normalize_search_results(rows):
-    """Build model/date result blocks; every block owns an independent column set."""
-    model_groups = group_model_dates(rows)
-    result = []
-    for model_index, (_identity_key, periods) in enumerate(model_groups):
+def _build_block(model_index, period_index, block_rows):
+    block_rows = sort_rows(block_rows)
+    columns = build_result_columns(block_rows)
+    condition_values = {}
+    source_images = []
+    for row in block_rows:
+        condition = clean(row.get("condition", ""))
+        price = clean(row.get("price", ""))
+        key = _condition_key(condition)
+        if key and price:
+            condition_values.setdefault(key, []).append(price)
+        image = clean(row.get("source_image", ""))
+        if image and image not in source_images:
+            source_images.append(image)
+    first = block_rows[0] if block_rows else {}
+    out = {
+        "data_date": clean(first.get("data_date", "")),
+        "identity": build_identity(first),
+        "source_image": " / ".join(source_images),
+        "_rows": block_rows,
+        "_model_key": identity_key(first) if first else (),
+        "_period_key": clean(first.get("data_date", "")),
+        "_model_index": model_index,
+        "_period_index": period_index,
+        "_columns": columns,
+    }
+    for field, title, _width in columns[2:-1]:
+        out[field] = " / ".join(condition_values.get(_condition_key(title), []))
+    return out
+
+
+def build_result_blocks(rows):
+    """Return the only canonical ResultBlock sequence used by the UI."""
+    blocks = []
+    for model_index, (_key, periods) in enumerate(group_model_dates(rows)):
         for period_index, group in enumerate(periods):
-            if period_index > 0:
-                result.append({"_separator": "period", "_model_index": model_index, "_period_index": period_index})
-            block_rows = sort_rows(group)
-            columns = build_result_columns(block_rows)
-            condition_values = {}
-            source_images = []
-            for row in block_rows:
-                condition = clean(row.get("condition", ""))
-                price = clean(row.get("price", ""))
-                key = _condition_key(condition)
-                if key and price:
-                    condition_values.setdefault(key, []).append(price)
-                image = clean(row.get("source_image", ""))
-                if image and image not in source_images:
-                    source_images.append(image)
-            out = {
-                "data_date": clean(block_rows[0].get("data_date", "")) if block_rows else "",
-                "identity": build_identity(block_rows[0]) if block_rows else "",
-                "source_image": " / ".join(source_images),
-                "_rows": block_rows,
-                "_model_key": identity_key(block_rows[0]) if block_rows else (),
-                "_period_key": clean(block_rows[0].get("data_date", "")) if block_rows else "",
-                "_model_index": model_index,
-                "_period_index": period_index,
-                "_columns": columns,
-            }
-            for field, title, _width in columns[2:-1]:
-                out[field] = " / ".join(condition_values.get(_condition_key(title), []))
-            result.append(out)
-        if model_index < len(model_groups) - 1:
-            for _ in range(2):
-                result.append({"_separator": "model", "_model_index": model_index})
+            blocks.append(_build_block(model_index, period_index, group))
+    return blocks
+
+
+def normalize_search_results(rows):
+    """Legacy display adapter: add visual separators around canonical ResultBlocks."""
+    blocks = build_result_blocks(rows)
+    result = []
+    for index, block in enumerate(blocks):
+        if index and block["_period_index"] > 0:
+            result.append({"_separator": "period", "_model_index": block["_model_index"], "_period_index": block["_period_index"]})
+        if index and block["_model_index"] != blocks[index - 1]["_model_index"]:
+            result.extend((
+                {"_separator": "model", "_model_index": blocks[index - 1]["_model_index"]},
+                {"_separator": "model", "_model_index": blocks[index - 1]["_model_index"]},
+            ))
+        result.append(block)
     return result
 
 
-# Legacy import compatibility. This constant is intentionally only a fallback;
-# runtime search rendering now builds columns per result block.
+# Legacy import compatibility only. Runtime rendering does not use this fixed schema.
 DISPLAY_COLUMNS = (("data_date", "数据日期", 105), ("identity", "手机/品牌/系列/型号/网络型号", 420), ("condition_0", "开机靓机/靓机/开机好屏", 145), ("condition_1", "开机好屏/内屏碎", 145), ("condition_2", "开机好碎", 145), ("condition_3", "开机碎屏", 145), ("condition_4", "不开机/开机坏配件", 145), ("condition_5", "废板·整机", 145), ("source_image", "来源图片", 150))
