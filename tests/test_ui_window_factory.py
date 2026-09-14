@@ -10,8 +10,8 @@ def test_optional_actions_use_window_factory():
     bootstrap = UI_BOOTSTRAP.read_text(encoding="utf-8")
 
     assert "def _new_window(self, title, geometry=None, minsize=None):" in source
-    assert "def show_compare(self, rows, targets=None):" in source
-    assert "def detail_rows(self, rs):" in source
+    assert "def show_compare(self, rows, targets=None):" in source or "def show_compare(self,rows,targets=None):" in source
+    assert "def detail_rows(self, rs):" in source or "def detail_rows(self,rs):" in source
     assert '"show_compare":show_compare' in source
     assert '"detail_rows":detail_rows' in source
     assert "tk.Toplevel(" not in source
