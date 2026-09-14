@@ -33,23 +33,26 @@ def column_width(title,values=(),minimum=90,maximum=420):
     occupied=max([_char_width(title)]+[_char_width(v) for v in values]);return max(minimum,min(maximum,occupied*9+22))
 
 def group_model_dates(rows):
-    """Group periods by real-world model while retaining network-code blocks.
+    """Group consecutive rows by real-world model, then by date.
 
-    The returned model key keeps the established five-field shape, while the
-    model index intentionally ignores network model code. Thus OPPO A59
-    records with different codes in different periods stay in one model group.
+    Model identity is category/brand/series/model. Network model code is
+    detail-level data and must never split a visible model or date group.
+    Input order is authoritative and is never sorted here.
     """
-    groups=[];current_model=None;current_date=None;current_code=None;current_rows=[];model_index=-1;period_index=0
+    groups=[];current_model=None;current_date=None;current_rows=[];model_index=-1;period_index=0
     for row in list(rows or []):
-        model=model_group_key(row);date=clean(row.get("data_date",""));code=clean(row.get("model_code",""))
-        if current_rows and (model!=current_model or date!=current_date or code!=current_code):
+        model=model_group_key(row);date=clean(row.get("data_date",""))
+        if current_rows and (model!=current_model or date!=current_date):
             groups.append((block_key(current_rows[0]),current_date,current_rows,model_index,period_index));current_rows=[]
-            if model!=current_model:model_index+=1;period_index=0
-            elif date!=current_date:period_index+=1
+            if model!=current_model:
+                model_index+=1
+                period_index=0
+            else:
+                period_index+=1
         if not current_rows and model!=current_model:
             if model_index<0:model_index=0
             period_index=0
-        current_model,current_date,current_code=model,date,code;current_rows.append(row)
+        current_model,current_date=model,date;current_rows.append(row)
     if current_rows:groups.append((block_key(current_rows[0]),current_date,current_rows,model_index,period_index))
     return groups
 
