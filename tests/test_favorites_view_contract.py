@@ -27,7 +27,8 @@ def test_favorites_uses_same_canonical_matrix_builder_and_sorting():
     assert _calls_named(fn, "build_result_blocks")
     assert _calls_named(fn, "sort_rows")
     assert _calls_named(fn, "_favorite_menu")
-    assert _calls_attr(fn, "create_window") is False
+    # The top-level window must come from the shared lifecycle helper.
+    # Canvas.create_window is intentionally allowed for the scrollable matrix.
     assert _calls_attr(fn, "_new_window")
 
 
