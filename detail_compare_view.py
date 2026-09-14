@@ -9,7 +9,6 @@ import tkinter as tk
 from tkinter import ttk
 
 from ui_theme import THEME, FONT_BODY, FONT_LABEL, FONT_TITLE
-from value_order import value_rank
 
 DETAIL_COLS = (
     ("data_date", "数据日期", 105),
@@ -38,10 +37,6 @@ def _model_key(row):
 
 def _date_key(row):
     return _clean(row.get("data_date"))
-
-
-def _condition_key(row):
-    return tuple(-x for x in value_rank(row)) + (_clean(row.get("condition")),)
 
 
 def _screen_fit(window, geometry, minsize):
