@@ -7,10 +7,11 @@ from tkinter import ttk
 
 import phone_search
 from app_actions import install as install_app_actions
+from matrix_ui_actions import install as install_matrix_actions
 from search_display import build_result_blocks, group_model_dates
+from ui_theme import THEME, FONT_BODY, FONT_LABEL, FONT_TITLE
 
 
-_MODEL_PALETTE = ("#eef7ff", "#f5efff", "#eefaf2", "#fff7e8", "#f3f3f3")
 _UI_QUEUE = __import__("queue").Queue()
 
 
@@ -21,6 +22,7 @@ def _new_window(self, title, geometry=None, minsize=None):
         w.geometry(geometry)
     if minsize:
         w.minsize(*minsize)
+    w.configure(background=THEME["window_bg"])
     try:
         w.transient(self.root)
         w.lift()
@@ -36,19 +38,20 @@ class SearchApp(phone_search.App):
     def ui(self):
         phone_search.App.ui(self)
         self.tree.grid_remove()
+        self.root.configure(background=THEME["window_bg"])
         host = self.tree.master
-        self._results_canvas = tk.Canvas(host, highlightthickness=0, bd=0)
+        self._results_canvas = tk.Canvas(host, highlightthickness=0, bd=0, background=THEME["surface"], relief="flat")
         scrollbar = ttk.Scrollbar(host, orient="vertical", command=self._results_canvas.yview)
         self._results_canvas.configure(yscrollcommand=scrollbar.set)
         self._results_canvas.grid(row=0, column=0, sticky="nsew")
         scrollbar.grid(row=0, column=1, sticky="ns")
         host.grid_rowconfigure(0, weight=1)
         host.grid_columnconfigure(0, weight=1)
-        self._results_inner = tk.Frame(self._results_canvas, bd=0, highlightthickness=0)
+        self._results_inner = tk.Frame(self._results_canvas, bd=0, highlightthickness=0, background=THEME["surface"])
         self._results_window = self._results_canvas.create_window((0, 0), window=self._results_inner, anchor="nw")
         self._results_inner.bind("<Configure>", lambda _e: self._results_canvas.configure(scrollregion=self._results_canvas.bbox("all")))
         self._results_canvas.bind("<Configure>", self._resize_results_inner)
-        self.empty_hint = ttk.Label(host, text="输入品牌、系列、型号开始查询", font=("微软雅黑", 12))
+        self.empty_hint = ttk.Label(host, text="输入品牌、系列、型号开始查询", font=("微软雅黑", 12), foreground=THEME["text_muted"], background=THEME["surface"])
         self._result_views = []
         self._result_trees = []
         self._result_tree_map = {}
@@ -101,7 +104,7 @@ def _configure_result_tree(tree, columns, iid, display, favorite):
     values = [display.get(field, "") for field, _, _ in columns]
     tag = _row_tag(display["_model_index"], display["_period_index"])
     tree.insert("", "end", iid=iid, values=values + ["★ 已收藏" if favorite else "☆ 一键收藏"], tags=(tag,))
-    tree.tag_configure(tag, background=_MODEL_PALETTE[display["_model_index"] % len(_MODEL_PALETTE)])
+    tree.tag_configure(tag, background=THEME["model_bands"][display["_model_index"] % len(THEME["model_bands"])])
 
 
 def _render_search_matrix(self, result):
@@ -109,7 +112,6 @@ def _render_search_matrix(self, result):
     self.map = {}
     self._matrix_map = {}
     self._display_columns = ()
-    # SearchService order is authoritative. Rendering only groups contiguous runs.
     blocks = build_result_blocks(list(result or []))
     parent = getattr(self, "_results_inner", None)
     if parent is None:
@@ -121,11 +123,11 @@ def _render_search_matrix(self, result):
         period_index = block["_period_index"]
         if previous_model is not None and model_index != previous_model:
             for _ in range(2):
-                spacer = tk.Frame(parent, height=8)
+                spacer = tk.Frame(parent, height=8, background=THEME["surface"])
                 spacer.pack(fill="x")
                 self._result_views.append(spacer)
         elif period_index > 0:
-            spacer = tk.Frame(parent, height=4)
+            spacer = tk.Frame(parent, height=4, background=THEME["surface"])
             spacer.pack(fill="x")
             self._result_views.append(spacer)
         columns = tuple(block.get("_columns") or ())
@@ -135,7 +137,7 @@ def _render_search_matrix(self, result):
         rows = list(block.get("_rows") or [])
         favorite_keys = {self.fav.identity(r) for r in self.fav.dedupe()}
         favorite = any(self.fav.identity(r) in favorite_keys for r in rows)
-        frame = tk.Frame(parent, bd=0, highlightthickness=0)
+        frame = tk.Frame(parent, bd=0, highlightthickness=0, background=THEME["surface"])
         tree = ttk.Treeview(frame, columns=(), show="headings", height=1, selectmode="none")
         _configure_result_tree(tree, columns, iid, block, favorite)
         # Search is display-only: no selection, drag, context menu, or inline favorite action.
@@ -174,7 +176,6 @@ def _render_search_matrix(self, result):
 
 
 def favorite_groups(self):
-    """Return favorite groups in stored order; grouping never re-sorts records."""
     return group_model_dates(self.fav.dedupe())
 
 
@@ -251,6 +252,7 @@ def clear_search(self):
 
 
 install_app_actions(SearchApp)
+install_matrix_actions(SearchApp)
 SearchApp.render = _render_search_matrix
 SearchApp.favorite_groups = favorite_groups
 SearchApp.clear_search = clear_search
