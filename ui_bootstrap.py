@@ -70,20 +70,18 @@ class SearchApp(phone_search.App):
             style.configure("Title.TLabel", background=THEME["surface"], foreground=THEME["text"], font=FONT_TITLE)
             style.configure("Meta.TLabel", background=THEME["surface"], foreground=THEME["text_secondary"], font=FONT_BODY)
             style.configure("Status.TLabel", background=THEME["surface_alt"], foreground=THEME["text_muted"], font=FONT_BODY)
-            style.configure("TButton", background=THEME["surface"], foreground=THEME["text"], font=FONT_BODY,
-                            padding=(THEME["button_pad_x"], THEME["button_pad_y"]), relief="flat", borderwidth=0)
-            style.map("TButton", background=[("active", THEME["surface_subtle"]), ("pressed", THEME["selection"])])
-            style.configure("Primary.TButton", background=THEME["accent"], foreground="#ffffff", font=FONT_BODY,
-                            padding=(THEME["button_pad_x"], THEME["button_pad_y"]), relief="flat", borderwidth=0)
-            style.map("Primary.TButton", background=[("active", THEME["accent_hover"]), ("pressed", THEME["accent_hover"])])
-            style.configure("Favorite.TButton", background=THEME["selection_strong"], foreground=THEME["text"], font=FONT_BODY,
-                            padding=(THEME["button_pad_x"], THEME["button_pad_y"]), relief="flat", borderwidth=0)
-            style.map("Favorite.TButton", background=[("active", THEME["selection"]), ("pressed", THEME["selection_strong"])])
-            style.configure("Compare.TButton", background=THEME["surface"], foreground=THEME["accent"], font=FONT_BODY,
-                            padding=(THEME["button_pad_x"], THEME["button_pad_y"]), relief="flat", borderwidth=0)
-            style.map("Compare.TButton", background=[("active", THEME["surface_subtle"]), ("pressed", THEME["selection"])])
-            style.configure("Search.Treeview", font=FONT_BODY, rowheight=THEME["table_row_height"], background=THEME["surface"],
-                            fieldbackground=THEME["surface"], foreground=THEME["text"], borderwidth=0, relief="flat")
+            button_base = dict(background=THEME["button_bg"], foreground=THEME["button_text"], font=FONT_BODY,
+                               padding=(THEME["button_pad_x"], THEME["button_pad_y"]), relief="solid", borderwidth=1)
+            style.configure("TButton", **button_base)
+            style.map("TButton", background=[("active", THEME["button_hover"]), ("pressed", THEME["button_pressed"]), ("disabled", THEME["button_disabled"])])
+            style.configure("Primary.TButton", **button_base, foreground=THEME["button_accent_text"])
+            style.map("Primary.TButton", background=[("active", THEME["button_hover"]), ("pressed", THEME["button_pressed"])])
+            style.configure("Favorite.TButton", **button_base, foreground=THEME["button_accent_text"])
+            style.map("Favorite.TButton", background=[("active", THEME["button_hover"]), ("pressed", THEME["button_pressed"])])
+            style.configure("Compare.TButton", **button_base, foreground=THEME["button_accent_text"])
+            style.map("Compare.TButton", background=[("active", THEME["button_hover"]), ("pressed", THEME["button_pressed"])])
+            style.configure("Search.Treeview", font=FONT_BODY, rowheight=THEME["table_row_height"], background=THEME["table_bg"],
+                            fieldbackground=THEME["table_bg"], foreground=THEME["text"], borderwidth=0, relief="flat")
             style.configure("Search.Treeview.Heading", font=FONT_TITLE, background=THEME["table_header"], foreground=THEME["text"],
                             padding=(THEME["space_sm"], 3), relief="flat", borderwidth=0)
             style.configure("TCombobox", fieldbackground=THEME["surface"], background=THEME["surface"],
@@ -415,11 +413,17 @@ def clear_search(self):
     self.entry.focus_set()
 
 
+def add_favorite_all_search_results(self):
+    """Search is read-only: one-click favorite always captures every result row."""
+    return self.addToFavorites(list(self.rows or []))
+
+
 install_app_actions(SearchApp)
 install_matrix_actions(SearchApp)
 SearchApp.render = _render_search_matrix
 SearchApp.favorite_groups = favorite_groups
 SearchApp.clear_search = clear_search
+SearchApp.add_favorite = add_favorite_all_search_results
 SearchApp._poll_async_results = _poll_async_results
 SearchApp._apply_async_result = _apply_async_result
 SearchApp._queue_async_result = _queue_async_result
