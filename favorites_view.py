@@ -16,16 +16,12 @@ def _ordered_blocks(rows):
 
 
 def _grouped_text(rows):
-    rows=list(rows or [])
-    blocks=_ordered_blocks(rows)
-    lines=['\t'.join(h for _,h,_ in COLS)]
-    last_model=last_date=None
+    rows=list(rows or []);blocks=_ordered_blocks(rows)
+    lines=['\t'.join(h for _,h,_ in COLS)];last_model=last_date=None
     for b in blocks:
         model,date=b.get('_model_key'),b.get('_period_key')
-        if last_model is not None and model!=last_model:
-            lines.extend(['\t'*(len(COLS)-1)]*2)
-        elif last_date is not None and date!=last_date:
-            lines.append('\t'*(len(COLS)-1))
+        if last_model is not None and model!=last_model:lines.extend(['\t'*(len(COLS)-1)]*2)
+        elif last_date is not None and date!=last_date:lines.append('\t'*(len(COLS)-1))
         for r in b.get('_rows',[]):lines.append('\t'.join(str(r.get(c,'')) for c,_,_ in COLS))
         last_model,last_date=model,date
     return '\r\n'.join(lines)
@@ -34,7 +30,7 @@ def _grouped_text(rows):
 def _copy_grouped(self,rows,window=None):
     rows=list(rows or [])
     if not rows:
-        if window: messagebox.showinfo('我的收藏','请先选择要复制的收藏',parent=window)
+        if window:messagebox.showinfo('我的收藏','请先选择要复制的收藏',parent=window)
         return
     self.root.clipboard_clear();self.root.clipboard_append(_grouped_text(rows));self.root.update();self.status.config(text=f'已复制 {len(rows)} 条收藏，保留分组与间隔')
 
@@ -42,7 +38,7 @@ def _copy_grouped(self,rows,window=None):
 def _export_grouped(self,rows,xlsx,window=None):
     rows=list(rows or [])
     if not rows:
-        if window: messagebox.showinfo('我的收藏','请先选择要导出的收藏',parent=window)
+        if window:messagebox.showinfo('我的收藏','请先选择要导出的收藏',parent=window)
         return
     ext='.xlsx' if xlsx else '.csv';initial='数码价格收藏.xlsx' if xlsx else '数码价格收藏结果.csv'
     types=[('Excel 文件','*.xlsx')] if xlsx else [('CSV 文件','*.csv'),('所有文件','*.*')]
@@ -80,8 +76,7 @@ def _export_grouped(self,rows,xlsx,window=None):
 
 
 def show_favorites_matrix(self):
-    rows=list(self.fav.dedupe());w=self._new_window('⭐ 我的收藏', '1650x760', (1150,560))
-    w.configure(background=THEME['window_bg'])
+    rows=list(self.fav.dedupe());w=self._new_window('⭐ 我的收藏','1650x760',(1150,560));w.configure(background=THEME['window_bg'])
     style=ttk.Style(w)
     try:
         style.configure('FavoritesHeader.TFrame',background=THEME['surface_alt'],borderwidth=1,relief='solid')
@@ -90,35 +85,33 @@ def show_favorites_matrix(self):
         style.configure('FavoritesTitle.TLabel',background=THEME['surface_alt'],foreground=THEME['text'],font=("微软雅黑",13,"bold"))
         style.configure('FavoritesHint.TLabel',background=THEME['surface_alt'],foreground=THEME['text_secondary'],font=FONT_LABEL)
         style.configure('FavoritesStatus.TLabel',background=THEME['surface_alt'],foreground=THEME['text_muted'],font=FONT_BODY)
-        style.configure('Favorites.Treeview',font=FONT_BODY,rowheight=36,background=THEME['surface'],fieldbackground=THEME['surface'],foreground=THEME['text'],borderwidth=0)
-        style.configure('Favorites.Treeview.Heading',font=FONT_TITLE,background=THEME['table_header'],foreground=THEME['text'],relief='flat')
-        style.configure('FavoritesPrimary.TButton',background=THEME['accent'],foreground='#ffffff',font=FONT_TITLE,padding=(11,5),relief='flat',borderwidth=0)
-        style.configure('FavoritesDanger.TButton',background=THEME['surface'],foreground=THEME['danger'],font=FONT_BODY,padding=(10,5),relief='flat',borderwidth=0)
-        style.configure('FavoritesSecondary.TButton',background=THEME['surface'],foreground=THEME['text'],font=FONT_BODY,padding=(10,5),relief='flat',borderwidth=0)
+        style.configure('Favorites.Treeview',font=FONT_BODY,rowheight=THEME['table_row_height'],background=THEME['surface'],fieldbackground=THEME['surface'],foreground=THEME['text'],borderwidth=0,relief='flat')
+        style.configure('Favorites.Treeview.Heading',font=FONT_BODY,background=THEME['table_header'],foreground=THEME['text_secondary'],relief='flat',borderwidth=0,padding=(THEME['space_md'],3))
+        style.configure('FavoritesPrimary.TButton',background=THEME['accent'],foreground='#ffffff',font=FONT_TITLE,padding=(THEME['primary_pad_x'],THEME['primary_pad_y']),relief='flat',borderwidth=0)
+        style.configure('FavoritesDanger.TButton',background=THEME['surface'],foreground=THEME['danger'],font=FONT_BODY,padding=(THEME['button_pad_x'],THEME['button_pad_y']),relief='flat',borderwidth=0)
+        style.configure('FavoritesSecondary.TButton',background=THEME['surface'],foreground=THEME['text'],font=FONT_BODY,padding=(THEME['button_pad_x'],THEME['button_pad_y']),relief='flat',borderwidth=0)
         style.map('FavoritesPrimary.TButton',background=[('active',THEME['accent_hover']),('pressed',THEME['accent_hover'])])
         style.map('FavoritesDanger.TButton',background=[('active',THEME['surface_subtle']),('pressed',THEME['selection'])])
         style.map('FavoritesSecondary.TButton',background=[('active',THEME['surface_subtle']),('pressed',THEME['selection'])])
         style.map('Favorites.Treeview',background=[('selected',THEME['selection_strong'])])
-    except tk.TclError:
-        pass
+    except tk.TclError:pass
 
-    header=ttk.Frame(w,style='FavoritesHeader.TFrame',padding=(14,9));header.pack(fill='x',padx=12,pady=(12,8))
+    header=ttk.Frame(w,style='FavoritesHeader.TFrame',padding=(THEME['space_lg'],THEME['space_sm'],THEME['space_lg'],THEME['space_md']))
+    header.pack(fill='x',padx=THEME['space_lg'],pady=(THEME['space_lg'],THEME['space_sm']))
     title=ttk.Label(header,text='',style='FavoritesTitle.TLabel');title.pack(side='left')
     hint=ttk.Label(header,text='点击选择 · Ctrl 多选 · Shift 范围选择 · 拖动选择 · Ctrl+A 全选',style='FavoritesHint.TLabel');hint.pack(side='right')
-    host=ttk.Frame(w,style='FavoritesResults.TFrame',padding=1);host.pack(fill='both',expand=True,padx=12,pady=(0,8))
+    host=ttk.Frame(w,style='FavoritesResults.TFrame',padding=1);host.pack(fill='both',expand=True,padx=THEME['space_lg'],pady=(0,THEME['space_sm']))
     canvas=tk.Canvas(host,highlightthickness=0,bd=0,background=THEME['surface'],relief='flat');scroll=ttk.Scrollbar(host,orient='vertical',command=canvas.yview);canvas.configure(yscrollcommand=scroll.set);canvas.grid(row=0,column=0,sticky='nsew');scroll.grid(row=0,column=1,sticky='ns');host.grid_rowconfigure(0,weight=1);host.grid_columnconfigure(0,weight=1)
     inner=tk.Frame(canvas,background=THEME['surface']);window_id=canvas.create_window((0,0),window=inner,anchor='nw');inner.bind('<Configure>',lambda e:canvas.configure(scrollregion=canvas.bbox('all')));canvas.bind('<Configure>',lambda e:canvas.itemconfigure(window_id,width=e.width))
     blocks=_ordered_blocks(rows);trees=[];mapping={};selected=set();anchor_index=None;dragging=False
 
-    def refresh_title():
-        title.config(text=f'我的收藏 · {len(rows)} 条 · 已选择 {sum(len(mapping[i].get("_rows",[])) for i in selected if i in mapping)} 条')
+    def refresh_title():title.config(text=f'我的收藏 · {len(rows)} 条 · 已选择 {sum(len(mapping[i].get("_rows",[])) for i in selected if i in mapping)} 条')
 
     def paint(iid,on):
         tree=mapping[iid]['_tree']
         try:tree.selection_set(iid) if on else tree.selection_remove(iid)
         except tk.TclError:pass
-        tree.tag_configure('selected',background=THEME['selection'])
-        tree.tag_configure('normal',background=THEME['surface'])
+        tree.tag_configure('selected',background=THEME['selection']);tree.tag_configure('normal',background=THEME['surface'])
         try:tree.item(iid,tags=('selected' if on else 'normal',))
         except tk.TclError:pass
 
@@ -143,8 +136,7 @@ def show_favorites_matrix(self):
 
     def drag_start(event,iid,index,tree):
         nonlocal dragging,anchor_index
-        dragging=True;anchor_index=index;select_range(index,index)
-        return 'break'
+        dragging=True;anchor_index=index;select_range(index,index);return 'break'
 
     def drag_motion(event,tree):
         if not dragging:return
@@ -155,12 +147,9 @@ def show_favorites_matrix(self):
         except (ValueError,tk.TclError):pass
 
     def drag_end(_event):
-        nonlocal dragging
-        dragging=False
+        nonlocal dragging;dragging=False
 
-    def selected_rows():
-        return [r for iid in mapping for r in mapping[iid].get('_rows',[]) if iid in selected]
-
+    def selected_rows():return [r for iid in mapping for r in mapping[iid].get('_rows',[]) if iid in selected]
     def all_rows():return list(rows)
 
     def remove_selected():
@@ -169,7 +158,10 @@ def show_favorites_matrix(self):
         self.fav.remove(picked);w.destroy();self.show_favorites();self.status.config(text=f'已移除收藏 {len(picked)} 条')
 
     for i,b in enumerate(blocks):
-        if i:tk.Frame(inner,height=8 if b['_model_index']==blocks[i-1]['_model_index'] else 16,background=THEME['surface']).pack(fill='x')
+        if i:
+            gap=THEME['model_gap'] if b['_model_index']!=blocks[i-1]['_model_index'] else THEME['period_gap']
+            line=tk.Frame(inner,height=gap,background=THEME['surface'],highlightthickness=1,highlightbackground=THEME['border_soft'])
+            line.pack(fill='x',pady=(THEME['space_xs'],THEME['space_xs']))
         cols=tuple(b.get('_columns') or ());tree=ttk.Treeview(inner,columns=[c[0] for c in cols]+['favorite'],show='headings',height=1,selectmode='none',style='Favorites.Treeview')
         for field,t,wid in cols:
             tree.heading(field,text=t);tree.column(field,width=wid,minwidth=60,anchor='center' if field=='data_date' or field.startswith('condition_') else 'w',stretch=False)
@@ -184,22 +176,21 @@ def show_favorites_matrix(self):
     def export_selected(xlsx):_export_grouped(self,selected_rows(),xlsx,w)
     def copy_all():_copy_grouped(self,all_rows(),w)
     def export_all(xlsx):_export_grouped(self,all_rows(),xlsx,w)
-    bar=ttk.Frame(w,style='FavoritesAction.TFrame',padding=(12,0,12,10));bar.pack(fill='x')
-    ttk.Button(bar,text='查看选中',style='FavoritesPrimary.TButton',command=lambda:self.detail_rows(selected_rows()) if selected_rows() else messagebox.showinfo('我的收藏','请先选择收藏',parent=w)).pack(side='left',padx=4)
-    ttk.Button(bar,text='移除选中',style='FavoritesDanger.TButton',command=remove_selected).pack(side='left',padx=4)
-    ttk.Button(bar,text='复制选中',style='FavoritesSecondary.TButton',command=copy_selected).pack(side='left',padx=4)
-    ttk.Button(bar,text='导出选中 CSV',style='FavoritesSecondary.TButton',command=lambda:export_selected(False)).pack(side='left',padx=4)
-    ttk.Button(bar,text='导出选中 Excel',style='FavoritesSecondary.TButton',command=lambda:export_selected(True)).pack(side='left',padx=4)
-    ttk.Separator(bar,orient='vertical').pack(side='left',fill='y',padx=8)
-    ttk.Button(bar,text='复制全部',style='FavoritesSecondary.TButton',command=copy_all).pack(side='left',padx=4)
-    ttk.Button(bar,text='导出全部 CSV',style='FavoritesSecondary.TButton',command=lambda:export_all(False)).pack(side='left',padx=4)
-    ttk.Button(bar,text='导出全部 Excel',style='FavoritesSecondary.TButton',command=lambda:export_all(True)).pack(side='left',padx=4)
-    ttk.Button(bar,text='关闭',style='FavoritesSecondary.TButton',command=w.destroy).pack(side='right',padx=4)
+    bar=ttk.Frame(w,style='FavoritesAction.TFrame',padding=(THEME['space_lg'],0,THEME['space_lg'],THEME['space_md']));bar.pack(fill='x')
+    ttk.Button(bar,text='查看选中',style='FavoritesPrimary.TButton',command=lambda:self.detail_rows(selected_rows()) if selected_rows() else messagebox.showinfo('我的收藏','请先选择收藏',parent=w)).pack(side='left',padx=THEME['space_xs'])
+    ttk.Button(bar,text='移除选中',style='FavoritesDanger.TButton',command=remove_selected).pack(side='left',padx=THEME['space_xs'])
+    ttk.Button(bar,text='复制选中',style='FavoritesSecondary.TButton',command=copy_selected).pack(side='left',padx=THEME['space_xs'])
+    ttk.Button(bar,text='导出选中 CSV',style='FavoritesSecondary.TButton',command=lambda:export_selected(False)).pack(side='left',padx=THEME['space_xs'])
+    ttk.Button(bar,text='导出选中 Excel',style='FavoritesSecondary.TButton',command=lambda:export_selected(True)).pack(side='left',padx=THEME['space_xs'])
+    ttk.Separator(bar,orient='vertical').pack(side='left',fill='y',padx=THEME['space_sm'])
+    ttk.Button(bar,text='复制全部',style='FavoritesSecondary.TButton',command=copy_all).pack(side='left',padx=THEME['space_xs'])
+    ttk.Button(bar,text='导出全部 CSV',style='FavoritesSecondary.TButton',command=lambda:export_all(False)).pack(side='left',padx=THEME['space_xs'])
+    ttk.Button(bar,text='导出全部 Excel',style='FavoritesSecondary.TButton',command=lambda:export_all(True)).pack(side='left',padx=THEME['space_xs'])
+    ttk.Button(bar,text='关闭',style='FavoritesSecondary.TButton',command=w.destroy).pack(side='right',padx=THEME['space_xs'])
     w.bind('<Control-a>',lambda e:(selected.update(mapping.keys()),[paint(i,True) for i in mapping],refresh_title(),'break')[-1]);w.bind('<Escape>',lambda e:w.destroy());return w
 
 
-def _favorite_menu(self,event,tree,block,window):
-    return
+def _favorite_menu(self,event,tree,block,window):return
 
 
 def _remove_block(self,window,rows):
