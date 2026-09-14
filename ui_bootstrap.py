@@ -14,15 +14,38 @@ from ui_theme import THEME, FONT_BODY, FONT_LABEL, FONT_TITLE, FONT_SEARCH
 _UI_QUEUE = __import__("queue").Queue()
 
 
+def _screen_fit_geometry(root, geometry=None, minsize=None):
+    """Keep every top-level window fully visible while preserving requested proportions."""
+    root.update_idletasks()
+    sw, sh = root.winfo_screenwidth(), root.winfo_screenheight()
+    raw_w, raw_h = 1200, 720
+    if geometry:
+        try:
+            size = str(geometry).split("+", 1)[0]
+            raw_w, raw_h = (int(x) for x in size.lower().split("x", 1))
+        except (ValueError, TypeError):
+            pass
+    w = min(raw_w, max(760, sw - 36))
+    h = min(raw_h, max(520, sh - 72))
+    if minsize:
+        mw, mh = minsize
+        mw = min(mw, max(640, sw - 36))
+        mh = min(mh, max(480, sh - 72))
+        w, h = max(w, mw), max(h, mh)
+        w, h = min(w, sw - 36), min(h, sh - 72)
+    x = max(12, (sw - w) // 2)
+    y = max(12, (sh - h) // 2)
+    return w, h, x, y
+
+
 def _new_window(self, title, geometry=None, minsize=None):
     if "我的收藏" in str(title):
         title = str(title).replace("我的收藏", "展示收藏")
     w = tk.Toplevel(self.root)
     w.title(title)
-    if geometry:
-        w.geometry(geometry)
-    if minsize:
-        w.minsize(*minsize)
+    width, height, x, y = _screen_fit_geometry(w, geometry, minsize)
+    w.geometry(f"{width}x{height}+{x}+{y}")
+    w.minsize(min(width, x + width), min(height, y + height))
     w.configure(background=THEME["window_bg"])
     try:
         w.transient(self.root)
@@ -57,13 +80,13 @@ class SearchApp(phone_search.App):
                             padding=(THEME["button_pad_x"], THEME["button_pad_y"]), relief="flat", borderwidth=0)
             style.map("TButton", background=[("active", THEME["surface_subtle"]), ("pressed", THEME["selection"])],
                       foreground=[("disabled", THEME["text_muted"])])
-            style.configure("Primary.TButton", background=THEME["accent"], foreground="#ffffff", font=FONT_TITLE,
-                            padding=(THEME["primary_pad_x"], THEME["primary_pad_y"]), relief="flat", borderwidth=0)
+            style.configure("Primary.TButton", background=THEME["accent"], foreground="#ffffff", font=FONT_BODY,
+                            padding=(THEME["button_pad_x"], THEME["button_pad_y"]), relief="flat", borderwidth=0)
             style.map("Primary.TButton", background=[("active", THEME["accent_hover"]), ("pressed", THEME["accent_hover"]),
                                                         ("disabled", THEME["surface_subtle"])],
                       foreground=[("disabled", THEME["text_muted"])])
             style.configure("Favorite.TButton", background=THEME["selection_strong"], foreground=THEME["text"],
-                            font=FONT_TITLE, padding=(THEME["primary_pad_x"], THEME["primary_pad_y"]), relief="flat", borderwidth=0)
+                            font=FONT_BODY, padding=(THEME["button_pad_x"], THEME["button_pad_y"]), relief="flat", borderwidth=0)
             style.map("Favorite.TButton", background=[("active", THEME["selection"]), ("pressed", THEME["selection_strong"])])
             style.configure("TCombobox", fieldbackground=THEME["surface"], background=THEME["surface"],
                             foreground=THEME["text"], arrowcolor=THEME["accent"])
@@ -180,9 +203,9 @@ def _configure_result_tree(tree, columns, iid, display, favorite):
         tree.heading(field, text=title)
         is_quote = field.startswith("condition_")
         tree.column(field, width=width, minwidth=max(60, min(width, 90)),
-                    anchor="center" if field == "data_date" or is_quote else "w", stretch=False)
+                    anchor="center" if field == "data_date" or is_quote else "w", stretch=True)
     tree.heading("favorite", text="收藏")
-    tree.column("favorite", width=110, minwidth=90, anchor="center", stretch=False)
+    tree.column("favorite", width=110, minwidth=90, anchor="center", stretch=True)
     values = [display.get(field, "") for field, _, _ in columns]
     tag = _row_tag(display["_model_index"], display["_period_index"])
     tree.insert("", "end", iid=iid, values=values + ["★ 已收藏" if favorite else "☆ 一键收藏"], tags=(tag,))
