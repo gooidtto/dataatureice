@@ -99,22 +99,18 @@ def _reliable_search(self, record_history=True):
 
 
 def _install_search_behavior(self):
+    """Typing only updates suggestions; Search button or Enter performs the query."""
     q = getattr(self, "q", None)
     if q is None: return
     try:
         for mode, callback in q.trace_info():
             if mode == "write": q.trace_remove(mode, callback)
     except (AttributeError, tk.TclError): pass
+
     def on_change(*_args):
-        pending = getattr(self, "_sync_search_after_id", None)
-        if pending:
-            try: self.root.after_cancel(pending)
-            except tk.TclError: pass
-        text = __import__('phone_search').clean(q.get())
-        if not text:
-            self._sync_search_after_id = None
-            return
-        self._sync_search_after_id = self.root.after(180, lambda: _reliable_search(self, False))
+        refresh = getattr(self, "refresh_suggestions", None)
+        if callable(refresh): refresh()
+
     q.trace_add("write", on_change)
     self._sync_search_after_id = None
 
