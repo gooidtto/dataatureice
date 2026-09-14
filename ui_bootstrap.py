@@ -7,7 +7,7 @@ from tkinter import ttk
 
 import phone_search
 from app_actions import install as install_app_actions
-from search_display import normalize_search_results, sort_rows
+from search_display import group_model_dates, normalize_search_results, sort_rows
 
 
 _MODEL_PALETTE = ("#eef7ff", "#f5efff", "#eefaf2", "#fff7e8", "#f3f3f3")
@@ -246,20 +246,7 @@ def _render_search_matrix(self, result):
 
 def favorite_groups(self):
     """Return the canonical favorite grouping consumed by show_favorites()."""
-    rows = sort_rows(self.fav.dedupe())
-    grouped = {}
-    for row in rows:
-        key = tuple(
-            phone_search.clean(row.get(field, ""))
-            for field in ("category", "brand", "series", "model", "model_code")
-        )
-        date = phone_search.clean(row.get("data_date", ""))
-        grouped.setdefault(key, {}).setdefault(date, []).append(row)
-    result = []
-    for key, dates in grouped.items():
-        blocks = [sort_rows(group) for _date, group in sorted(dates.items(), reverse=True)]
-        result.append((key, blocks))
-    return result
+    return group_model_dates(self.fav.dedupe())
 
 
 def _poll_async_results(self):
