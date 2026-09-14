@@ -12,24 +12,24 @@ def _module(path):
 
 
 def _functions(module):
-    return {
-        node.name: node
-        for node in module.body
-        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
-    }
+    return {node.name: node for node in module.body if isinstance(node, ast.FunctionDef)}
+
+
+def _class(module, name):
+    return next(node for node in module.body if isinstance(node, ast.ClassDef) and node.name == name)
 
 
 def _methods(module, class_name):
-    cls = next(node for node in module.body if isinstance(node, ast.ClassDef) and node.name == class_name)
-    return {node.name: node for node in cls.body if isinstance(node, ast.FunctionDef)}
+    return {node.name: node for node in _class(module, class_name).body if isinstance(node, ast.FunctionDef)}
 
 
-def _call_names(node):
-    return {
-        child.func.attr if isinstance(child.func, ast.Attribute) else child.func.id
+def _has_method_call(node, attr):
+    return any(
+        isinstance(child, ast.Call)
+        and isinstance(child.func, ast.Attribute)
+        and child.func.attr == attr
         for child in ast.walk(node)
-        if isinstance(child, ast.Call) and isinstance(child.func, (ast.Attribute, ast.Name))
-    }
+    )
 
 
 def test_search_app_owns_window_factory_without_global_tk_patch():
@@ -37,49 +37,55 @@ def test_search_app_owns_window_factory_without_global_tk_patch():
     functions = _functions(module)
     methods = _methods(module, "SearchApp")
     assert "_new_window" in functions
-    assert [arg.arg for arg in functions["_new_window"].args.args] == [
-        "self", "title", "geometry", "minsize"
-    ]
+    assert [arg.arg for arg in functions["_new_window"].args.args] == ["self", "title", "geometry", "minsize"]
+    assert "_new_window" in methods
     assert any(
         isinstance(node, ast.Assign)
         and any(isinstance(target, ast.Name) and target.id == "_new_window" for target in node.targets)
-        for node in ast.walk(next(node for node in module.body if isinstance(node, ast.ClassDef) and node.name == "SearchApp"))
+        for node in _class(module, "SearchApp").body
     )
-    assert "_new_window" in methods
-    assert not any(
-        isinstance(node, ast.Assign)
-        and isinstance(node.value, ast.Attribute)
-        and node.value.attr == "Toplevel"
-        for node in ast.walk(module)
-    )
-
-
-def test_result_double_click_selects_matrix_iid_before_detail():
-    methods = _methods(_module(UI), "SearchApp")
-    method = methods["_result_double_click"]
-    calls = [
-        node.func.attr
-        for node in ast.walk(method)
-        if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)
-    ]
-    assert calls.index("detail") > calls.index("_select_result_iid") if "_select_result_iid" in calls else False
-    assert isinstance(method.body[-1], ast.Return)
-
-
-def test_app_actions_do_not_bypass_window_factory():
-    module = _module(ACTIONS)
-    functions = _functions(module)
-    assert "_new_window" in functions
-    assert [arg.arg for arg in functions["_new_window"].args.args] == [
-        "self", "title", "geometry", "minsize"
-    ]
     assert not any(
         isinstance(node, ast.Call)
         and isinstance(node.func, ast.Attribute)
         and node.func.attr == "Toplevel"
         for node in ast.walk(module)
     )
-    assert "_new_window" in _call_names(functions["sources"])
+
+
+def test_result_double_click_selects_matrix_iid_before_detail():
+    method = _methods(_module(UI), "SearchApp")["_result_double_click"]
+    statements = method.body
+    select_index = next(
+        i for i, stmt in enumerate(statements)
+        if isinstance(stmt, ast.Expr)
+        and isinstance(stmt.value, ast.Call)
+        and isinstance(stmt.value.func, ast.Name)
+        and stmt.value.func.id == "_select_result_iid"
+    )
+    detail_index = next(
+        i for i, stmt in enumerate(statements)
+        if isinstance(stmt, ast.Expr)
+        and isinstance(stmt.value, ast.Call)
+        and isinstance(stmt.value.func, ast.Attribute)
+        and stmt.value.func.attr == "detail"
+    )
+    assert select_index < detail_index
+    assert isinstance(statements[-1], ast.Return)
+    assert isinstance(statements[-1].value, ast.Constant)
+    assert statements[-1].value.value == "break"
+
+
+def test_app_actions_do_not_bypass_window_factory():
+    module = _module(ACTIONS)
+    functions = _functions(module)
+    assert [arg.arg for arg in functions["_new_window"].args.args] == ["self", "title", "geometry", "minsize"]
+    assert not any(
+        isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Attribute)
+        and node.func.attr == "Toplevel"
+        for node in ast.walk(module)
+    )
+    assert _has_method_call(functions["sources"], "_new_window")
     install = functions["install"]
     assert any(
         isinstance(node, ast.Call)
