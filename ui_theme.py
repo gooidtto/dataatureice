@@ -26,11 +26,8 @@ THEME = {
     "warning": "#806b3d",
     "danger": "#875858",
     "model_bands": ("#eff6ed", "#edf4eb", "#f1f6ef", "#eaf2e8", "#f3f7f1"),
-    # Separator semantics: same model / different period = cyan;
-    # different model group = orange.
-    "period_separator": "#58bcc1",
-    "model_separator": "#d9964a",
-    # One shared glass-like button surface for every button family.
+    "period_separator": "#9bbfc0",
+    "model_separator": "#c9a77a",
     "button_bg": "#e6f0e4",
     "button_hover": "#d9e8d7",
     "button_pressed": "#c9ddc7",
@@ -54,9 +51,6 @@ THEME = {
     "model_gap": 10,
 }
 
-# The existing renderers already create dedicated spacer Frames with
-# period_gap/model_gap heights. Keep their layout logic unchanged while
-# applying semantic separator colors only to those frames.
 _OriginalFrame = _tk.Frame
 
 class _SeparatorAwareFrame(_OriginalFrame):
