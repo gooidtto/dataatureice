@@ -95,8 +95,13 @@ def build_result_blocks(rows):
 def normalize_search_results(rows):
     blocks=build_result_blocks(rows);result=[]
     for index,block in enumerate(blocks):
-        if index and block["_model_index"]==blocks[index-1]["_model_index"] and block["_period_key"]!=blocks[index-1]["_period_key"]:result.append({"_separator":"period","_model_index":block["_model_index"],"_period_index":block["_period_index"]})
-        elif index and block["_model_index"]!=blocks[index-1]["_model_index"]:result.extend(({"_separator":"model","_model_index":blocks[index-1]["_model_index"]},{"_separator":"model","_model_index":blocks[index-1]["_model_index"]))
+        if index and block["_model_index"]==blocks[index-1]["_model_index"] and block["_period_key"]!=blocks[index-1]["_period_key"]:
+            result.append({"_separator":"period","_model_index":block["_model_index"],"_period_index":block["_period_index"]})
+        elif index and block["_model_index"]!=blocks[index-1]["_model_index"]:
+            result.extend((
+                {"_separator":"model","_model_index":blocks[index-1]["_model_index"]},
+                {"_separator":"model","_model_index":blocks[index-1]["_model_index"]},
+            ))
         result.append(block)
     return result
 
