@@ -92,10 +92,10 @@ def show_favorites_matrix(self):
         return [r for block in blocks for r in block.get("_rows", [])]
 
     def remove_selected():
-        picked = selected_rows() or all_rows()
+        picked = selected_rows()
         if not picked:
             from tkinter import messagebox
-            return messagebox.showinfo("我的收藏", "没有可移除的收藏", parent=w)
+            return messagebox.showinfo("我的收藏", "请先选择要移除的收藏", parent=w)
         self.fav.remove(picked)
         w.destroy()
         self.show_favorites()
