@@ -1,11 +1,12 @@
-"""Tk UI bootstrap for the stable SearchApp result/favorites surface."""
+"""Stable Tk bootstrap for the search/result surface."""
 from __future__ import annotations
 
 import tkinter as tk
-from queue import Empty
 from tkinter import ttk
+from queue import Empty
 
 import phone_search
+import app_actions
 from app_actions import install as install_app_actions
 from matrix_ui_actions import install as install_matrix_actions
 from search_display import build_result_blocks, group_model_dates
@@ -15,27 +16,21 @@ _UI_QUEUE = __import__("queue").Queue()
 
 
 def _screen_fit_geometry(root, geometry=None, minsize=None):
-    """Keep every top-level window fully visible while preserving requested proportions."""
     root.update_idletasks()
     sw, sh = root.winfo_screenwidth(), root.winfo_screenheight()
     raw_w, raw_h = 1200, 720
     if geometry:
         try:
-            size = str(geometry).split("+", 1)[0]
-            raw_w, raw_h = (int(x) for x in size.lower().split("x", 1))
+            raw_w, raw_h = (int(x) for x in str(geometry).split("+", 1)[0].lower().split("x", 1))
         except (ValueError, TypeError):
             pass
     w = min(raw_w, max(760, sw - 36))
     h = min(raw_h, max(520, sh - 72))
     if minsize:
         mw, mh = minsize
-        mw = min(mw, max(640, sw - 36))
-        mh = min(mh, max(480, sh - 72))
-        w, h = max(w, mw), max(h, mh)
-        w, h = min(w, sw - 36), min(h, sh - 72)
-    x = max(12, (sw - w) // 2)
-    y = max(12, (sh - h) // 2)
-    return w, h, x, y
+        w = min(max(w, min(mw, sw - 36)), sw - 36)
+        h = min(max(h, min(mh, sh - 72)), sh - 72)
+    return w, h, max(12, (sw - w) // 2), max(12, (sh - h) // 2)
 
 
 def _new_window(self, title, geometry=None, minsize=None):
@@ -60,10 +55,9 @@ class SearchApp(phone_search.App):
     _new_window = _new_window
 
     def ui(self):
-        phone_search.App.ui(self)
-        self.tree.grid_remove()
-        self.root.configure(background=THEME["window_bg"])
-        style = ttk.Style(self.root)
+        root = self.root
+        root.configure(background=THEME["window_bg"])
+        style = ttk.Style(root)
         try:
             style.theme_use("clam")
             style.configure("TFrame", background=THEME["window_bg"])
@@ -78,75 +72,68 @@ class SearchApp(phone_search.App):
             style.configure("Status.TLabel", background=THEME["surface_alt"], foreground=THEME["text_muted"], font=FONT_BODY)
             style.configure("TButton", background=THEME["surface"], foreground=THEME["text"], font=FONT_BODY,
                             padding=(THEME["button_pad_x"], THEME["button_pad_y"]), relief="flat", borderwidth=0)
-            style.map("TButton", background=[("active", THEME["surface_subtle"]), ("pressed", THEME["selection"])],
-                      foreground=[("disabled", THEME["text_muted"])])
+            style.map("TButton", background=[("active", THEME["surface_subtle"]), ("pressed", THEME["selection"])])
             style.configure("Primary.TButton", background=THEME["accent"], foreground="#ffffff", font=FONT_BODY,
                             padding=(THEME["button_pad_x"], THEME["button_pad_y"]), relief="flat", borderwidth=0)
-            style.map("Primary.TButton", background=[("active", THEME["accent_hover"]), ("pressed", THEME["accent_hover"]),
-                                                        ("disabled", THEME["surface_subtle"])],
-                      foreground=[("disabled", THEME["text_muted"])])
-            style.configure("Favorite.TButton", background=THEME["selection_strong"], foreground=THEME["text"],
-                            font=FONT_BODY, padding=(THEME["button_pad_x"], THEME["button_pad_y"]), relief="flat", borderwidth=0)
+            style.map("Primary.TButton", background=[("active", THEME["accent_hover"]), ("pressed", THEME["accent_hover"])])
+            style.configure("Favorite.TButton", background=THEME["selection_strong"], foreground=THEME["text"], font=FONT_BODY,
+                            padding=(THEME["button_pad_x"], THEME["button_pad_y"]), relief="flat", borderwidth=0)
             style.map("Favorite.TButton", background=[("active", THEME["selection"]), ("pressed", THEME["selection_strong"])])
+            style.configure("Compare.TButton", background=THEME["surface"], foreground=THEME["accent"], font=FONT_BODY,
+                            padding=(THEME["button_pad_x"], THEME["button_pad_y"]), relief="flat", borderwidth=0)
+            style.map("Compare.TButton", background=[("active", THEME["surface_subtle"]), ("pressed", THEME["selection"])])
+            style.configure("Search.Treeview", font=FONT_BODY, rowheight=THEME["table_row_height"], background=THEME["surface"],
+                            fieldbackground=THEME["surface"], foreground=THEME["text"], borderwidth=0, relief="flat")
+            style.configure("Search.Treeview.Heading", font=FONT_TITLE, background=THEME["table_header"], foreground=THEME["text"],
+                            padding=(THEME["space_sm"], 3), relief="flat", borderwidth=0)
             style.configure("TCombobox", fieldbackground=THEME["surface"], background=THEME["surface"],
                             foreground=THEME["text"], arrowcolor=THEME["accent"])
-            style.configure("Search.Treeview", font=FONT_BODY, rowheight=THEME["table_row_height"],
-                            background=THEME["surface"], fieldbackground=THEME["surface"], foreground=THEME["text"],
-                            borderwidth=0, relief="flat")
-            style.configure("Search.Treeview.Heading", font=FONT_TITLE, background=THEME["table_header"],
-                            foreground=THEME["text"], relief="flat", borderwidth=0,
-                            padding=(THEME["space_md"], 3))
         except tk.TclError:
             pass
 
-        children = list(self.root.winfo_children())
-        bands = [child for child in children if isinstance(child, ttk.Frame)]
-        if len(bands) >= 4:
-            try:
-                bands[0].configure(style="Search.TFrame", padding=(THEME["space_lg"], THEME["space_md"]))
-                bands[1].configure(style="Info.TFrame", padding=(THEME["space_lg"], THEME["space_sm"], THEME["space_lg"], THEME["space_md"]))
-                bands[2].configure(style="Action.TFrame", padding=(THEME["space_lg"], 0, THEME["space_lg"], THEME["space_md"]))
-                bands[3].configure(style="Results.TFrame")
-            except tk.TclError:
-                pass
+        top = ttk.Frame(root, style="Search.TFrame", padding=(THEME["space_lg"], THEME["space_md"]))
+        top.pack(fill="x", padx=THEME["space_lg"], pady=(THEME["space_lg"], THEME["space_sm"]))
+        self.search_bar = top
+        ttk.Label(top, text="⌕ 品牌 / 系列 / 型号 / 别名", style="Search.TLabel").pack(side="left")
+        self.q = tk.StringVar()
+        self.entry = tk.Entry(top, textvariable=self.q, font=FONT_SEARCH, width=30, bg=THEME["surface"], fg=THEME["text"],
+                              insertbackground=THEME["accent"], relief="flat", highlightthickness=1,
+                              highlightbackground=THEME["border"], highlightcolor=THEME["accent"])
+        self.entry.pack(side="left", padx=(THEME["space_md"], THEME["space_xs"]), ipady=5, fill="x", expand=True)
+        self.entry.bind("<Return>", lambda _e: self.search())
+        self.entry.bind("<FocusIn>", lambda _e: self.root.after_idle(self._refresh_suggestions))
+        self.cat = ttk.Combobox(top, textvariable=tk.StringVar(value="全部"), values=["全部", "手机", "平板", "电脑", "其它", "手机配件"],
+                                state="readonly", width=8)
+        self.cat.set("全部")
+        self.cat.pack(side="left", padx=THEME["space_xs"])
+        for text, command, style_name in (("×", self.clear_search, "TButton"), ("查询", self.search, "Primary.TButton"),
+                                          ("刷新", self.load, "TButton"), ("数据目录", self.open_dir, "TButton"),
+                                          ("来源结构", self.sources, "TButton")):
+            ttk.Button(top, text=text, command=command, style=style_name).pack(side="left", padx=THEME["space_xs"])
+        self.status = ttk.Label(top, text="", style="Status.TLabel")
+        self.status.pack(side="right", padx=(THEME["space_md"], 0))
 
-        try:
-            for button in bands[0].winfo_children() if len(bands) >= 1 else []:
-                if isinstance(button, ttk.Button):
-                    text = str(button.cget("text"))
-                    if "收藏" in text and text not in {"查询", "🔍"}:
-                        button.pack_forget()
-                    else:
-                        button.configure(style="Primary.TButton" if text in {"查询", "🔍"} else "TButton")
-                elif isinstance(button, ttk.Label):
-                    button.configure(style="Search.TLabel")
-            for label in bands[1].winfo_children() if len(bands) >= 2 else []:
-                if isinstance(label, ttk.Label):
-                    text = str(label.cget("text"))
-                    label.configure(style="Title.TLabel" if "输入品牌" in text or "搜索结果" in text else "Meta.TLabel")
-            for button in bands[2].winfo_children() if len(bands) >= 3 else []:
-                if isinstance(button, ttk.Button):
-                    button.configure(style="Favorite.TButton" if "一键收藏" in str(button.cget("text")) else "TButton")
-                elif isinstance(button, ttk.Label):
-                    button.configure(style="Status.TLabel")
-            if len(bands) >= 3:
-                ttk.Button(bands[2], text="展示收藏", style="Favorite.TButton",
-                           command=self.show_favorites).pack(side="left", padx=THEME["space_xs"])
-        except (IndexError, tk.TclError):
-            pass
+        info = ttk.Frame(root, style="Info.TFrame", padding=(THEME["space_lg"], THEME["space_sm"], THEME["space_lg"], THEME["space_md"]))
+        info.pack(fill="x")
+        self.target = ttk.Label(info, text="输入品牌、系列、型号开始查询", style="Title.TLabel")
+        self.target.pack(side="left")
+        self.meta = ttk.Label(info, text="", style="Meta.TLabel")
+        self.meta.pack(side="right")
 
-        try:
-            self.entry.configure(background=THEME["surface"], foreground=THEME["text"], insertbackground=THEME["accent"],
-                                  relief="flat", highlightthickness=1, highlightbackground=THEME["border"],
-                                  highlightcolor=THEME["accent"], font=FONT_SEARCH)
-        except tk.TclError:
-            pass
+        actions = ttk.Frame(root, style="Action.TFrame", padding=(THEME["space_lg"], 0, THEME["space_lg"], THEME["space_md"]))
+        actions.pack(fill="x")
+        ttk.Button(actions, text="☆ 一键收藏", command=self.add_favorite, style="Favorite.TButton").pack(side="left", padx=THEME["space_xs"])
+        ttk.Button(actions, text="展示收藏", command=self.show_favorites, style="Favorite.TButton").pack(side="left", padx=THEME["space_xs"])
+        ttk.Button(actions, text="条件比价", command=self.condition_compare, style="Primary.TButton").pack(side="left", padx=THEME["space_xs"])
+        ttk.Button(actions, text="历史对比", command=self.history_compare, style="Compare.TButton").pack(side="left", padx=THEME["space_xs"])
+        ttk.Label(actions, text="搜索区只展示；收藏区负责选择与操作", style="Status.TLabel").pack(side="right")
 
-        host = self.tree.master
+        host = ttk.Frame(root, style="Results.TFrame", padding=1)
+        host.pack(fill="both", expand=True, padx=THEME["space_lg"], pady=(0, THEME["space_lg"]))
         self._results_canvas = tk.Canvas(host, highlightthickness=0, bd=0, background=THEME["surface"], relief="flat")
         scrollbar = ttk.Scrollbar(host, orient="vertical", command=self._results_canvas.yview)
         self._results_canvas.configure(yscrollcommand=scrollbar.set)
-        self._results_canvas.grid(row=0, column=0, sticky="nsew", padx=1, pady=1)
+        self._results_canvas.grid(row=0, column=0, sticky="nsew")
         scrollbar.grid(row=0, column=1, sticky="ns")
         host.grid_rowconfigure(0, weight=1)
         host.grid_columnconfigure(0, weight=1)
@@ -162,6 +149,8 @@ class SearchApp(phone_search.App):
         self._result_order = []
         self._matrix_map = {}
         self._display_columns = ()
+        self.tree = ttk.Treeview(host, columns=[x[0] for x in phone_search.COLS] + ["favorite"], show="headings", selectmode="none")
+        self.tree.grid_remove()
 
     def _resize_results_inner(self, event):
         try:
@@ -178,6 +167,82 @@ class SearchApp(phone_search.App):
         if rows:
             self.detail_rows(rows)
         return "break"
+
+    def _refresh_suggestions(self):
+        items = self.h.suggestions(phone_search.clean(self.q.get()), 5)
+        panel = getattr(self, "_history_panel", None)
+        if not items:
+            self._hide_suggestions()
+            return
+        try:
+            if panel is None or not panel.winfo_exists():
+                panel = tk.Frame(self.search_bar, bg=THEME["surface"], bd=1, relief="solid",
+                                 highlightthickness=1, highlightbackground=THEME["border"])
+                self._history_panel = panel
+            for child in panel.winfo_children():
+                child.destroy()
+            tk.Label(panel, text="搜索历史", anchor="w", bg=THEME["surface_alt"], fg=THEME["text_secondary"],
+                     font=FONT_LABEL, padx=THEME["space_md"], pady=THEME["space_sm"]).pack(fill="x")
+            for item in items:
+                label = tk.Label(panel, text=item, anchor="w", bg=THEME["surface"], fg=THEME["text"], font=FONT_BODY,
+                                 padx=THEME["space_md"], pady=THEME["space_sm"], cursor="hand2")
+                label.pack(fill="x")
+                label.bind("<Button-1>", lambda _e, value=item: self._use_suggestion(value))
+                label.bind("<Enter>", lambda _e, widget=label: widget.configure(bg=THEME["selection"]))
+                label.bind("<Leave>", lambda _e, widget=label: widget.configure(bg=THEME["surface"]))
+            panel.update_idletasks()
+            panel.place(x=self.entry.winfo_x(), y=self.entry.winfo_y() + self.entry.winfo_height() + 3,
+                        width=max(self.entry.winfo_width(), 420))
+            panel.lift()
+        except tk.TclError:
+            self._hide_suggestions()
+
+    def _use_suggestion(self, value):
+        self.q.set(value)
+        self._hide_suggestions()
+        self.search()
+
+    def _hide_suggestions(self):
+        panel = getattr(self, "_history_panel", None)
+        if panel is not None:
+            try:
+                panel.place_forget()
+                panel.destroy()
+            except tk.TclError:
+                pass
+        self._history_panel = None
+
+    def _dismiss_suggestions(self, event=None):
+        if event is None:
+            return
+        panel = getattr(self, "_history_panel", None)
+        if panel is None:
+            return
+        try:
+            ex, ey = event.x_root, event.y_root
+            px, py = self.entry.winfo_rootx(), self.entry.winfo_rooty()
+            if px <= ex <= px + self.entry.winfo_width() and py <= ey <= py + self.entry.winfo_height():
+                return
+            x, y = panel.winfo_rootx(), panel.winfo_rooty()
+            if x <= ex <= x + panel.winfo_width() and y <= ey <= y + panel.winfo_height():
+                return
+        except tk.TclError:
+            pass
+        self._hide_suggestions()
+
+    def condition_compare(self):
+        rows = list(self.rows or [])
+        if not rows:
+            return self.toast("请先查询品牌、系列或型号")
+        from detail_compare_view import show_condition_compare
+        return show_condition_compare(self, rows)
+
+    def history_compare(self):
+        rows = list(self.rows or [])
+        if not rows:
+            return self.toast("请先查询品牌、系列或型号")
+        from detail_compare_view import show_history_compare
+        return show_history_compare(self, rows)
 
 
 def _clear_result_views(self):
@@ -224,17 +289,16 @@ def _render_search_matrix(self, result):
         return
     previous_model = None
     for block in blocks:
-        model_index = block["_model_index"]
-        period_index = block["_period_index"]
+        model_index, period_index = block["_model_index"], block["_period_index"]
         if previous_model is not None and model_index != previous_model:
             for _ in range(2):
-                spacer = tk.Frame(parent, height=THEME["model_gap"], background=THEME["surface"],
-                                  highlightthickness=1, highlightbackground=THEME["border_soft"])
+                spacer = tk.Frame(parent, height=THEME["model_gap"], background=THEME["surface"], highlightthickness=1,
+                                  highlightbackground=THEME["border_soft"])
                 spacer.pack(fill="x", pady=(THEME["space_xs"], THEME["space_xs"]))
                 self._result_views.append(spacer)
         elif period_index > 0:
-            spacer = tk.Frame(parent, height=THEME["period_gap"], background=THEME["surface"],
-                              highlightthickness=1, highlightbackground=THEME["border_soft"])
+            spacer = tk.Frame(parent, height=THEME["period_gap"], background=THEME["surface"], highlightthickness=1,
+                              highlightbackground=THEME["border_soft"])
             spacer.pack(fill="x", pady=(THEME["space_xs"], THEME["space_xs"]))
             self._result_views.append(spacer)
         columns = tuple(block.get("_columns") or ())
@@ -270,9 +334,6 @@ def _render_search_matrix(self, result):
         previous_model = model_index
     try:
         self._results_canvas.configure(scrollregion=self._results_canvas.bbox("all"))
-    except (AttributeError, tk.TclError):
-        pass
-    try:
         if self._matrix_map:
             self.empty_hint.place_forget()
         else:
@@ -310,9 +371,9 @@ def _apply_async_result(self, query_id, q, record_history, future):
     if record_history:
         self.h.add(q)
     self.render(self.rows)
-    count = len(getattr(self, "_matrix_map", {}) or {})
-    self.target.config(text=f"搜索结果：{q} · {count} 个结果块")
-    self.status.config(text=f"找到 {count} 个结果块")
+    self.target.config(text=f"搜索结果：{q} · {len(self._matrix_map)} 个结果块")
+    self.status.config(text=f"找到 {len(self._matrix_map)} 个结果块")
+    self._refresh_suggestions()
 
 
 def _queue_async_result(query_id, q, record_history, future):
@@ -328,14 +389,11 @@ def _debounced_search(self):
 
 
 def clear_search(self):
-    try:
-        self.root.after_cancel(self._search_after_id)
-    except Exception:
-        pass
-    try:
-        self.root.after_cancel(self._sync_search_after_id)
-    except Exception:
-        pass
+    for attr in ("_search_after_id", "_sync_search_after_id"):
+        try:
+            self.root.after_cancel(getattr(self, attr))
+        except Exception:
+            pass
     self._search_query_id = getattr(self, "_search_query_id", 0) + 1
     self.q.set("")
     self.hide_suggestions()
@@ -366,7 +424,6 @@ SearchApp._poll_async_results = _poll_async_results
 SearchApp._apply_async_result = _apply_async_result
 SearchApp._queue_async_result = _queue_async_result
 SearchApp._debounced_search = _debounced_search
-
 
 if __name__ == "__main__":
     root = tk.Tk()
