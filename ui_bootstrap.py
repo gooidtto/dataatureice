@@ -40,145 +40,55 @@ class SearchApp(phone_search.App):
         self.root.configure(background=THEME["window_bg"])
         style = ttk.Style(self.root)
         try:
-            style.configure(
-                "TFrame",
-                background=THEME["window_bg"],
-            )
-            style.configure(
-                "Search.TFrame",
-                background=THEME["surface_alt"],
-                borderwidth=1,
-                relief="solid",
-            )
-            style.configure(
-                "Info.TFrame",
-                background=THEME["surface"],
-                borderwidth=0,
-            )
-            style.configure(
-                "Action.TFrame",
-                background=THEME["surface_alt"],
-                borderwidth=0,
-            )
-            style.configure(
-                "Results.TFrame",
-                background=THEME["border_soft"],
-                borderwidth=1,
-                relief="solid",
-            )
-            style.configure(
-                "TLabel",
-                background=THEME["window_bg"],
-                foreground=THEME["text"],
-                font=FONT_BODY,
-            )
-            style.configure(
-                "Search.TLabel",
-                background=THEME["surface_alt"],
-                foreground=THEME["text"],
-                font=FONT_LABEL,
-            )
-            style.configure(
-                "Title.TLabel",
-                background=THEME["surface"],
-                foreground=THEME["text"],
-                font=(FONT_FAMILY := "微软雅黑", 12, "bold"),
-            )
-            style.configure(
-                "Meta.TLabel",
-                background=THEME["surface"],
-                foreground=THEME["text_secondary"],
-                font=FONT_BODY,
-            )
-            style.configure(
-                "Status.TLabel",
-                background=THEME["surface_alt"],
-                foreground=THEME["text_muted"],
-                font=FONT_BODY,
-            )
-            style.configure(
-                "TButton",
-                background=THEME["surface"],
-                foreground=THEME["text"],
-                font=FONT_BODY,
-                padding=(10, 5),
-                relief="flat",
-                borderwidth=0,
-            )
-            style.map(
-                "TButton",
-                background=[
-                    ("active", THEME["surface_subtle"]),
-                    ("pressed", THEME["selection"]),
-                ],
-                foreground=[("disabled", THEME["text_muted"])],
-            )
-            style.configure(
-                "Primary.TButton",
-                background=THEME["accent"],
-                foreground="#ffffff",
-                font=FONT_TITLE,
-                padding=(12, 5),
-                relief="flat",
-                borderwidth=0,
-            )
-            style.map(
-                "Primary.TButton",
-                background=[
-                    ("active", THEME["accent_hover"]),
-                    ("pressed", THEME["accent_hover"]),
-                    ("disabled", THEME["surface_subtle"]),
-                ],
-                foreground=[("disabled", THEME["text_muted"])],
-            )
-            style.configure(
-                "Favorite.TButton",
-                background=THEME["selection_strong"],
-                foreground=THEME["accent_hover"],
-                font=FONT_TITLE,
-                padding=(11, 5),
-                relief="flat",
-                borderwidth=0,
-            )
-            style.map(
-                "Favorite.TButton",
-                background=[
-                    ("active", THEME["selection"]),
-                    ("pressed", THEME["selection_strong"]),
-                ],
-            )
-            style.configure(
-                "TCombobox",
-                fieldbackground=THEME["surface"],
-                background=THEME["surface"],
-                foreground=THEME["text"],
-                arrowcolor=THEME["accent"],
-            )
+            style.configure("TFrame", background=THEME["window_bg"])
+            style.configure("Search.TFrame", background=THEME["surface_alt"], borderwidth=1, relief="solid")
+            style.configure("Info.TFrame", background=THEME["surface"], borderwidth=0)
+            style.configure("Action.TFrame", background=THEME["surface_alt"], borderwidth=0)
+            style.configure("Results.TFrame", background=THEME["border_soft"], borderwidth=1, relief="solid")
+            style.configure("TLabel", background=THEME["window_bg"], foreground=THEME["text"], font=FONT_BODY)
+            style.configure("Search.TLabel", background=THEME["surface_alt"], foreground=THEME["text"], font=FONT_LABEL)
+            style.configure("Title.TLabel", background=THEME["surface"], foreground=THEME["text"], font=("微软雅黑", 12, "bold"))
+            style.configure("Meta.TLabel", background=THEME["surface"], foreground=THEME["text_secondary"], font=FONT_BODY)
+            style.configure("Status.TLabel", background=THEME["surface_alt"], foreground=THEME["text_muted"], font=FONT_BODY)
+            style.configure("TButton", background=THEME["surface"], foreground=THEME["text"], font=FONT_BODY,
+                            padding=(THEME["button_pad_x"], THEME["button_pad_y"]), relief="flat", borderwidth=0)
+            style.map("TButton", background=[("active", THEME["surface_subtle"]), ("pressed", THEME["selection"])],
+                      foreground=[("disabled", THEME["text_muted"])])
+            style.configure("Primary.TButton", background=THEME["accent"], foreground="#ffffff", font=FONT_TITLE,
+                            padding=(THEME["primary_pad_x"], THEME["primary_pad_y"]), relief="flat", borderwidth=0)
+            style.map("Primary.TButton", background=[("active", THEME["accent_hover"]), ("pressed", THEME["accent_hover"]),
+                                                        ("disabled", THEME["surface_subtle"])],
+                      foreground=[("disabled", THEME["text_muted"])])
+            style.configure("Favorite.TButton", background=THEME["selection_strong"], foreground=THEME["accent_hover"],
+                            font=FONT_TITLE, padding=(THEME["primary_pad_x"], THEME["primary_pad_y"]), relief="flat", borderwidth=0)
+            style.map("Favorite.TButton", background=[("active", THEME["selection"]), ("pressed", THEME["selection_strong"])])
+            style.configure("TCombobox", fieldbackground=THEME["surface"], background=THEME["surface"],
+                            foreground=THEME["text"], arrowcolor=THEME["accent"])
+            style.configure("Search.Treeview", font=FONT_BODY, rowheight=THEME["table_row_height"],
+                            background=THEME["surface"], fieldbackground=THEME["surface"], foreground=THEME["text"],
+                            borderwidth=0, relief="flat")
+            style.configure("Search.Treeview.Heading", font=FONT_BODY, background=THEME["table_header"],
+                            foreground=THEME["text_secondary"], relief="flat", borderwidth=0,
+                            padding=(THEME["space_md"], 3))
         except tk.TclError:
             pass
 
-        # Reclassify the four major bands created by the legacy UI builder.
-        # This gives the page an explicit hierarchy without changing its layout.
         children = list(self.root.winfo_children())
         bands = [child for child in children if isinstance(child, ttk.Frame)]
         if len(bands) >= 4:
             try:
-                bands[0].configure(style="Search.TFrame", padding=(12, 9))
-                bands[1].configure(style="Info.TFrame", padding=(12, 7, 12, 8))
-                bands[2].configure(style="Action.TFrame", padding=(12, 0, 12, 8))
+                bands[0].configure(style="Search.TFrame", padding=(THEME["space_lg"], THEME["space_md"]))
+                bands[1].configure(style="Info.TFrame", padding=(THEME["space_lg"], THEME["space_sm"], THEME["space_lg"], THEME["space_md"]))
+                bands[2].configure(style="Action.TFrame", padding=(THEME["space_lg"], 0, THEME["space_lg"], THEME["space_md"]))
                 bands[3].configure(style="Results.TFrame")
             except tk.TclError:
                 pass
 
         try:
-            # Primary search controls: one clear visual anchor, everything else secondary.
             for button in bands[0].winfo_children() if len(bands) >= 1 else []:
                 if isinstance(button, ttk.Button):
                     text = str(button.cget("text"))
-                    if text in {"查询", "🔍"}:
-                        button.configure(style="Primary.TButton")
-                    else:
-                        button.configure(style="TButton")
+                    button.configure(style="Primary.TButton" if text in {"查询", "🔍"} else "TButton")
                 elif isinstance(button, ttk.Label):
                     button.configure(style="Search.TLabel")
             for label in bands[1].winfo_children() if len(bands) >= 2 else []:
@@ -194,56 +104,26 @@ class SearchApp(phone_search.App):
             pass
 
         try:
-            self.entry.configure(
-                background=THEME["surface"],
-                foreground=THEME["text"],
-                insertbackground=THEME["accent"],
-                relief="flat",
-                highlightthickness=1,
-                highlightbackground=THEME["border"],
-                highlightcolor=THEME["accent"],
-                font=FONT_SEARCH,
-            )
+            self.entry.configure(background=THEME["surface"], foreground=THEME["text"], insertbackground=THEME["accent"],
+                                  relief="flat", highlightthickness=1, highlightbackground=THEME["border"],
+                                  highlightcolor=THEME["accent"], font=FONT_SEARCH)
         except tk.TclError:
             pass
 
         host = self.tree.master
-        self._results_canvas = tk.Canvas(
-            host,
-            highlightthickness=0,
-            bd=0,
-            background=THEME["surface"],
-            relief="flat",
-        )
+        self._results_canvas = tk.Canvas(host, highlightthickness=0, bd=0, background=THEME["surface"], relief="flat")
         scrollbar = ttk.Scrollbar(host, orient="vertical", command=self._results_canvas.yview)
         self._results_canvas.configure(yscrollcommand=scrollbar.set)
         self._results_canvas.grid(row=0, column=0, sticky="nsew", padx=1, pady=1)
         scrollbar.grid(row=0, column=1, sticky="ns")
         host.grid_rowconfigure(0, weight=1)
         host.grid_columnconfigure(0, weight=1)
-        self._results_inner = tk.Frame(
-            self._results_canvas,
-            bd=0,
-            highlightthickness=0,
-            background=THEME["surface"],
-        )
-        self._results_window = self._results_canvas.create_window(
-            (0, 0),
-            window=self._results_inner,
-            anchor="nw",
-        )
-        self._results_inner.bind(
-            "<Configure>",
-            lambda _e: self._results_canvas.configure(scrollregion=self._results_canvas.bbox("all")),
-        )
+        self._results_inner = tk.Frame(self._results_canvas, bd=0, highlightthickness=0, background=THEME["surface"])
+        self._results_window = self._results_canvas.create_window((0, 0), window=self._results_inner, anchor="nw")
+        self._results_inner.bind("<Configure>", lambda _e: self._results_canvas.configure(scrollregion=self._results_canvas.bbox("all")))
         self._results_canvas.bind("<Configure>", self._resize_results_inner)
-        self.empty_hint = ttk.Label(
-            host,
-            text="输入品牌、系列、型号开始查询",
-            font=("微软雅黑", 12),
-            foreground=THEME["text_muted"],
-            background=THEME["surface"],
-        )
+        self.empty_hint = ttk.Label(host, text="输入品牌、系列、型号开始查询", font=("微软雅黑", 12),
+                                    foreground=THEME["text_muted"], background=THEME["surface"])
         self._result_views = []
         self._result_trees = []
         self._result_tree_map = {}
@@ -286,32 +166,18 @@ def _row_tag(model_index, period_index):
 
 def _configure_result_tree(tree, columns, iid, display, favorite):
     fields = [c[0] for c in columns] + ["favorite"]
-    tree.configure(columns=fields, show="headings", height=1, selectmode="none")
+    tree.configure(columns=fields, show="headings", height=1, selectmode="none", style="Search.Treeview")
     for field, title, width in columns:
         tree.heading(field, text=title)
         is_quote = field.startswith("condition_")
-        tree.column(
-            field,
-            width=width,
-            minwidth=max(60, min(width, 90)),
-            anchor="center" if field == "data_date" or is_quote else "w",
-            stretch=False,
-        )
+        tree.column(field, width=width, minwidth=max(60, min(width, 90)),
+                    anchor="center" if field == "data_date" or is_quote else "w", stretch=False)
     tree.heading("favorite", text="收藏")
     tree.column("favorite", width=110, minwidth=90, anchor="center", stretch=False)
     values = [display.get(field, "") for field, _, _ in columns]
     tag = _row_tag(display["_model_index"], display["_period_index"])
-    tree.insert(
-        "",
-        "end",
-        iid=iid,
-        values=values + ["★ 已收藏" if favorite else "☆ 一键收藏"],
-        tags=(tag,),
-    )
-    tree.tag_configure(
-        tag,
-        background=THEME["model_bands"][display["_model_index"] % len(THEME["model_bands"])],
-    )
+    tree.insert("", "end", iid=iid, values=values + ["★ 已收藏" if favorite else "☆ 一键收藏"], tags=(tag,))
+    tree.tag_configure(tag, background=THEME["model_bands"][display["_model_index"] % len(THEME["model_bands"])])
 
 
 def _render_search_matrix(self, result):
@@ -330,12 +196,14 @@ def _render_search_matrix(self, result):
         period_index = block["_period_index"]
         if previous_model is not None and model_index != previous_model:
             for _ in range(2):
-                spacer = tk.Frame(parent, height=8, background=THEME["surface"])
-                spacer.pack(fill="x")
+                spacer = tk.Frame(parent, height=THEME["model_gap"], background=THEME["surface"],
+                                  highlightthickness=1, highlightbackground=THEME["border_soft"])
+                spacer.pack(fill="x", pady=(THEME["space_xs"], THEME["space_xs"]))
                 self._result_views.append(spacer)
         elif period_index > 0:
-            spacer = tk.Frame(parent, height=4, background=THEME["surface"])
-            spacer.pack(fill="x")
+            spacer = tk.Frame(parent, height=THEME["period_gap"], background=THEME["surface"],
+                              highlightthickness=1, highlightbackground=THEME["border_soft"])
+            spacer.pack(fill="x", pady=(THEME["space_xs"], THEME["space_xs"]))
             self._result_views.append(spacer)
         columns = tuple(block.get("_columns") or ())
         if columns:
@@ -345,12 +213,11 @@ def _render_search_matrix(self, result):
         favorite_keys = {self.fav.identity(r) for r in self.fav.dedupe()}
         favorite = any(self.fav.identity(r) in favorite_keys for r in rows)
         frame = tk.Frame(parent, bd=0, highlightthickness=0, background=THEME["surface"])
-        tree = ttk.Treeview(frame, columns=(), show="headings", height=1, selectmode="none")
+        tree = ttk.Treeview(frame, columns=(), show="headings", height=1, selectmode="none", style="Search.Treeview")
         _configure_result_tree(tree, columns, iid, block, favorite)
-        # Search is display-only: no selection, drag, context menu, or inline favorite action.
         tree.bind("<Double-1>", lambda _event, iid=iid: self._result_double_click(iid))
         tree.pack(fill="x", expand=True)
-        frame.pack(fill="x", expand=True, pady=(0, 2))
+        frame.pack(fill="x", expand=True, pady=(0, THEME["result_gap"]))
         self._result_views.append(frame)
         self._result_trees.append(tree)
         self._result_tree_map[iid] = tree
