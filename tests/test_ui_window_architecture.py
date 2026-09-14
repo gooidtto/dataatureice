@@ -89,8 +89,7 @@ def test_favorite_action_is_installed_on_search_app():
     assert _arg_names(actions["addToFavorites"]) == ["self", "rows"]
     assert _calls_attr(actions["addToFavorites"], "add")
     assert _contains_string(actions["addToFavorites"], "已经收藏")
-    install = actions["install"]
-    assert _contains_string(install, "addToFavorites")
+    assert _contains_string(actions["install"], "addToFavorites")
 
 
 def test_main_window_is_withdrawn_during_app_initialization():
@@ -106,8 +105,8 @@ def test_child_window_is_hidden_until_configuration_finishes():
     actions = _functions(_module(ACTIONS))
     new_window = actions["_new_window"]
     assert _calls_attr(new_window, "withdraw")
-    assert _contains_string(new_window, "_show_window")
-    assert _contains_string(actions["_show_window"], "")
+    assert _calls_attr(new_window, "after_idle")
+    assert _calls_named(new_window, "_show_window")
     assert _calls_attr(actions["_show_window"], "deiconify")
     lifecycle = actions["_install_window_lifecycle"]
     assert _contains_string(lifecycle, "_window_factory")
