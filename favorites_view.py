@@ -85,14 +85,14 @@ def show_favorites_matrix(self):
         style.configure('FavoritesTitle.TLabel',background=THEME['surface_alt'],foreground=THEME['text'],font=FONT_TITLE)
         style.configure('FavoritesHint.TLabel',background=THEME['surface_alt'],foreground=THEME['text_secondary'],font=FONT_LABEL)
         style.configure('FavoritesStatus.TLabel',background=THEME['surface_alt'],foreground=THEME['text_muted'],font=FONT_BODY)
-        style.configure('Favorites.Treeview',font=FONT_BODY,rowheight=THEME['table_row_height'],background=THEME['surface'],fieldbackground=THEME['surface'],foreground=THEME['text'],borderwidth=0,relief='flat')
-        style.configure('Favorites.Treeview.Heading',font=FONT_BODY,background=THEME['table_header'],foreground=THEME['text_secondary'],relief='flat',borderwidth=0,padding=(THEME['space_md'],3))
-        style.configure('FavoritesPrimary.TButton',background=THEME['accent'],foreground='#ffffff',font=FONT_BODY,padding=(THEME['button_pad_x'],THEME['button_pad_y']),relief='flat',borderwidth=0)
-        style.configure('FavoritesDanger.TButton',background=THEME['surface'],foreground=THEME['danger'],font=FONT_BODY,padding=(THEME['button_pad_x'],THEME['button_pad_y']),relief='flat',borderwidth=0)
-        style.configure('FavoritesSecondary.TButton',background=THEME['surface'],foreground=THEME['text'],font=FONT_BODY,padding=(THEME['button_pad_x'],THEME['button_pad_y']),relief='flat',borderwidth=0)
-        style.map('FavoritesPrimary.TButton',background=[('active',THEME['accent_hover']),('pressed',THEME['accent_hover'])])
-        style.map('FavoritesDanger.TButton',background=[('active',THEME['surface_subtle']),('pressed',THEME['selection'])])
-        style.map('FavoritesSecondary.TButton',background=[('active',THEME['surface_subtle']),('pressed',THEME['selection'])])
+        style.configure('Favorites.Treeview',font=FONT_BODY,rowheight=THEME['table_row_height'],background=THEME['table_bg'],fieldbackground=THEME['table_bg'],foreground=THEME['text'],borderwidth=0,relief='flat')
+        style.configure('Favorites.Treeview.Heading',font=FONT_BODY,background=THEME['table_header'],foreground=THEME['text'],relief='flat',borderwidth=0,padding=(THEME['space_md'],3))
+        button_base=dict(background=THEME['button_bg'],foreground=THEME['button_text'],font=FONT_BODY,padding=(THEME['button_pad_x'],THEME['button_pad_y']),relief='solid',borderwidth=1)
+        style.configure('FavoritesPrimary.TButton',**button_base,foreground=THEME['button_accent_text'])
+        style.configure('FavoritesDanger.TButton',**button_base,foreground=THEME['button_accent_text'])
+        style.configure('FavoritesSecondary.TButton',**button_base,foreground=THEME['button_text'])
+        for name in ('FavoritesPrimary.TButton','FavoritesDanger.TButton','FavoritesSecondary.TButton'):
+            style.map(name,background=[('active',THEME['button_hover']),('pressed',THEME['button_pressed']),('disabled',THEME['button_disabled'])])
         style.map('Favorites.Treeview',background=[('selected',THEME['selection_strong'])])
     except tk.TclError:pass
 
@@ -111,7 +111,7 @@ def show_favorites_matrix(self):
         tree=mapping[iid]['_tree']
         try:tree.selection_set(iid) if on else tree.selection_remove(iid)
         except tk.TclError:pass
-        tree.tag_configure('selected',background=THEME['selection']);tree.tag_configure('normal',background=THEME['surface'])
+        tree.tag_configure('selected',background=THEME['selection']);tree.tag_configure('normal',background=THEME['table_bg'])
         try:tree.item(iid,tags=('selected' if on else 'normal',))
         except tk.TclError:pass
 
@@ -207,7 +207,7 @@ def show_favorites_matrix(self):
         for field,t,wid in cols:
             tree.heading(field,text=t);tree.column(field,width=wid,minwidth=60,anchor='center' if field=='data_date' or field.startswith('condition_') else 'w',stretch=False)
         tree.heading('favorite',text='收藏');tree.column('favorite',width=110,minwidth=70,anchor='center',stretch=False)
-        iid=f'favorite-{i}';tree.insert('','end',iid=iid,values=[b.get(field,'') for field,_,_ in cols]+['★ 已收藏'],tags=('normal',));tree.tag_configure('normal',background=THEME['surface']);tree.tag_configure('selected',background=THEME['selection'])
+        iid=f'favorite-{i}';tree.insert('','end',iid=iid,values=[b.get(field,'') for field,_,_ in cols]+['★ 已收藏'],tags=('normal',));tree.tag_configure('normal',background=THEME['table_bg']);tree.tag_configure('selected',background=THEME['selection'])
         mapping[iid]={'_rows':list(b.get('_rows',[])),'_tree':tree,'_block':b,'_index':i}
         tree.bind('<Button-1>',lambda e,ii=iid,idx=i,t=tree:click(e,ii,idx,t),add='+');tree.bind('<B1-Motion>',lambda e,t=tree:drag_motion(e,t),add='+');tree.bind('<ButtonRelease-1>',drag_end,add='+');tree.bind('<Double-1>',lambda e,bb=b:self.detail_rows(bb.get('_rows',[])));tree.pack(fill='x',expand=True)
         trees.append(tree)
