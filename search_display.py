@@ -33,26 +33,27 @@ def column_width(title,values=(),minimum=90,maximum=420):
     occupied=max([_char_width(title)]+[_char_width(v) for v in values]);return max(minimum,min(maximum,occupied*9+22))
 
 def group_model_dates(rows):
-    """Group consecutive rows by real-world model, then by date.
+    """Group by model/date while retaining distinct network-code detail blocks.
 
-    Model identity is category/brand/series/model. Network model code is
-    detail-level data and must never split a visible model or date group.
-    Input order is authoritative and is never sorted here.
+    The real-world model group is category/brand/series/model. A different
+    network model code may create another detail block inside the same model
+    and date, but it never creates a model/date separator. Input order is
+    authoritative and is never sorted here.
     """
-    groups=[];current_model=None;current_date=None;current_rows=[];model_index=-1;period_index=0
+    groups=[];current_model=None;current_date=None;current_code=None;current_rows=[];model_index=-1;period_index=0
     for row in list(rows or []):
-        model=model_group_key(row);date=clean(row.get("data_date",""))
-        if current_rows and (model!=current_model or date!=current_date):
+        model=model_group_key(row);date=clean(row.get("data_date",""));code=clean(row.get("model_code",""))
+        if current_rows and (model!=current_model or date!=current_date or code!=current_code):
             groups.append((block_key(current_rows[0]),current_date,current_rows,model_index,period_index));current_rows=[]
             if model!=current_model:
                 model_index+=1
                 period_index=0
-            else:
+            elif date!=current_date:
                 period_index+=1
         if not current_rows and model!=current_model:
             if model_index<0:model_index=0
             period_index=0
-        current_model,current_date=model,date;current_rows.append(row)
+        current_model,current_date,current_code=model,date,code;current_rows.append(row)
     if current_rows:groups.append((block_key(current_rows[0]),current_date,current_rows,model_index,period_index))
     return groups
 
@@ -95,7 +96,7 @@ def normalize_search_results(rows):
     blocks=build_result_blocks(rows);result=[]
     for index,block in enumerate(blocks):
         if index and block["_model_index"]==blocks[index-1]["_model_index"] and block["_period_key"]!=blocks[index-1]["_period_key"]:result.append({"_separator":"period","_model_index":block["_model_index"],"_period_index":block["_period_index"]})
-        elif index and block["_model_index"]!=blocks[index-1]["_model_index"]:result.extend(({"_separator":"model","_model_index":blocks[index-1]["_model_index"]},{"_separator":"model","_model_index":blocks[index-1]["_model_index"]}))
+        elif index and block["_model_index"]!=blocks[index-1]["_model_index"]:result.extend(({"_separator":"model","_model_index":blocks[index-1]["_model_index"]},{"_separator":"model","_model_index":blocks[index-1]["_model_index"]))
         result.append(block)
     return result
 
