@@ -1,6 +1,8 @@
 """Canonical search-result model and presentation helpers."""
+import csv
 import re
 import unicodedata
+from pathlib import Path
 from typing import TypedDict
 
 from value_order import value_rank
@@ -52,7 +54,7 @@ def column_width(title, values=(), minimum=90, maximum=420):
 
 
 def group_model_dates(rows):
-    """Group rows without changing the relative order supplied by search."""
+    """Group rows without changing the relative order supplied by search/favorites."""
     grouped = {}
     model_order = []
     date_order = {}
@@ -134,7 +136,7 @@ def _build_block(model_index, period_index, block_rows):
 
 
 def build_result_blocks(rows):
-    """Return ResultBlocks in the exact first-seen model/date order of search rows."""
+    """Return ResultBlocks in the exact first-seen model/date order of supplied rows."""
     blocks = []
     for model_index, (_key, periods) in enumerate(group_model_dates(rows)):
         for period_index, group in enumerate(periods):
@@ -158,6 +160,59 @@ def normalize_search_results(rows):
             ))
         result.append(block)
     return result
+
+
+def grouped_row_blocks(rows):
+    """Return exportable blocks in first-seen model/date order, with no independent sorting."""
+    return build_result_blocks(list(rows or []))
+
+
+def grouped_text(rows, columns=None):
+    """Create clipboard text using the same model/date spacing as the UI."""
+    rows = list(rows or [])
+    if not rows:
+        return ""
+    columns = tuple(columns or ((field, title, 0) for field, title, _ in build_display_columns(rows)))
+    blocks = grouped_row_blocks(rows)
+    headers = [title for _field, title, _width in columns]
+    lines = ["\t".join(headers)]
+    previous_model = previous_date = None
+    for block in blocks:
+        model = block.get("_model_key")
+        date = block.get("_period_key")
+        if previous_model is not None and model != previous_model:
+            lines.extend(["\t" * (len(columns) - 1)] * 2)
+        elif previous_date is not None and date != previous_date:
+            lines.append("\t" * (len(columns) - 1))
+        values = [block.get(field, "") for field, _title, _width in columns]
+        lines.append("\t".join(str(value) for value in values))
+        previous_model, previous_date = model, date
+    return "\r\n".join(lines)
+
+
+def grouped_csv_rows(rows, columns=None):
+    """Yield CSV rows with blank-row spacing identical to the display rules."""
+    rows = list(rows or [])
+    if not rows:
+        return []
+    columns = tuple(columns or ((field, title, 0) for field, title, _ in build_display_columns(rows)))
+    output = [[title for _field, title, _width in columns]]
+    previous_model = previous_date = None
+    for block in grouped_row_blocks(rows):
+        model = block.get("_model_key")
+        date = block.get("_period_key")
+        if previous_model is not None and model != previous_model:
+            output.extend([[""] * len(columns), [""] * len(columns)])
+        elif previous_date is not None and date != previous_date:
+            output.append([""] * len(columns))
+        output.append([block.get(field, "") for field, _title, _width in columns])
+        previous_model, previous_date = model, date
+    return output
+
+
+def grouped_excel_rows(rows, columns=None):
+    """Yield Excel rows with blank rows matching grouped_csv_rows()."""
+    return grouped_csv_rows(rows, columns=columns)
 
 
 DISPLAY_COLUMNS = (("data_date", "数据日期", 105), ("identity", "手机/品牌/系列/型号/网络型号", 420), ("condition_0", "开机靓机/靓机/开机好屏", 145), ("condition_1", "开机好屏/内屏碎", 145), ("condition_2", "开机好碎", 145), ("condition_3", "开机碎屏", 145), ("condition_4", "不开机/开机坏配件", 145), ("condition_5", "废板·整机", 145), ("source_image", "来源图片", 150))
