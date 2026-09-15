@@ -25,20 +25,19 @@ def build_identity(row):return " ".join(clean(row.get(field,"")) for field in ID
 def identity_key(row):return tuple(clean(row.get(field,"")) for field in IDENTITY_FIELDS)
 
 def model_family(value):
-    """Return the search-family model key without collapsing unrelated model numbers.
+    """Return a conservative real-world model-family key.
 
-    Candidate variants such as OPPO A59, A59s, A59m and A59t belong to the same
-    real-world A59 family. Search result blocks should therefore use the shared
-    numeric model root for grouping, while the full model remains in identity.
-    A trailing configuration in parentheses and a simple 5G suffix are ignored
-    for grouping. Models that do not match this conservative pattern remain
-    unchanged.
+    Candidate variants such as OPPO A59, A59s, A59m, A59t and A59 5G share
+    the A59 family key for grouping. The displayed model text is never changed.
+    Models that do not match the numeric-root pattern remain unchanged.
     """
     text=clean(value)
     if not text:return ""
     base=clean(text.split("(",1)[0])
     compact=re.sub(r"\s+","",base).casefold()
-    match=re.match(r"^(.+?\d+)(?:[a-z]+)?(?:5g)?$",compact)
+    if compact.endswith("5g"):
+        compact=compact[:-2]
+    match=re.match(r"^(.+?\d+)(?:[a-z]+)?$",compact)
     return match.group(1) if match else compact
 
 def model_group_key(row):
@@ -118,10 +117,7 @@ def normalize_search_results(rows):
         if index and block["_model_index"]==blocks[index-1]["_model_index"] and block["_period_key"]!=blocks[index-1]["_period_key"]:
             result.append({"_separator":"period","_model_index":block["_model_index"],"_period_index":block["_period_index"]})
         elif index and block["_model_index"]!=blocks[index-1]["_model_index"]:
-            result.extend((
-                {"_separator":"model","_model_index":blocks[index-1]["_model_index"]},
-                {"_separator":"model","_model_index":blocks[index-1]["_model_index"]},
-            ))
+            result.extend(({"_separator":"model","_model_index":blocks[index-1]["_model_index"]},{"_separator":"model","_model_index":blocks[index-1]["_model_index"]}))
         result.append(block)
     return result
 
