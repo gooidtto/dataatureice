@@ -84,8 +84,15 @@ class SearchApp(phone_search.App):
         except tk.TclError:
             pass
 
-        search_shell = tk.Frame(root, bg=THEME["surface"], bd=1, relief="solid", highlightthickness=1, highlightbackground=THEME["border"], highlightcolor=THEME["accent"])
-        search_shell.pack(fill="x", padx=THEME["space_lg"], pady=(THEME["space_lg"], THEME["space_sm"]), ipady=2)
+        # Canonical horizontal search toolbar: input+clear, search button, category group.
+        toolbar = tk.Frame(root, bg=THEME["window_bg"], bd=0, highlightthickness=0)
+        toolbar.pack(fill="x", padx=THEME["space_lg"], pady=(THEME["space_lg"], THEME["space_sm"]))
+        toolbar.grid_columnconfigure(0, weight=1)
+        toolbar.grid_rowconfigure(0, minsize=44, weight=0)
+
+        search_shell = tk.Frame(toolbar, bg=THEME["surface"], bd=1, relief="solid", highlightthickness=1, highlightbackground=THEME["border"], highlightcolor=THEME["accent"], height=44)
+        search_shell.grid(row=0, column=0, sticky="ew")
+        search_shell.pack_propagate(False)
         self.search_bar = search_shell
         tk.Label(search_shell, text="⌕", bg=THEME["surface"], fg=THEME["text"], font=("SimHei", 18), padx=THEME["space_md"]).pack(side="left")
         self.q = tk.StringVar()
@@ -95,13 +102,26 @@ class SearchApp(phone_search.App):
         self.entry.bind("<FocusIn>", lambda _e: self.root.after_idle(self._refresh_suggestions_ui))
         self.entry.bind("<Escape>", lambda _e: self._hide_suggestions_ui())
         self.entry.bind("<KeyRelease>", lambda _e: self.root.after_idle(self._reposition_history_popup))
-        self.clear_button = tk.Button(search_shell, text="×", command=self.clear_search, bg=THEME["surface"], fg=THEME["text"], activebackground=THEME["surface_subtle"], activeforeground=THEME["text"], relief="flat", bd=0, font=("SimHei", 19), padx=7, cursor="hand2")
-        self.clear_button.pack(side="left")
-        self.search_button = tk.Button(search_shell, text="⌕", command=self.search, bg=THEME["surface"], fg=THEME["text"], activebackground=THEME["accent_soft"], activeforeground=THEME["accent"], relief="flat", bd=0, font=("SimHei", 18), padx=10, cursor="hand2")
-        self.search_button.pack(side="left", padx=(0, 3))
-        self.cat = ttk.Combobox(search_shell, textvariable=tk.StringVar(value="全部"), values=["全部", "手机", "平板", "电脑", "其它", "手机配件"], state="readonly", width=9)
+        self.clear_button = tk.Button(search_shell, text="×", command=self.clear_search, bg=THEME["surface"], fg=THEME["text_muted"], activebackground=THEME["surface_subtle"], activeforeground=THEME["text_secondary"], relief="flat", bd=0, font=("SimHei", 17), padx=7, cursor="hand2", height=1)
+        self.clear_button.pack(side="left", padx=(0, 4))
+
+        search_button = tk.Button(toolbar, text="搜索", command=self.search, bg=THEME["button_bg"], fg=THEME["button_text"], activebackground=THEME["button_hover"], activeforeground=THEME["accent"], relief="solid", bd=1, highlightthickness=0, font=FONT_BODY, padx=THEME["button_pad_x"], pady=THEME["button_pad_y"], cursor="hand2", width=7, height=1)
+        search_button.grid(row=0, column=1, sticky="ns", padx=(THEME["space_sm"], 0))
+        self.search_button = search_button
+
+        category_group = tk.Frame(toolbar, bg=THEME["window_bg"], bd=0, highlightthickness=0, height=44)
+        category_group.grid(row=0, column=2, sticky="ns", padx=(THEME["space_lg"], 0))
+        category_group.pack_propagate(False)
+        tk.Label(category_group, text="分类：", bg=THEME["window_bg"], fg=THEME["text_secondary"], font=FONT_BODY).pack(side="left", fill="y", padx=(0, THEME["space_xs"]))
+        category_var = tk.StringVar(value="全部")
+        cat_style = "Search.Category.TCombobox"
+        style.configure(cat_style, font=FONT_BODY, padding=(THEME["button_pad_x"], THEME["button_pad_y"]), fieldbackground=THEME["button_bg"], background=THEME["button_bg"], foreground=THEME["button_text"], arrowcolor=THEME["accent"], borderwidth=1, relief="solid")
+        style.map(cat_style, fieldbackground=[("readonly", THEME["button_bg"]), ("active", THEME["button_hover"])], background=[("readonly", THEME["button_bg"]), ("active", THEME["button_hover"])], foreground=[("readonly", THEME["button_text"])])
+        self.cat = ttk.Combobox(category_group, textvariable=category_var, values=["全部", "手机", "平板", "电脑", "其它", "手机配件"], state="readonly", width=7, style=cat_style)
         self.cat.set("全部")
-        self.cat.pack(side="left", padx=(4, THEME["space_sm"]))
+        self.cat.pack(side="left", fill="y")
+        self._category_var = category_var
+        self.manage_category_button = None
 
         utility = ttk.Frame(root, style="Info.TFrame", padding=(THEME["space_lg"], 0, THEME["space_lg"], 8))
         utility.pack(fill="x")
@@ -112,22 +132,23 @@ class SearchApp(phone_search.App):
 
         host = ttk.Frame(root, style="Results.TFrame", padding=0)
         host.pack(fill="both", expand=True, padx=THEME["space_lg"], pady=(0, THEME["space_lg"]))
-        toolbar = tk.Frame(host, bg=THEME["surface"], highlightthickness=1, highlightbackground=THEME["border_soft"], bd=0)
-        toolbar.pack(fill="x")
-        left = tk.Frame(toolbar, bg=THEME["surface"])
+        result_toolbar = tk.Frame(host, bg=THEME["surface"], highlightthickness=1, highlightbackground=THEME["border_soft"], bd=0)
+        result_toolbar.pack(fill="x")
+        left = tk.Frame(result_toolbar, bg=THEME["surface"])
         left.pack(side="left", padx=THEME["space_md"], pady=THEME["space_sm"])
         tk.Label(left, text="搜索结果", bg=THEME["surface"], fg=THEME["text"], font=FONT_TITLE).pack(side="left", padx=(0, 8))
         self.result_count = tk.Label(left, text="0 条", bg=THEME["surface"], fg=THEME["text_muted"], font=FONT_BODY)
         self.result_count.pack(side="left")
-        actions = tk.Frame(toolbar, bg=THEME["surface"])
+        actions = tk.Frame(result_toolbar, bg=THEME["surface"])
         actions.pack(side="right", padx=THEME["space_sm"], pady=THEME["space_xs"])
         def action(text, command, accent=False):
             return tk.Button(actions, text=text, command=command, bg=THEME["button_bg"], fg=THEME["button_accent_text"] if accent else THEME["button_text"], activebackground=THEME["accent_soft"] if accent else THEME["button_hover"], activeforeground=THEME["accent"], relief="solid", bd=1, highlightthickness=0, font=FONT_BODY, padx=THEME["button_pad_x"], pady=THEME["button_pad_y"], cursor="hand2")
+        # Required order: favorites, data operations, comparison utilities.
+        action("☆ 一键收藏", self.add_favorite, True).pack(side="left", padx=2)
+        action("展示收藏", self.show_favorites, True).pack(side="left", padx=2)
         action("复制全部", self.copy_all).pack(side="left", padx=2)
         action("导出 CSV", self.export_csv).pack(side="left", padx=2)
         action("导出 Excel", self.export_xlsx).pack(side="left", padx=2)
-        action("☆ 一键收藏", self.add_favorite, True).pack(side="left", padx=2)
-        action("展示收藏", self.show_favorites, True).pack(side="left", padx=2)
         action("条件比价", self.condition_compare).pack(side="left", padx=2)
         action("历史对比", self.history_compare).pack(side="left", padx=2)
 
