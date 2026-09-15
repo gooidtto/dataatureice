@@ -49,7 +49,7 @@ def _button_style_kwargs(accent=False):
 
 
 def _normalize_search_controls(app):
-    """Separate input from search/category controls with matched control geometry."""
+    """Keep search input separate from one compact, independent category selector."""
     shell = getattr(app, "search_bar", None)
     entry = getattr(app, "entry", None)
     old_search = getattr(app, "search_button", None)
@@ -61,13 +61,12 @@ def _normalize_search_controls(app):
         root = shell.master
         utility = getattr(getattr(app, "target", None), "master", None)
 
-        # Remove only the obsolete controls. The entry and clear button remain
-        # in the original search surface, preserving history anchoring.
         old_search.pack_forget()
         old_cat.pack_forget()
         old_search.destroy()
         old_cat.destroy()
 
+        # The search surface contains only the input and clear affordance.
         shell.pack_forget()
         shell.configure(height=44)
         shell.pack_propagate(False)
@@ -111,19 +110,25 @@ def _normalize_search_controls(app):
             **_button_style_kwargs(accent=True),
         )
         search_button.configure(width=7)
-        search_button.pack(side="left", padx=(0, THEME["space_sm"]))
+        search_button.pack(side="left", padx=(0, THEME["space_md"]))
+
+        # Keep category as the only category control in the main toolbar.
+        category_group = tk.Frame(
+            controls,
+            bg=THEME["window_bg"],
+            bd=0,
+            highlightthickness=0,
+        )
+        category_group.pack(side="left", fill="y")
 
         tk.Label(
-            controls,
+            category_group,
             text="分类",
             bg=THEME["window_bg"],
             fg=THEME["text_secondary"],
             font=FONT_BODY,
-        ).pack(side="left", padx=THEME["space_xs"])
+        ).pack(side="left", padx=(0, THEME["space_xs"]))
 
-        # Use a dedicated ttk style so the category selector has the same
-        # visual height/padding and approximate width as the adjacent buttons,
-        # without changing the application's global combobox style.
         combo_style = "Search.Category.TCombobox"
         style = ttk.Style(root)
         style.configure(
@@ -145,7 +150,7 @@ def _normalize_search_controls(app):
         )
         category_var = tk.StringVar(value="全部")
         cat = ttk.Combobox(
-            controls,
+            category_group,
             textvariable=category_var,
             values=["全部", "手机", "平板", "电脑", "其它", "手机配件"],
             state="readonly",
@@ -153,94 +158,20 @@ def _normalize_search_controls(app):
             style=combo_style,
         )
         cat.set("全部")
-        cat.pack(side="left", padx=(0, THEME["space_sm"]))
-
-        manage = tk.Button(
-            controls,
-            text="管理分类",
-            command=lambda: _manage_categories(app),
-            **_button_style_kwargs(),
-        )
-        manage.configure(width=7)
-        manage.pack(side="left")
+        cat.pack(side="left")
 
         app.search_button = search_button
         app.cat = cat
         app._category_var = category_var
-        app.manage_category_button = manage
         app.clear_button = clear
+        app.manage_category_button = None
     except tk.TclError:
         return
 
 
 def _manage_categories(app):
-    try:
-        win = app._new_window("管理分类", "560x420", (460, 340))
-    except Exception:
-        return
-    try:
-        win.configure(background=THEME["window_bg"])
-        body = tk.Frame(
-            win,
-            bg=THEME["surface"],
-            bd=1,
-            relief="solid",
-            highlightthickness=1,
-            highlightbackground=THEME["border_soft"],
-        )
-        body.pack(fill="both", expand=True, padx=THEME["space_lg"], pady=THEME["space_lg"])
-        tk.Label(body, text="分类筛选", bg=THEME["surface"], fg=THEME["text"], font=FONT_TITLE).pack(
-            anchor="w", padx=THEME["space_lg"], pady=(THEME["space_lg"], 4)
-        )
-        tk.Label(
-            body,
-            text="选择分类后，独立的分类筛选控件会立即更新。",
-            bg=THEME["surface"],
-            fg=THEME["text_secondary"],
-            font=FONT_BODY,
-        ).pack(anchor="w", padx=THEME["space_lg"], pady=(0, THEME["space_md"]))
-
-        values = list(app.cat.cget("values"))
-        listbox = tk.Listbox(
-            body,
-            font=FONT_BODY,
-            bg=THEME["surface"],
-            fg=THEME["text"],
-            selectbackground=THEME["selection"],
-            selectforeground=THEME["text"],
-            relief="solid",
-            bd=1,
-            highlightthickness=0,
-            activestyle="none",
-        )
-        listbox.pack(fill="both", expand=True, padx=THEME["space_lg"], pady=(0, THEME["space_md"]))
-        for value in values:
-            listbox.insert("end", value)
-        current = app.cat.get()
-        if current in values:
-            index = values.index(current)
-            listbox.selection_set(index)
-            listbox.see(index)
-
-        actions = tk.Frame(body, bg=THEME["surface"])
-        actions.pack(fill="x", padx=THEME["space_lg"], pady=(0, THEME["space_lg"]))
-
-        def choose():
-            selection = listbox.curselection()
-            if selection:
-                app.cat.set(listbox.get(selection[0]))
-            win.destroy()
-
-        tk.Button(actions, text="应用", command=choose, **_button_style_kwargs(accent=True)).pack(
-            side="right", padx=(THEME["space_sm"], 0)
-        )
-        tk.Button(actions, text="关闭", command=win.destroy, **_button_style_kwargs()).pack(side="right")
-        win.bind("<Escape>", lambda _e: win.destroy())
-    except tk.TclError:
-        try:
-            win.destroy()
-        except tk.TclError:
-            pass
+    """Legacy compatibility entry point; category selection now lives in the toolbar."""
+    return None
 
 
 def organize_search_toolbar(app):
@@ -281,8 +212,6 @@ def organize_search_toolbar(app):
         buttons = _button_children(action_frame)
         if len(buttons) < 7:
             return
-        # Original construction order:
-        # copy, CSV, Excel, one-click favorite, favorites, condition, history.
         ordered = [buttons[3], buttons[4], buttons[0], buttons[1], buttons[2], buttons[5], buttons[6]]
         groups = (ordered[0:2], ordered[2:5], ordered[5:7])
         column = 0
