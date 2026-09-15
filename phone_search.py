@@ -194,7 +194,11 @@ class App:
    self._hide_suggestions()
   except tk.TclError:pass
  def load(self):
-  self.s.load();self.meta.config(text=f'最新：{self.s.latest or "无"} · 快照 {len(self.s.dates)} · 已验证价格行 {len(self.s.rows)}');self.status.config(text='数据校验通过' if not self.s.errors else '数据校验提示：'+self.s.errors[0])
+  self.s.load()
+  meta=getattr(self,'meta',None)
+  if meta is not None:
+   meta.config(text=f'最新：{self.s.latest or "无"} · 快照 {len(self.s.dates)} · 已验证价格行 {len(self.s.rows)}')
+  self.status.config(text='数据校验通过' if not self.s.errors else '数据校验提示：'+self.s.errors[0])
  def search(self,record_history=True):
   q=clean(self.q.get())
   if not q:return []
