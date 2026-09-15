@@ -41,55 +41,82 @@ class SearchApp(phone_search.App):
             style.configure('Search.Treeview',font=FONT_BODY,rowheight=THEME['table_row_height'],background=THEME['table_bg'],fieldbackground=THEME['table_bg'],foreground=THEME['text'],borderwidth=0,relief='flat');style.configure('Search.Treeview.Heading',font=FONT_TITLE,background=THEME['table_header'],foreground=THEME['text'],padding=(THEME['space_sm'],3),relief='flat',borderwidth=0);style.configure('TCombobox',fieldbackground=THEME['surface'],background=THEME['surface'],foreground=THEME['text'],arrowcolor=THEME['accent'])
         except tk.TclError:pass
         top=ttk.Frame(root,style='Search.TFrame',padding=(THEME['space_lg'],THEME['space_md']));top.pack(fill='x',padx=THEME['space_lg'],pady=(THEME['space_lg'],THEME['space_sm']));self.search_bar=top
-        ttk.Label(top,text='⌕ 品牌 / 系列 / 型号 / 别名',style='Search.TLabel').pack(side='left');self.q=tk.StringVar();self.entry=tk.Entry(top,textvariable=self.q,font=FONT_SEARCH,width=30,bg=THEME['surface'],fg=THEME['text'],insertbackground=THEME['accent'],relief='flat',highlightthickness=1,highlightbackground=THEME['border'],highlightcolor=THEME['accent']);self.entry.pack(side='left',padx=(THEME['space_md'],THEME['space_xs']),ipady=5,fill='x',expand=True);self.entry.bind('<Return>',lambda _e:self.search());self.entry.bind('<FocusIn>',lambda _e:self.root.after_idle(self._refresh_suggestions));self.entry.bind('<Escape>',lambda _e:self._hide_suggestions())
+        ttk.Label(top,text='⌕ 品牌 / 系列 / 型号 / 别名',style='Search.TLabel').pack(side='left');self.q=tk.StringVar();self.entry=tk.Entry(top,textvariable=self.q,font=FONT_SEARCH,width=30,bg=THEME['surface'],fg=THEME['text'],insertbackground=THEME['accent'],relief='flat',highlightthickness=1,highlightbackground=THEME['border'],highlightcolor=THEME['accent']);self.entry.pack(side='left',padx=(THEME['space_md'],THEME['space_xs']),ipady=5,fill='x',expand=True);self.entry.bind('<Return>',lambda _e:self.search());self.entry.bind('<FocusIn>',lambda _e:self.root.after_idle(self._refresh_suggestions));self.entry.bind('<Escape>',lambda _e:self._hide_suggestions);root.bind('<Button-1>',self._dismiss_suggestions,add='+')
         self.cat=ttk.Combobox(top,textvariable=tk.StringVar(value='全部'),values=['全部','手机','平板','电脑','其它','手机配件'],state='readonly',width=8);self.cat.set('全部');self.cat.pack(side='left',padx=THEME['space_xs'])
         for text,command,style_name in (('×',self.clear_search,'TButton'),('查询',self.search,'Primary.TButton'),('刷新',self.load,'TButton'),('数据目录',self.open_dir,'TButton'),('来源结构',self.sources,'TButton')):ttk.Button(top,text=text,command=command,style=style_name).pack(side='left',padx=THEME['space_xs'])
         self.status=ttk.Label(top,text='',style='Status.TLabel');self.status.pack(side='right',padx=(THEME['space_md'],0))
         info=ttk.Frame(root,style='Info.TFrame',padding=(THEME['space_lg'],THEME['space_sm'],THEME['space_lg'],THEME['space_md']));info.pack(fill='x');self.target=ttk.Label(info,text='输入品牌、系列、型号开始查询',style='Title.TLabel');self.target.pack(side='left');self.meta=ttk.Label(info,text='',style='Meta.TLabel');self.meta.pack(side='right')
         actions=ttk.Frame(root,style='Action.TFrame',padding=(THEME['space_lg'],0,THEME['space_lg'],THEME['space_md']));actions.pack(fill='x');ttk.Button(actions,text='☆ 一键收藏',command=self.add_favorite,style='Favorite.TButton').pack(side='left',padx=THEME['space_xs']);ttk.Button(actions,text='展示收藏',command=self.show_favorites,style='Favorite.TButton').pack(side='left',padx=THEME['space_xs']);ttk.Button(actions,text='条件比价',command=self.condition_compare,style='Primary.TButton').pack(side='left',padx=THEME['space_xs']);ttk.Button(actions,text='历史对比',command=self.history_compare,style='Compare.TButton').pack(side='left',padx=THEME['space_xs']);ttk.Label(actions,text='搜索区只展示；收藏区负责选择与操作',style='Status.TLabel').pack(side='right')
         host=ttk.Frame(root,style='Results.TFrame',padding=1);host.pack(fill='both',expand=True,padx=THEME['space_lg'],pady=(0,THEME['space_lg']));self._results_canvas=tk.Canvas(host,highlightthickness=0,bd=0,background=THEME['surface'],relief='flat');scroll=ttk.Scrollbar(host,orient='vertical',command=self._results_canvas.yview);self._results_canvas.configure(yscrollcommand=scroll.set);self._results_canvas.grid(row=0,column=0,sticky='nsew');scroll.grid(row=0,column=1,sticky='ns');host.grid_rowconfigure(0,weight=1);host.grid_columnconfigure(0,weight=1);self._results_inner=tk.Frame(self._results_canvas,background=THEME['surface']);self._results_window=self._results_canvas.create_window((0,0),window=self._results_inner,anchor='nw');self._results_inner.bind('<Configure>',lambda _e:self._results_canvas.configure(scrollregion=self._results_canvas.bbox('all')));self._results_canvas.bind('<Configure>',self._resize_results_inner);self.empty_hint=ttk.Label(host,text='输入品牌、系列、型号开始查询',font=FONT_TITLE,foreground=THEME['text_muted'],background=THEME['surface']);self._result_views=[];self._result_trees=[];self._result_tree_map={};self._result_order=[];self._matrix_map={};self._display_columns=();self.tree=ttk.Treeview(host,columns=[x[0] for x in phone_search.COLS]+['favorite'],show='headings',selectmode='none');self.tree.grid_remove()
+        original_remove=self.fav.remove
+        def sync_remove(rows):
+            result=original_remove(rows)
+            current=list(getattr(self,'rows',[]) or [])
+            if current:
+                renderer=getattr(self,'render',None)
+                if callable(renderer):renderer(current)
+            return result
+        self.fav.remove=sync_remove
     def _resize_results_inner(self,event):
         try:self._results_canvas.itemconfigure(self._results_window,width=event.width)
         except tk.TclError:pass
     def _new_window(self,title,geometry=None,minsize=None):return _new_window(self,title,geometry,minsize)
+    def _patch_search_history_ui(self):return None
+    def _refresh_suggestions(self,keep_empty=False):
+        if not hasattr(self,'entry') or not hasattr(self,'h'):return
+        items=self.h.suggestions(phone_search.clean(self.q.get()),12)
+        if not items and not keep_empty:
+            self._hide_suggestions();return
+        try:
+            popup=getattr(self,'suggest_popup',None)
+            if popup is None or not popup.winfo_exists():
+                popup=tk.Toplevel(self.root);popup.overrideredirect(True);popup.transient(self.root);popup.configure(bg=THEME['border']);popup.attributes('-topmost',False);self.suggest_popup=popup
+            for child in popup.winfo_children():child.destroy()
+            outer=tk.Frame(popup,bg=THEME['border'],bd=0,highlightthickness=0);outer.pack(fill='both',expand=True)
+            header=tk.Frame(outer,bg=THEME['surface_alt'],height=38);header.pack(fill='x');header.pack_propagate(False)
+            tk.Label(header,text='搜索历史',anchor='w',bg=THEME['surface_alt'],fg=THEME['text_secondary'],font=FONT_LABEL,padx=THEME['space_md']).pack(side='left',fill='both',expand=True)
+            tk.Button(header,text='清空记录',command=self.clear_search_history,bg=THEME['surface_alt'],fg=THEME['button_text'],activebackground=THEME['button_hover'],activeforeground=THEME['button_text'],relief='flat',bd=0,font=FONT_BODY,padx=THEME['space_md'],cursor='hand2').pack(side='right',fill='y')
+            body=tk.Frame(outer,bg=THEME['surface'],bd=1,relief='solid',highlightthickness=0);body.pack(fill='both',expand=True)
+            if items:
+                for item in items:
+                    row=tk.Frame(body,bg=THEME['surface'],height=38);row.pack(fill='x');row.pack_propagate(False)
+                    tk.Label(row,text='◷',bg=THEME['surface'],fg=THEME['text_muted'],font=FONT_BODY,width=3).pack(side='left')
+                    label=tk.Label(row,text=item,anchor='w',bg=THEME['surface'],fg=THEME['text'],font=FONT_BODY,padx=THEME['space_xs'],cursor='hand2');label.pack(side='left',fill='both',expand=True)
+                    for widget in (row,label):
+                        widget.bind('<Button-1>',lambda _e,value=item:self._use_suggestion(value))
+                        widget.bind('<Enter>',lambda _e,w=row:w.configure(bg=THEME['selection']))
+                        widget.bind('<Leave>',lambda _e,w=row:w.configure(bg=THEME['surface']))
+            else:
+                tk.Label(body,text='暂无搜索历史',anchor='w',bg=THEME['surface'],fg=THEME['text_muted'],font=FONT_BODY,padx=THEME['space_md'],pady=THEME['space_md']).pack(fill='x')
+            popup.update_idletasks();width=max(self.entry.winfo_width(),460);height=38+2+(len(items)*38 if items else 44);x=self.entry.winfo_rootx();y=self.entry.winfo_rooty()+self.entry.winfo_height()+3;popup.geometry(f'{width}x{height}+{x}+{y}');popup.lift()
+        except tk.TclError:self._hide_suggestions()
+    def clear_search_history(self):
+        try:self.h.clear()
+        except Exception as exc:self.status.config(text=f'清空搜索历史失败：{exc}');return
+        self.status.config(text='搜索历史已清空');self.entry.focus_set();self._refresh_suggestions(True)
+    def _use_suggestion(self,value):self.q.set(value);self._hide_suggestions();self.search()
+    def _hide_suggestions(self):
+        popup=getattr(self,'suggest_popup',None)
+        if popup is not None:
+            try:popup.destroy()
+            except tk.TclError:pass
+        self.suggest_popup=None
+    def _dismiss_suggestions(self,event=None):
+        if event is None:return
+        popup=getattr(self,'suggest_popup',None)
+        if popup is None:return
+        try:
+            ex,ey=event.x_root,event.y_root;px,py=self.entry.winfo_rootx(),self.entry.winfo_rooty()
+            if px<=ex<=px+self.entry.winfo_width() and py<=ey<=py+self.entry.winfo_height():
+                self.root.after_idle(self._refresh_suggestions);return
+            x1,y1=popup.winfo_rootx(),popup.winfo_rooty();x2,y2=x1+popup.winfo_width(),y1+popup.winfo_height()
+            if x1<=ex<=x2 and y1<=ey<=y2:return
+        except tk.TclError:pass
+        self._hide_suggestions()
     def _result_double_click(self,iid):
         rows=list((self._matrix_map.get(iid) or {}).get('_rows') or [])
         if rows:self.detail_rows(rows)
         return 'break'
-    def _refresh_suggestions(self):
-        if not hasattr(self,'entry') or not hasattr(self,'h'):return
-        items=self.h.suggestions(phone_search.clean(self.q.get()),10);panel=getattr(self,'_history_panel',None)
-        if not items:self._hide_suggestions();return
-        try:
-            if panel is None or not panel.winfo_exists():panel=tk.Frame(self.search_bar,bg=THEME['surface'],bd=1,relief='solid',highlightthickness=1,highlightbackground=THEME['border']);self._history_panel=panel
-            for child in panel.winfo_children():child.destroy()
-            header=tk.Frame(panel,bg=THEME['surface_alt']);header.pack(fill='x');tk.Label(header,text='搜索历史',anchor='w',bg=THEME['surface_alt'],fg=THEME['text_secondary'],font=FONT_LABEL,padx=THEME['space_md'],pady=THEME['space_sm']).pack(side='left',fill='x',expand=True);ttk.Button(header,text='清除',style='TButton',command=self.clear_search_history).pack(side='right',padx=THEME['space_xs'],pady=THEME['space_xs'])
-            for item in items:
-                label=tk.Label(panel,text=item,anchor='w',bg=THEME['surface'],fg=THEME['text'],font=FONT_BODY,padx=THEME['space_md'],pady=THEME['space_sm'],cursor='hand2');label.pack(fill='x');label.bind('<Button-1>',lambda _e,value=item:self._use_suggestion(value));label.bind('<Enter>',lambda _e,w=label:w.configure(bg=THEME['selection']));label.bind('<Leave>',lambda _e,w=label:w.configure(bg=THEME['surface']))
-            panel.update_idletasks();panel.place(x=self.entry.winfo_x(),y=self.entry.winfo_y()+self.entry.winfo_height()+3,width=max(self.entry.winfo_width(),420));panel.lift()
-        except tk.TclError:self._hide_suggestions()
-    def _use_suggestion(self,value):self.q.set(value);self._hide_suggestions();self.search()
-    def clear_search_history(self):
-        try:self.h.clear()
-        except Exception as exc:self.status.config(text=f'清除搜索历史失败：{exc}');return
-        self._hide_suggestions();self.status.config(text='搜索历史已清除');self.entry.focus_set()
-    def _hide_suggestions(self):
-        panel=getattr(self,'_history_panel',None)
-        if panel is not None:
-            try:panel.place_forget();panel.destroy()
-            except tk.TclError:pass
-        self._history_panel=None
-    def _dismiss_suggestions(self,event=None):
-        if event is None:return
-        panel=getattr(self,'_history_panel',None)
-        if panel is None:return
-        try:
-            ex,ey=event.x_root,event.y_root;px,py=self.entry.winfo_rootx(),self.entry.winfo_rooty()
-            if px<=ex<=px+self.entry.winfo_width() and py<=ey<=py+self.entry.winfo_height():self.root.after_idle(self._refresh_suggestions);return
-            x,y=panel.winfo_rootx(),panel.winfo_rooty()
-            if x<=ex<=x+panel.winfo_width() and y<=ey<=y+panel.winfo_height():return
-        except tk.TclError:pass
-        self._hide_suggestions()
     def condition_compare(self):
         rows=list(self.rows or [])
         if not rows:return self.toast('请先查询品牌、系列或型号')
@@ -161,6 +188,13 @@ def clear_search(self):
     try:self.empty_hint.place(relx=.5,rely=.5,anchor='center')
     except tk.TclError:pass
     self.status.config(text='请输入品牌、系列、型号或别名');self.entry.focus_set()
-def add_favorite_all_search_results(self):return self.addToFavorites(list(self.rows or []))
+def add_favorite_all_search_results(self):
+    rows=list(self.rows or [])
+    result=self.addToFavorites(rows)
+    if rows:
+        renderer=getattr(self,'render',None)
+        if callable(renderer):renderer(rows)
+    return result
 install_app_actions(SearchApp);install_matrix_actions(SearchApp);SearchApp.render=_render_search_matrix;SearchApp.favorite_groups=favorite_groups;SearchApp.clear_search=clear_search;SearchApp.add_favorite=add_favorite_all_search_results;SearchApp._poll_async_results=_poll_async_results;SearchApp._apply_async_result=_apply_async_result;SearchApp._queue_async_result=_queue_async_result;SearchApp._debounced_search=_debounced_search
+SearchApp._refresh_suggestions=SearchApp._refresh_suggestions;app_actions._refresh_suggestions=SearchApp._refresh_suggestions;app_actions._hide_suggestions=SearchApp._hide_suggestions;app_actions._show_suggestions=lambda app:app._refresh_suggestions();app_actions._dismiss_suggestions=SearchApp._dismiss_suggestions
 if __name__=='__main__':root=tk.Tk();app=SearchApp(root);root.mainloop()
