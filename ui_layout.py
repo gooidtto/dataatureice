@@ -49,7 +49,7 @@ def _button_style_kwargs(accent=False):
 
 
 def _normalize_search_controls(app):
-    """Keep search input separate from one compact, independent category selector."""
+    """Build one compact search row: input, search, category label and selector."""
     shell = getattr(app, "search_bar", None)
     entry = getattr(app, "entry", None)
     old_search = getattr(app, "search_button", None)
@@ -75,7 +75,7 @@ def _normalize_search_controls(app):
             fill="x",
             expand=True,
             padx=(THEME["space_lg"], THEME["space_sm"]),
-            pady=(THEME["space_lg"], THEME["space_sm"]),
+            pady=10,
         )
         if utility is not None:
             pack_kwargs["before"] = utility
@@ -95,9 +95,8 @@ def _normalize_search_controls(app):
 
         controls_kwargs = dict(
             side="left",
-            fill="y",
             padx=(0, THEME["space_lg"]),
-            pady=(THEME["space_lg"], THEME["space_sm"]),
+            pady=10,
         )
         if utility is not None:
             controls_kwargs["before"] = utility
@@ -112,18 +111,17 @@ def _normalize_search_controls(app):
         search_button.configure(width=7)
         search_button.pack(side="left", padx=(0, THEME["space_md"]))
 
-        # Keep category as the only category control in the main toolbar.
         category_group = tk.Frame(
             controls,
             bg=THEME["window_bg"],
             bd=0,
             highlightthickness=0,
         )
-        category_group.pack(side="left", fill="y")
+        category_group.pack(side="left")
 
         tk.Label(
             category_group,
-            text="分类",
+            text="分类：",
             bg=THEME["window_bg"],
             fg=THEME["text_secondary"],
             font=FONT_BODY,
