@@ -138,6 +138,11 @@ class Store:
 class App:
  def __init__(self,root):
   self.root=root;root.title('数码回收价格秒查工具 · 图片事实库版');self.fit_main_window();root.resizable(True,True);self.base=os.path.dirname(sys.executable) if getattr(sys,'frozen',False) else os.path.dirname(os.path.abspath(__file__));self.d=os.path.join(self.base,'data');os.makedirs(self.d,exist_ok=True);self.s=Store(self.d);self.h=JsonList(os.path.join(self.d,'search_history.json'));self.fav=Favorites(os.path.join(self.d,'favorites.json'));self.rows=[];self.map={};self.suggest_popup=None;self.setup();self.ui();self.load();self._patch_search_history_ui()
+  try:
+   from ui_layout import apply as apply_layout
+   apply_layout(self)
+  except Exception:
+   pass
  def fit_main_window(self):
   self.root.update_idletasks();sw,sh=self.root.winfo_screenwidth(),self.root.winfo_screenheight();w=min(1720,max(1050,int(sw*.92)));h=min(930,max(620,int(sh*.88)));w=min(w,sw-24);h=min(h,sh-48);self.root.minsize(min(1250,w),min(720,h));self.root.geometry(f'{w}x{h}+{max(12,(sw-w)//2)}+{max(12,(sh-h)//2)}')
  def setup(self):
