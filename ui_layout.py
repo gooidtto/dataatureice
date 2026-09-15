@@ -48,15 +48,10 @@ def organize_search_toolbar(app):
         toolbar = title.master
         children = list(toolbar.winfo_children())
         left = title.master
-        # The title lives in the first child frame; the action buttons live in
-        # the other frame containing the seven result-action buttons.
         action_frame = next((c for c in children if len(_button_children(c)) >= 7), None)
         if action_frame is None:
             return
 
-        # Convert the toolbar to a compact two-level grid. The first row keeps
-        # context and the most important collection actions visible; the
-        # second row contains copy/export and comparison utilities.
         for child in children:
             try:
                 child.pack_forget()
@@ -80,27 +75,32 @@ def organize_search_toolbar(app):
         if len(buttons) < 7:
             return
 
-        # Functional order is preserved. Visual spacing creates three groups:
-        # data handling | favorites | comparison.
+        # Put the two collection actions at the front of the central action
+        # row. The remaining actions shift right once, keeping their relative
+        # order and callbacks unchanged:
+        # 一键收藏 | 展示收藏 | 复制全部 | 导出 CSV | 导出 Excel | 条件比价 | 历史对比
+        ordered = [buttons[3], buttons[4], buttons[0], buttons[1], buttons[2], buttons[5], buttons[6]]
+
+        # Visual groups now follow the new priority: favorites first, data
+        # operations second, comparison utilities last.
         groups = [
-            buttons[0:3],
-            buttons[3:5],
-            buttons[5:7],
+            ordered[0:2],
+            ordered[2:5],
+            ordered[5:7],
         ]
+        column = 0
         for group_index, group in enumerate(groups):
             for index, button in enumerate(group):
                 padx = (0 if index == 0 else 3, 3)
                 if group_index and index == 0:
                     padx = (THEME["space_md"], 3)
-                button.grid(row=0, column=sum(len(g) for g in groups[:group_index]) + index,
-                            padx=padx, pady=THEME["space_xs"], sticky="ew")
+                button.grid(row=0, column=column, padx=padx, pady=THEME["space_xs"], sticky="ew")
+                column += 1
                 try:
                     button.configure(pady=max(4, THEME["button_pad_y"] - 1))
                 except tk.TclError:
                     pass
 
-        # Keep the toolbar visually calm: one thin lower rhythm line rather
-        # than seven individually floating controls.
         toolbar.configure(background=THEME["surface"])
     except tk.TclError:
         return
