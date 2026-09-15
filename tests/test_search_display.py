@@ -1,4 +1,4 @@
-from search_display import build_display_columns, build_identity, normalize_search_results
+from search_display import build_display_columns, build_identity, model_family, normalize_search_results
 
 
 def legacy_detail_rows(payload): return list(payload.get("_rows", []))
@@ -37,6 +37,23 @@ def test_same_model_different_network_codes_stay_in_one_model_group():
     assert [b["_model_index"] for b in blocks]==[0,0]
     assert [b["_period_index"] for b in blocks]==[0,1]
     assert [s["_separator"] for s in result if s.get("_separator")] == ["period"]
+
+def test_oppo_a59_suffix_candidates_share_one_model_family_across_dates():
+    assert [model_family(v) for v in ["A59","A59s","A59m","A59t","A59 5G"]] == ["a59","a59","a59","a59","a59"]
+    rows=[
+        row(record_id="a59",brand="OPPO",series="A系列",model="A59",data_date="2026-08-31",condition="开机好屏",price="500"),
+        row(record_id="a59s",brand="OPPO",series="A系列",model="A59s",data_date="2026-08-25",condition="开机靓好",price="480"),
+        row(record_id="a59m",brand="OPPO",series="A系列",model="A59m",data_date="2026-08-20",condition="开机好碎",price="300"),
+    ]
+    result=normalize_search_results(rows);blocks=payloads(result)
+    assert [b["_model_index"] for b in blocks]==[0,0,0]
+    assert [b["_period_index"] for b in blocks]==[0,1,2]
+    assert [s["_separator"] for s in result if s.get("_separator")] == ["period","period"]
+    assert [b["identity"] for b in blocks] == ["手机 OPPO A系列 A59", "手机 OPPO A系列 A59s", "手机 OPPO A系列 A59m"]
+
+def test_unrelated_model_numbers_remain_separate_families():
+    rows=[row(record_id="a59",brand="OPPO",series="A系列",model="A59",condition="开机好屏",price="500"),row(record_id="a57",brand="OPPO",series="A系列",model="A57",condition="开机好屏",price="450")]
+    result=normalize_search_results(rows);assert [b["_model_index"] for b in payloads(result)] == [0,1];assert [s["_separator"] for s in result if s.get("_separator")] == ["model","model"]
 
 def test_build_identity_uses_only_available_fields():
     assert build_identity(row())=="手机 华为 荣耀畅玩系列 畅玩7x (3+32) BND-AL00";assert build_identity(row(series=""))=="手机 华为 畅玩7x (3+32) BND-AL00";assert build_identity(row(model_code=""))=="手机 华为 荣耀畅玩系列 畅玩7x (3+32)";assert build_identity(row(brand="",series=""))=="手机 畅玩7x (3+32) BND-AL00";assert build_identity(row(category="",brand="",series="",model="",model_code=""))==""
