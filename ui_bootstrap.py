@@ -146,9 +146,10 @@ def _render_search_matrix(self,result):
     for block in blocks:
         model_index,period_index=block['_model_index'],block['_period_index']
         if previous_model is not None and model_index!=previous_model:
-            for _ in range(2):spacer=tk.Frame(parent,height=THEME['model_gap'],background=THEME['surface'],highlightthickness=1,highlightbackground=THEME['border_soft']);spacer.pack(fill='x',pady=(THEME['space_xs'],THEME['space_xs']));self._result_views.append(spacer)
+            for _ in range(2):
+                spacer=tk.Frame(parent,height=THEME['model_gap'],background=THEME['model_separator'],highlightthickness=1,highlightbackground=THEME['model_separator_line']);spacer.pack(fill='x',pady=(THEME['space_xs'],THEME['space_xs']));self._result_views.append(spacer)
         elif period_index>0:
-            spacer=tk.Frame(parent,height=THEME['period_gap'],background=THEME['surface'],highlightthickness=1,highlightbackground=THEME['border_soft']);spacer.pack(fill='x',pady=(THEME['space_xs'],THEME['space_xs']));self._result_views.append(spacer)
+            spacer=tk.Frame(parent,height=THEME['period_gap'],background=THEME['period_separator'],highlightthickness=1,highlightbackground=THEME['separator_line']);spacer.pack(fill='x',pady=(THEME['space_xs'],THEME['space_xs']));self._result_views.append(spacer)
         columns=tuple(block.get('_columns') or ());self._display_columns=columns or self._display_columns;iid=f'result-{len(self._matrix_map)}';rows=list(block.get('_rows') or []);favorite_keys={self.fav.identity(r) for r in self.fav.dedupe()};favorite=any(self.fav.identity(r) in favorite_keys for r in rows);frame=tk.Frame(parent,bd=0,highlightthickness=0,background=THEME['surface']);tree=ttk.Treeview(frame,columns=(),show='headings',height=1,selectmode='none',style='Search.Treeview');_configure_result_tree(tree,columns,iid,block,favorite);tree.bind('<Double-1>',lambda _event,iid=iid:self._result_double_click(iid));tree.pack(fill='x',expand=True);frame.pack(fill='x',expand=True,pady=(0,THEME['result_gap']));self._result_views.append(frame);self._result_trees.append(tree);self._result_tree_map[iid]=tree;self._result_order.append(iid);self._matrix_map[iid]=block
         if rows:
             self.map[iid]=rows[0]
