@@ -41,9 +41,9 @@ def test_same_model_different_network_codes_stay_in_one_model_group():
 def test_oppo_a59_suffix_candidates_share_one_model_family_across_dates():
     assert [model_family(v) for v in ["A59","A59s","A59m","A59t","A59 5G"]] == ["a59","a59","a59","a59","a59"]
     rows=[
-        row(record_id="a59",brand="OPPO",series="A系列",model="A59",data_date="2026-08-31",condition="开机好屏",price="500"),
-        row(record_id="a59s",brand="OPPO",series="A系列",model="A59s",data_date="2026-08-25",condition="开机靓好",price="480"),
-        row(record_id="a59m",brand="OPPO",series="A系列",model="A59m",data_date="2026-08-20",condition="开机好碎",price="300"),
+        row(record_id="a59",brand="OPPO",series="A系列",model="A59",model_code="",data_date="2026-08-31",condition="开机好屏",price="500"),
+        row(record_id="a59s",brand="OPPO",series="A系列",model="A59s",model_code="",data_date="2026-08-25",condition="开机靓好",price="480"),
+        row(record_id="a59m",brand="OPPO",series="A系列",model="A59m",model_code="",data_date="2026-08-20",condition="开机好碎",price="300"),
     ]
     result=normalize_search_results(rows);blocks=payloads(result)
     assert [b["_model_index"] for b in blocks]==[0,0,0]
