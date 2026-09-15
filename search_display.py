@@ -23,7 +23,26 @@ class ResultBlock(TypedDict):
 def clean(value):return re.sub(r"\s+"," ",unicodedata.normalize("NFKC","" if value is None else str(value))).strip()
 def build_identity(row):return " ".join(clean(row.get(field,"")) for field in IDENTITY_FIELDS if clean(row.get(field,"")))
 def identity_key(row):return tuple(clean(row.get(field,"")) for field in IDENTITY_FIELDS)
-def model_group_key(row):return tuple(clean(row.get(field,"")) for field in MODEL_GROUP_FIELDS)
+
+def model_family(value):
+    """Return the search-family model key without collapsing unrelated model numbers.
+
+    Candidate variants such as OPPO A59, A59s, A59m and A59t belong to the same
+    real-world A59 family. Search result blocks should therefore use the shared
+    numeric model root for grouping, while the full model remains in identity.
+    A trailing configuration in parentheses and a simple 5G suffix are ignored
+    for grouping. Models that do not match this conservative pattern remain
+    unchanged.
+    """
+    text=clean(value)
+    if not text:return ""
+    base=clean(text.split("(",1)[0])
+    compact=re.sub(r"\s+","",base).casefold()
+    match=re.match(r"^(.+?\d+)(?:[a-z]+)?(?:5g)?$",compact)
+    return match.group(1) if match else compact
+
+def model_group_key(row):
+    return (clean(row.get("category","")),clean(row.get("brand","")),clean(row.get("series","")),model_family(row.get("model","")))
 def block_key(row):return identity_key(row)
 def sort_rows(rows):return list(rows or [])
 def _condition_key(value):return clean(value).replace(" ","")
@@ -33,12 +52,13 @@ def column_width(title,values=(),minimum=90,maximum=420):
     occupied=max([_char_width(title)]+[_char_width(v) for v in values]);return max(minimum,min(maximum,occupied*9+22))
 
 def group_model_dates(rows):
-    """Group by model/date while retaining distinct network-code detail blocks.
+    """Group by search-family model/date while retaining distinct detail blocks.
 
-    The real-world model group is category/brand/series/model. A different
-    network model code may create another detail block inside the same model
-    and date, but it never creates a model/date separator. Input order is
-    authoritative and is never sorted here.
+    The real-world model family is category/brand/series plus a conservative
+    normalized model root, so A59/A59s/A59m/A59t stay together across dates.
+    A different network model code may create another detail block inside the
+    same model and date, but it never creates a model/date separator. Input
+    order is authoritative and is never sorted here.
     """
     groups=[];current_model=None;current_date=None;current_code=None;current_rows=[];model_index=-1;period_index=0
     for row in list(rows or []):
