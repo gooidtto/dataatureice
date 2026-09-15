@@ -121,7 +121,12 @@ class SearchApp(phone_search.App):
         # Canonical horizontal search toolbar: input+clear, search button, category group.
         toolbar = tk.Frame(root, bg=THEME["window_bg"], bd=0, highlightthickness=0)
         toolbar.pack(fill="x", padx=THEME["space_lg"], pady=(THEME["space_lg"], THEME["space_sm"]))
-        toolbar.grid_columnconfigure(0, weight=1)
+        # The search field is flexible; the button and category group are fixed-width peers.
+        # This prevents the category group from collapsing and keeps the search field from
+        # consuming the space that belongs to the category control.
+        toolbar.grid_columnconfigure(0, weight=1, minsize=520)
+        toolbar.grid_columnconfigure(1, weight=0)
+        toolbar.grid_columnconfigure(2, weight=0)
         toolbar.grid_rowconfigure(0, minsize=44, weight=0)
 
         search_shell = tk.Frame(toolbar, bg=THEME["surface"], bd=1, relief="solid", highlightthickness=1, highlightbackground=THEME["border"], highlightcolor=THEME["accent"], height=44)
@@ -143,9 +148,11 @@ class SearchApp(phone_search.App):
         search_button.grid(row=0, column=1, sticky="ns", padx=(THEME["space_sm"], 0))
         self.search_button = search_button
 
-        category_group = tk.Frame(toolbar, bg=THEME["window_bg"], bd=0, highlightthickness=0, height=44)
-        category_group.grid(row=0, column=2, sticky="ns", padx=(THEME["space_lg"], 0))
-        category_group.pack_propagate(False)
+        # Explicit width is required because propagation is intentionally disabled to
+        # keep this control vertically aligned with the 44px search/search-button row.
+        category_group = tk.Frame(toolbar, bg=THEME["window_bg"], bd=0, highlightthickness=0, width=145, height=44)
+        category_group.grid(row=0, column=2, sticky="nsew", padx=(THEME["space_lg"], 0))
+        category_group.grid_propagate(False)
         tk.Label(category_group, text="分类：", bg=THEME["window_bg"], fg=THEME["text_secondary"], font=FONT_BODY).pack(side="left", fill="y", padx=(0, THEME["space_xs"]))
         category_var = tk.StringVar(value="全部")
         cat_style = "Search.Category.TCombobox"
