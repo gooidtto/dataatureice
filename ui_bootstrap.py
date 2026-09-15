@@ -71,8 +71,8 @@ class SearchApp(phone_search.App):
             style.configure("Title.TLabel", background=THEME["surface"], foreground=THEME["text"], font=FONT_TITLE)
             style.configure("Meta.TLabel", background=THEME["surface"], foreground=THEME["text_secondary"], font=FONT_BODY)
             style.configure("Status.TLabel", background=THEME["surface"], foreground=THEME["text_muted"], font=FONT_BODY)
-            base = dict(background=THEME["button_bg"], foreground=THEME["button_text"], font=FONT_BODY, padding=(THEME["button_pad_x"], THEME["button_pad_y"]), relief="solid", borderwidth=1)
-            style.configure("TButton", **base)
+            base = dict(background=THEME["button_bg"], font=FONT_BODY, padding=(THEME["button_pad_x"], THEME["button_pad_y"]), relief="solid", borderwidth=1)
+            style.configure("TButton", **base, foreground=THEME["button_text"])
             style.map("TButton", background=[("active", THEME["button_hover"]), ("pressed", THEME["button_pressed"]), ("disabled", THEME["button_disabled"])], foreground=[("disabled", THEME["text_muted"])])
             for name in ("Primary.TButton", "Favorite.TButton", "Compare.TButton"):
                 style.configure(name, **base, foreground=THEME["button_accent_text"])
