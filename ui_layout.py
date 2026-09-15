@@ -49,7 +49,7 @@ def _button_style_kwargs(accent=False):
 
 
 def _normalize_search_controls(app):
-    """Separate input from search/category controls without changing callbacks."""
+    """Separate input from search/category controls with matched control geometry."""
     shell = getattr(app, "search_bar", None)
     entry = getattr(app, "entry", None)
     old_search = getattr(app, "search_button", None)
@@ -68,8 +68,6 @@ def _normalize_search_controls(app):
         old_search.destroy()
         old_cat.destroy()
 
-        # Keep the search surface visually compact. Do not stretch controls to
-        # the shell height; native Tk buttons should keep their natural height.
         shell.pack_forget()
         shell.configure(height=44)
         shell.pack_propagate(False)
@@ -123,16 +121,38 @@ def _normalize_search_controls(app):
             font=FONT_BODY,
         ).pack(side="left", padx=THEME["space_xs"])
 
+        # Use a dedicated ttk style so the category selector has the same
+        # visual height/padding and approximate width as the adjacent buttons,
+        # without changing the application's global combobox style.
+        combo_style = "Search.Category.TCombobox"
+        style = ttk.Style(root)
+        style.configure(
+            combo_style,
+            font=FONT_BODY,
+            padding=(THEME["button_pad_x"], THEME["button_pad_y"]),
+            fieldbackground=THEME["button_bg"],
+            background=THEME["button_bg"],
+            foreground=THEME["button_text"],
+            arrowcolor=THEME["accent"],
+            borderwidth=1,
+            relief="solid",
+        )
+        style.map(
+            combo_style,
+            fieldbackground=[("readonly", THEME["button_bg"]), ("active", THEME["button_hover"])],
+            background=[("readonly", THEME["button_bg"]), ("active", THEME["button_hover"])],
+            foreground=[("readonly", THEME["button_text"])],
+        )
         category_var = tk.StringVar(value="全部")
         cat = ttk.Combobox(
             controls,
             textvariable=category_var,
             values=["全部", "手机", "平板", "电脑", "其它", "手机配件"],
             state="readonly",
-            width=10,
+            width=7,
+            style=combo_style,
         )
         cat.set("全部")
-        cat.configure(font=FONT_BODY)
         cat.pack(side="left", padx=(0, THEME["space_sm"]))
 
         manage = tk.Button(
@@ -169,13 +189,9 @@ def _manage_categories(app):
             highlightbackground=THEME["border_soft"],
         )
         body.pack(fill="both", expand=True, padx=THEME["space_lg"], pady=THEME["space_lg"])
-        tk.Label(
-            body,
-            text="分类筛选",
-            bg=THEME["surface"],
-            fg=THEME["text"],
-            font=FONT_TITLE,
-        ).pack(anchor="w", padx=THEME["space_lg"], pady=(THEME["space_lg"], 4))
+        tk.Label(body, text="分类筛选", bg=THEME["surface"], fg=THEME["text"], font=FONT_TITLE).pack(
+            anchor="w", padx=THEME["space_lg"], pady=(THEME["space_lg"], 4)
+        )
         tk.Label(
             body,
             text="选择分类后，独立的分类筛选控件会立即更新。",
