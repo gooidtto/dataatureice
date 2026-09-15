@@ -50,8 +50,7 @@ class SearchApp(phone_search.App):
         host=ttk.Frame(root,style='Results.TFrame',padding=1);host.pack(fill='both',expand=True,padx=THEME['space_lg'],pady=(0,THEME['space_lg']));self._results_canvas=tk.Canvas(host,highlightthickness=0,bd=0,background=THEME['surface'],relief='flat');scroll=ttk.Scrollbar(host,orient='vertical',command=self._results_canvas.yview);self._results_canvas.configure(yscrollcommand=scroll.set);self._results_canvas.grid(row=0,column=0,sticky='nsew');scroll.grid(row=0,column=1,sticky='ns');host.grid_rowconfigure(0,weight=1);host.grid_columnconfigure(0,weight=1);self._results_inner=tk.Frame(self._results_canvas,background=THEME['surface']);self._results_window=self._results_canvas.create_window((0,0),window=self._results_inner,anchor='nw');self._results_inner.bind('<Configure>',lambda _e:self._results_canvas.configure(scrollregion=self._results_canvas.bbox('all')));self._results_canvas.bind('<Configure>',self._resize_results_inner);self.empty_hint=ttk.Label(host,text='输入品牌、系列、型号开始查询',font=FONT_TITLE,foreground=THEME['text_muted'],background=THEME['surface']);self._result_views=[];self._result_trees=[];self._result_tree_map={};self._result_order=[];self._matrix_map={};self._display_columns=();self.tree=ttk.Treeview(host,columns=[x[0] for x in phone_search.COLS]+['favorite'],show='headings',selectmode='none');self.tree.grid_remove()
         original_remove=self.fav.remove
         def sync_remove(rows):
-            result=original_remove(rows)
-            current=list(getattr(self,'rows',[]) or [])
+            result=original_remove(rows);current=list(getattr(self,'rows',[]) or [])
             if current:
                 renderer=getattr(self,'render',None)
                 if callable(renderer):renderer(current)
@@ -62,34 +61,42 @@ class SearchApp(phone_search.App):
         except tk.TclError:pass
     def _new_window(self,title,geometry=None,minsize=None):return _new_window(self,title,geometry,minsize)
     def _patch_search_history_ui(self):return None
+    def _history_popup(self):
+        popup=getattr(self,'suggest_popup',None)
+        try:
+            if popup is not None and popup.winfo_exists():return popup
+        except tk.TclError:pass
+        try:
+            popup=tk.Toplevel(self.root);popup.overrideredirect(True);popup.transient(self.root);popup.configure(bg=THEME['border']);popup.attributes('-topmost',False);self.suggest_popup=popup
+            popup.bind('<Escape>',lambda _e:self._hide_suggestions());return popup
+        except tk.TclError:self.suggest_popup=None;return None
     def _refresh_suggestions(self,keep_empty=False):
         if not hasattr(self,'entry') or not hasattr(self,'h'):return
-        items=self.h.suggestions(phone_search.clean(self.q.get()),12)
-        if not items and not keep_empty:
-            self._hide_suggestions();return
         try:
-            popup=getattr(self,'suggest_popup',None)
-            if popup is None or not popup.winfo_exists():
-                popup=tk.Toplevel(self.root);popup.overrideredirect(True);popup.transient(self.root);popup.configure(bg=THEME['border']);popup.attributes('-topmost',False);self.suggest_popup=popup
+            query=phone_search.clean(self.q.get());items=list(self.h.suggestions(query,12));popup=self._history_popup()
+            if popup is None:return
             for child in popup.winfo_children():child.destroy()
             outer=tk.Frame(popup,bg=THEME['border'],bd=0,highlightthickness=0);outer.pack(fill='both',expand=True)
-            header=tk.Frame(outer,bg=THEME['surface_alt'],height=38);header.pack(fill='x');header.pack_propagate(False)
-            tk.Label(header,text='搜索历史',anchor='w',bg=THEME['surface_alt'],fg=THEME['text_secondary'],font=FONT_LABEL,padx=THEME['space_md']).pack(side='left',fill='both',expand=True)
-            tk.Button(header,text='清空记录',command=self.clear_search_history,bg=THEME['surface_alt'],fg=THEME['button_text'],activebackground=THEME['button_hover'],activeforeground=THEME['button_text'],relief='flat',bd=0,font=FONT_BODY,padx=THEME['space_md'],cursor='hand2').pack(side='right',fill='y')
+            header=tk.Frame(outer,bg=THEME['surface_alt'],height=42);header.pack(fill='x');header.pack_propagate(False)
+            title='搜索历史' if not query else '搜索历史 · 匹配'
+            tk.Label(header,text=title,anchor='w',bg=THEME['surface_alt'],fg=THEME['chitose_midori'],font=FONT_TITLE,padx=THEME['space_md']).pack(side='left',fill='both',expand=True)
+            tk.Label(header,text=f'{len(items)} 条',bg=THEME['surface_alt'],fg=THEME['text_muted'],font=FONT_BODY,padx=THEME['space_sm']).pack(side='left')
+            tk.Button(header,text='清空',command=self.clear_search_history,bg=THEME['surface_alt'],fg=THEME['konjo'],activebackground=THEME['button_hover'],activeforeground=THEME['konjo'],relief='flat',bd=0,font=FONT_BODY,padx=THEME['space_md'],cursor='hand2').pack(side='right',fill='y')
             body=tk.Frame(outer,bg=THEME['surface'],bd=1,relief='solid',highlightthickness=0);body.pack(fill='both',expand=True)
             if items:
                 for item in items:
-                    row=tk.Frame(body,bg=THEME['surface'],height=38);row.pack(fill='x');row.pack_propagate(False)
-                    tk.Label(row,text='◷',bg=THEME['surface'],fg=THEME['text_muted'],font=FONT_BODY,width=3).pack(side='left')
-                    label=tk.Label(row,text=item,anchor='w',bg=THEME['surface'],fg=THEME['text'],font=FONT_BODY,padx=THEME['space_xs'],cursor='hand2');label.pack(side='left',fill='both',expand=True)
-                    for widget in (row,label):
-                        widget.bind('<Button-1>',lambda _e,value=item:self._use_suggestion(value))
-                        widget.bind('<Enter>',lambda _e,w=row:w.configure(bg=THEME['selection']))
-                        widget.bind('<Leave>',lambda _e,w=row:w.configure(bg=THEME['surface']))
+                    row=tk.Frame(body,bg=THEME['surface'],height=40);row.pack(fill='x');row.pack_propagate(False);marker=tk.Label(row,text='◷',bg=THEME['surface'],fg=THEME['text_muted'],font=FONT_BODY,width=3);marker.pack(side='left');label=tk.Label(row,text=item,anchor='w',bg=THEME['surface'],fg=THEME['text'],font=FONT_BODY,padx=THEME['space_xs'],cursor='hand2');label.pack(side='left',fill='both',expand=True)
+                    for widget in (row,marker,label):
+                        widget.bind('<Button-1>',lambda _e,value=item:self._use_suggestion(value));widget.bind('<Enter>',lambda _e,w=row:self._history_hover(w,True));widget.bind('<Leave>',lambda _e,w=row:self._history_hover(w,False))
             else:
-                tk.Label(body,text='暂无搜索历史',anchor='w',bg=THEME['surface'],fg=THEME['text_muted'],font=FONT_BODY,padx=THEME['space_md'],pady=THEME['space_md']).pack(fill='x')
-            popup.update_idletasks();width=max(self.entry.winfo_width(),460);height=38+2+(len(items)*38 if items else 44);x=self.entry.winfo_rootx();y=self.entry.winfo_rooty()+self.entry.winfo_height()+3;popup.geometry(f'{width}x{height}+{x}+{y}');popup.lift()
+                msg='暂无匹配的历史记录' if query else '暂无搜索历史记录';tk.Label(body,text=msg,anchor='w',bg=THEME['surface'],fg=THEME['text_muted'],font=FONT_BODY,padx=THEME['space_md'],pady=THEME['space_md']).pack(fill='x')
+            popup.update_idletasks();width=max(self.entry.winfo_width(),460);height=42+2+(len(items)*40 if items else 46);x=self.entry.winfo_rootx();y=self.entry.winfo_rooty()+self.entry.winfo_height()+4;popup.geometry(f'{width}x{height}+{x}+{y}');popup.lift()
         except tk.TclError:self._hide_suggestions()
+    def _history_hover(self,row,active):
+        try:
+            bg=THEME['selection'] if active else THEME['surface'];row.configure(bg=bg)
+            for child in row.winfo_children():child.configure(bg=bg)
+        except tk.TclError:pass
     def clear_search_history(self):
         try:self.h.clear()
         except Exception as exc:self.status.config(text=f'清空搜索历史失败：{exc}');return
@@ -107,8 +114,7 @@ class SearchApp(phone_search.App):
         if popup is None:return
         try:
             ex,ey=event.x_root,event.y_root;px,py=self.entry.winfo_rootx(),self.entry.winfo_rooty()
-            if px<=ex<=px+self.entry.winfo_width() and py<=ey<=py+self.entry.winfo_height():
-                self.root.after_idle(self._refresh_suggestions);return
+            if px<=ex<=px+self.entry.winfo_width() and py<=ey<=py+self.entry.winfo_height():self.root.after_idle(self._refresh_suggestions);return
             x1,y1=popup.winfo_rootx(),popup.winfo_rooty();x2,y2=x1+popup.winfo_width(),y1+popup.winfo_height()
             if x1<=ex<=x2 and y1<=ey<=y2:return
         except tk.TclError:pass
@@ -173,11 +179,13 @@ def _apply_async_result(self,query_id,q,record_history,future):
     try:result=future.result()
     except Exception as exc:self.status.config(text=f'搜索失败：{type(exc).__name__}: {exc}');return
     self.rows=list(result or []);self.h.add(q) if record_history else None;self.render(self.rows);self.target.config(text=f'搜索结果：{q} · {len(self._matrix_map)} 个结果块');self.status.config(text=f'找到 {len(self._matrix_map)} 个结果块');self._refresh_suggestions()
+
 def _queue_async_result(query_id,q,record_history,future):_UI_QUEUE.put((query_id,q,record_history,future))
 def _debounced_search(self):
     try:self.root.after_cancel(self._search_after_id)
     except Exception:pass
     self._search_after_id=self.root.after(180,lambda:self.search(False))
+
 def clear_search(self):
     for attr in ('_search_after_id','_sync_search_after_id'):
         try:self.root.after_cancel(getattr(self,attr))
@@ -189,13 +197,13 @@ def clear_search(self):
     try:self.empty_hint.place(relx=.5,rely=.5,anchor='center')
     except tk.TclError:pass
     self.status.config(text='请输入品牌、系列、型号或别名');self.entry.focus_set()
+
 def add_favorite_all_search_results(self):
-    rows=list(self.rows or [])
-    result=self.addToFavorites(rows)
+    rows=list(self.rows or []);result=self.addToFavorites(rows)
     if rows:
         renderer=getattr(self,'render',None)
         if callable(renderer):renderer(rows)
     return result
+
 install_app_actions(SearchApp);install_matrix_actions(SearchApp);SearchApp.render=_render_search_matrix;SearchApp.favorite_groups=favorite_groups;SearchApp.clear_search=clear_search;SearchApp.add_favorite=add_favorite_all_search_results;SearchApp._poll_async_results=_poll_async_results;SearchApp._apply_async_result=_apply_async_result;SearchApp._queue_async_result=_queue_async_result;SearchApp._debounced_search=_debounced_search
-SearchApp._refresh_suggestions=SearchApp._refresh_suggestions;app_actions._refresh_suggestions=SearchApp._refresh_suggestions;app_actions._hide_suggestions=SearchApp._hide_suggestions;app_actions._show_suggestions=lambda app:app._refresh_suggestions();app_actions._dismiss_suggestions=SearchApp._dismiss_suggestions
 if __name__=='__main__':root=tk.Tk();app=SearchApp(root);root.mainloop()
