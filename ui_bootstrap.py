@@ -52,6 +52,40 @@ def _new_window(self, title, geometry=None, minsize=None):
     return w
 
 
+def _make_button(parent, text, command, *, primary=False, accent_text=False, width=None):
+    """One button geometry/color contract for the desktop search surface."""
+    if primary:
+        bg = THEME["accent"]
+        fg = "#ffffff"
+        active_bg = THEME["accent_hover"]
+        active_fg = "#ffffff"
+    else:
+        bg = THEME["button_bg"]
+        fg = THEME["button_accent_text"] if accent_text else THEME["button_text"]
+        active_bg = THEME["button_hover"]
+        active_fg = THEME["accent"]
+    options = dict(
+        text=text,
+        command=command,
+        bg=bg,
+        fg=fg,
+        activebackground=active_bg,
+        activeforeground=active_fg,
+        relief="solid",
+        bd=1,
+        highlightthickness=0,
+        font=FONT_BODY,
+        padx=THEME["button_pad_x"],
+        pady=THEME["button_pad_y"],
+        cursor="hand2",
+        height=1,
+        overrelief="flat",
+    )
+    if width is not None:
+        options["width"] = width
+    return tk.Button(parent, **options)
+
+
 class SearchApp(phone_search.App):
     _new_window = _new_window
 
@@ -102,10 +136,10 @@ class SearchApp(phone_search.App):
         self.entry.bind("<FocusIn>", lambda _e: self.root.after_idle(self._refresh_suggestions_ui))
         self.entry.bind("<Escape>", lambda _e: self._hide_suggestions_ui())
         self.entry.bind("<KeyRelease>", lambda _e: self.root.after_idle(self._reposition_history_popup))
-        self.clear_button = tk.Button(search_shell, text="×", command=self.clear_search, bg=THEME["surface"], fg=THEME["text_muted"], activebackground=THEME["surface_subtle"], activeforeground=THEME["text_secondary"], relief="flat", bd=0, font=("SimHei", 17), padx=7, cursor="hand2", height=1)
+        self.clear_button = tk.Button(search_shell, text="×", command=self.clear_search, bg=THEME["surface"], fg=THEME["text_muted"], activebackground=THEME["surface_subtle"], activeforeground=THEME["text_secondary"], relief="flat", bd=0, font=("SimHei", 17), padx=7, cursor="hand2", height=1, overrelief="flat")
         self.clear_button.pack(side="left", padx=(0, 4))
 
-        search_button = tk.Button(toolbar, text="搜索", command=self.search, bg=THEME["button_bg"], fg=THEME["button_text"], activebackground=THEME["button_hover"], activeforeground=THEME["accent"], relief="solid", bd=1, highlightthickness=0, font=FONT_BODY, padx=THEME["button_pad_x"], pady=THEME["button_pad_y"], cursor="hand2", width=7, height=1)
+        search_button = _make_button(toolbar, "搜索", self.search, primary=True, width=7)
         search_button.grid(row=0, column=1, sticky="ns", padx=(THEME["space_sm"], 0))
         self.search_button = search_button
 
@@ -140,17 +174,17 @@ class SearchApp(phone_search.App):
         self.result_count = tk.Label(left, text="0 条", bg=THEME["surface"], fg=THEME["text_muted"], font=FONT_BODY)
         self.result_count.pack(side="left")
         actions = tk.Frame(result_toolbar, bg=THEME["surface"])
-        actions.pack(side="right", padx=THEME["space_sm"], pady=THEME["space_xs"])
+        actions.pack(side="right", padx=THEME["space_sm"], pady=THEME["space_sm"])
         def action(text, command, accent=False):
-            return tk.Button(actions, text=text, command=command, bg=THEME["button_bg"], fg=THEME["button_accent_text"] if accent else THEME["button_text"], activebackground=THEME["accent_soft"] if accent else THEME["button_hover"], activeforeground=THEME["accent"], relief="solid", bd=1, highlightthickness=0, font=FONT_BODY, padx=THEME["button_pad_x"], pady=THEME["button_pad_y"], cursor="hand2")
+            return _make_button(actions, text, command, accent_text=accent)
         # Required order: favorites, data operations, comparison utilities.
-        action("☆ 一键收藏", self.add_favorite, True).pack(side="left", padx=2)
-        action("展示收藏", self.show_favorites, True).pack(side="left", padx=2)
-        action("复制全部", self.copy_all).pack(side="left", padx=2)
-        action("导出 CSV", self.export_csv).pack(side="left", padx=2)
-        action("导出 Excel", self.export_xlsx).pack(side="left", padx=2)
-        action("条件比价", self.condition_compare).pack(side="left", padx=2)
-        action("历史对比", self.history_compare).pack(side="left", padx=2)
+        action("☆ 一键收藏", self.add_favorite, True).pack(side="left", padx=4)
+        action("展示收藏", self.show_favorites, True).pack(side="left", padx=4)
+        action("复制全部", self.copy_all).pack(side="left", padx=4)
+        action("导出 CSV", self.export_csv).pack(side="left", padx=4)
+        action("导出 Excel", self.export_xlsx).pack(side="left", padx=4)
+        action("条件比价", self.condition_compare).pack(side="left", padx=4)
+        action("历史对比", self.history_compare).pack(side="left", padx=4)
 
         matrix_host = tk.Frame(host, bg=THEME["surface"], highlightthickness=1, highlightbackground=THEME["border_soft"], bd=0)
         matrix_host.pack(fill="both", expand=True, pady=(1, 0))
@@ -225,7 +259,7 @@ class SearchApp(phone_search.App):
             tk.Label(header,text="⌕",bg=THEME["surface"],fg=THEME["text"],font=("SimHei",16),padx=THEME["space_md"]).pack(side="left")
             tk.Label(header,text=mode,anchor="w",bg=THEME["surface"],fg=THEME["text"],font=FONT_TITLE).pack(side="left",fill="both",expand=True)
             tk.Label(header,text=f"{len(items)} 条",bg=THEME["surface"],fg=THEME["text_muted"],font=FONT_BODY,padx=THEME["space_sm"]).pack(side="left")
-            tk.Button(header,text="清空",command=self.clear_search_history,bg=THEME["surface"],fg=THEME["text_secondary"],activebackground=THEME["surface_subtle"],activeforeground=THEME["accent"],relief="flat",bd=0,font=FONT_BODY,padx=THEME["space_md"],cursor="hand2").pack(side="right",fill="y")
+            tk.Button(header,text="清空",command=self.clear_search_history,bg=THEME["surface"],fg=THEME["text_secondary"],activebackground=THEME["surface_subtle"],activeforeground=THEME["accent"],relief="flat",bd=0,font=FONT_BODY,padx=THEME["space_md"],cursor="hand2",overrelief="flat").pack(side="right",fill="y")
             body=tk.Frame(outer,bg=THEME["surface"],bd=0);body.pack(fill="both",expand=True)
             if items:
                 for item in items:
