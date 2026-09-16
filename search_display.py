@@ -27,68 +27,50 @@ def build_identity(row):return " ".join(clean(row.get(field,"")) for field in ID
 def identity_key(row):return tuple(clean(row.get(field,"")) for field in IDENTITY_FIELDS)
 
 def set_display_query(query):
-    """Set the active search query used only for final display-group priority."""
     global _ACTIVE_QUERY
     _ACTIVE_QUERY=clean(query)
 
 def model_family(value):
-    """Return a conservative model-family key for known suffix variants."""
     text=clean(value)
     if not text:return ""
     base=clean(text.split("(",1)[0])
     compact=re.sub(r"\s+","",base).casefold()
-    if compact.endswith("5g"):
-        compact=compact[:-2]
+    if compact.endswith("5g"):compact=compact[:-2]
     match=re.match(r"^(.+?\d+)(?:[smt])$",compact)
     if match:return match.group(1)
     match=re.match(r"^(.+?\d+)$",compact)
     return match.group(1) if match else compact
 
-def model_group_key(row):
-    """Canonical real-world group key; series spelling must not split one model family."""
-    return (clean(row.get("category","")),clean(row.get("brand","")),model_family(row.get("model","")))
+def model_group_key(row):return (clean(row.get("category","")),clean(row.get("brand","")),model_family(row.get("model","")))
 def block_key(row):return identity_key(row)
 
 def _date_key(value):
-    text=clean(value)
-    digits=re.sub(r"[^0-9]","",text)
+    digits=re.sub(r"[^0-9]","",clean(value))
     try:return int(digits or "0")
     except ValueError:return 0
 
 def _model_group_sort_key(group_key,rows):
     representative=rows[0] if rows else {}
-    return tuple(clean(representative.get(field,"" )).casefold() for field in ("category","brand")) + (group_key[-1].casefold(), clean(representative.get("series","")).casefold())
+    return tuple(clean(representative.get(field,"")).casefold() for field in ("category","brand"))+(group_key[-1].casefold(),clean(representative.get("series","")).casefold())
 
-def _query_model_key(query):
-    return normalize(query)
+def _query_model_key(query):return normalize(query)
 
 def _group_exact_match(group_rows,query_key):
     if not query_key:return False
     for row in group_rows:
-        brand=normalize(row.get("brand","")); model=normalize(row.get("model","")); series=normalize(row.get("series",""))
+        brand=normalize(row.get("brand",""));model=normalize(row.get("model",""));series=normalize(row.get("series",""))
         if brand and normalize(f"{row.get('brand','')} {row.get('model','')}")==query_key:return True
         if model==query_key or series==query_key:return True
     return False
 
 def canonical_display_sort(rows):
-    """Final display order shared by search and favorites.
-
-    Matching/relevance is computed by SearchService. This function only decides the
-    final display layout: exact query model group first, then related model groups;
-    dates are descending inside each group. Favorites use the same function and the
-    same active query context, so their visible grouping remains identical.
-    """
     grouped={}
     for position,row in enumerate(list(rows or [])):
-        key_=model_group_key(row)
-        grouped.setdefault(key_,[]).append((position,row))
-
+        grouped.setdefault(model_group_key(row),[]).append((position,row))
     query_key=_query_model_key(_ACTIVE_QUERY)
     def group_sort(item):
-        group_key,items=item
-        group_rows=[r for _,r in items]
-        exact_rank=0 if _group_exact_match(group_rows,query_key) else 1
-        return (exact_rank,_model_group_sort_key(group_key,group_rows))
+        group_key,items=item;group_rows=[r for _,r in items]
+        return (0 if _group_exact_match(group_rows,query_key) else 1,_model_group_sort_key(group_key,group_rows))
     ordered_groups=sorted(grouped.items(),key=group_sort)
     result=[]
     for _,items in ordered_groups:
@@ -104,40 +86,26 @@ def column_width(title,values=(),minimum=90,maximum=420):
     occupied=max([_char_width(title)]+[_char_width(v) for v in values]);return max(minimum,min(maximum,occupied*9+22))
 
 def group_model_dates(rows):
-    """Build contiguous model/date blocks from rows already in canonical display order."""
     ordered=canonical_display_sort(rows)
-    model_groups={}
-    model_order=[]
+    model_groups={};model_order=[]
     for row in ordered:
-        model=model_group_key(row)
-        if model not in model_groups:
-            model_groups[model]=[]
-            model_order.append(model)
-        model_groups[model].append(row)
-
+        key=model_group_key(row)
+        if key not in model_groups:model_groups[key]=[];model_order.append(key)
+        model_groups[key].append(row)
     groups=[]
     for model_index,model in enumerate(model_order):
-        current_date=None
-        current_code=None
-        current_rows=[]
-        period_index=-1
+        periods={};period_order=[]
         for row in model_groups[model]:
-            date=clean(row.get("data_date",""))
-            code=clean(row.get("model_code",""))
-            if current_rows and (date!=current_date or code!=current_code):
-                groups.append((block_key(current_rows[0]),current_date,current_rows,model_index,period_index))
-                current_rows=[]
-            if not current_rows:
-                period_index+=1
-                current_date=date
-                current_code=code
-            current_rows.append(row)
-        if current_rows:
-            groups.append((block_key(current_rows[0]),current_date,current_rows,model_index,period_index))
+            period=(clean(row.get("data_date","")),clean(row.get("model_code","")))
+            if period not in periods:periods[period]=[];period_order.append(period)
+            periods[period].append(row)
+        period_order.sort(key=lambda item:(-_date_key(item[0]),item[1].casefold()))
+        for period_index,period in enumerate(period_order):
+            period_rows=periods[period]
+            groups.append((block_key(period_rows[0]),period[0],period_rows,model_index,period_index))
     return groups
 
 def build_display_columns(rows):
-    """Build quote columns in canonical real-world value order."""
     rows=list(rows or []);reps={}
     for row in rows:
         condition=clean(row.get("condition",""));ck=_condition_key(condition)
@@ -155,13 +123,13 @@ def build_display_columns(rows):
 def build_result_columns(rows):return build_display_columns(rows)
 
 def _build_block(model_index,period_index,block_rows):
-    block_rows=list(block_rows or []);columns=build_result_columns(block_rows);condition_values={};source_images=[]
+    block_rows=list(block_rows or []);first=block_rows[0] if block_rows else {};columns=build_result_columns(block_rows);condition_values={};source_images=[]
     for row in block_rows:
         condition=clean(row.get("condition",""));price=clean(row.get("price",""));ck=_condition_key(condition)
         if ck and price:condition_values.setdefault(ck,[]).append(price)
         image=clean(row.get("source_image",""))
         if image and image not in source_images:source_images.append(image)
-    first=block_rows[0] if block_rows else {};out={"data_date":clean(first.get("data_date","")),"identity":build_identity(first),"source_image":" / ".join(source_images),"_rows":block_rows,"_model_key":model_group_key(first) if first else (),"_period_key":clean(first.get("data_date","")),"_model_index":model_index,"_period_index":period_index,"_columns":columns}
+    out={"data_date":clean(first.get("data_date","")),"identity":build_identity(first),"source_image":" / ".join(source_images),"_rows":block_rows,"_model_key":model_group_key(first) if first else (),"_period_key":clean(first.get("data_date","")),"_model_index":model_index,"_period_index":period_index,"_columns":columns}
     for field,title,_ in columns[2:-1]:out[field]=" / ".join(condition_values.get(_condition_key(title),[]))
     return out
 
@@ -174,8 +142,7 @@ def build_result_blocks(rows):
 def normalize_search_results(rows):
     blocks=build_result_blocks(rows);result=[]
     for index,block in enumerate(blocks):
-        if index and block["_model_index"]!=blocks[index-1]["_model_index"]:
-            result.append({"_separator":"model","_model_index":blocks[index-1]["_model_index"]})
+        if index and block["_model_index"]!=blocks[index-1]["_model_index"]:result.append({"_separator":"model","_model_index":blocks[index-1]["_model_index"]})
         result.append(block)
     return result
 
