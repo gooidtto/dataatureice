@@ -10,7 +10,7 @@ def test_window_helper_signatures_are_ast_stable():
 def test_search_display_contract_is_block_local():
     from search_display import normalize_search_results
     rows=[{"data_date":"2026-08-31","category":"手机","brand":"OPPO","series":"A","model":"A59","model_code":"","condition":"开机屏好","price":"70","source_image":"oppo.jpg"},{"data_date":"2026-08-31","category":"手机","brand":"OPPO","series":"A","model":"A59","model_code":"","condition":"不开机","price":"60","source_image":"oppo.jpg"},{"data_date":"2026-08-25","category":"手机","brand":"OPPO","series":"A","model":"A59","model_code":"","condition":"开机屏好","price":"65","source_image":"oppo.jpg"}]
-    blocks=[item for item in normalize_search_results(rows) if not item.get("_separator")];assert len(blocks)==2;assert all(item["_rows"] for item in blocks);assert all(item["_columns"] for item in blocks);assert [b["_period_key"] for b in blocks]==["2026-08-31","2026-08-25"];assert set(item["_model_key"] for item in blocks)=={("手机","OPPO","A","A59","")}
+    blocks=[item for item in normalize_search_results(rows) if not item.get("_separator")];assert len(blocks)==2;assert all(item["_rows"] for item in blocks);assert all(item["_columns"] for item in blocks);assert [b["_period_key"] for b in blocks]==["2026-08-31","2026-08-25"];assert set(item["_model_key"] for item in blocks)=={("手机","OPPO","a59")}
 
 def test_favorite_groups_contract_matches_show_favorites_consumer():
     import ui_bootstrap
@@ -19,4 +19,4 @@ def test_favorite_groups_contract_matches_show_favorites_consumer():
             return [{"data_date":"2026-08-31","category":"手机","brand":"OPPO","series":"A","model":"A59","model_code":"","condition":"开机屏好"},{"data_date":"2026-08-25","category":"手机","brand":"OPPO","series":"A","model":"A59","model_code":"","condition":"不开机"}]
     class FakeApp: fav=FakeFavorites()
     groups=ui_bootstrap.favorite_groups(FakeApp());assert len(groups)==2
-    assert [(key[3],date,len(blocks)) for key,date,blocks,_,_ in groups]==[("A59","2026-08-31",1),("A59","2026-08-25",1)]
+    assert [(key[2],date,len(blocks)) for key,date,blocks,_,_ in groups]==[("a59","2026-08-31",1),("a59","2026-08-25",1)]
