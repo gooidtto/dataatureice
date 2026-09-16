@@ -8,6 +8,7 @@ FIXED_COLUMNS=(("data_date","数据日期"),("identity","手机/品牌/系列/�
 IDENTITY_FIELDS=("category","brand","series","model","model_code")
 MODEL_GROUP_FIELDS=("category","brand","model")
 SOURCE_COLUMN=("source_image","来源图片")
+_ACTIVE_QUERY=""
 
 class ResultBlock(TypedDict):
     data_date:str
@@ -21,18 +22,26 @@ class ResultBlock(TypedDict):
     _columns:tuple
 
 def clean(value):return re.sub(r"\s+"," ",unicodedata.normalize("NFKC","" if value is None else str(value))).strip()
+def normalize(value):return re.sub(r"[\s_\-—–·•/\\（）()【】\[\],，.;；:：|、]+","",clean(value).casefold())
 def build_identity(row):return " ".join(clean(row.get(field,"")) for field in IDENTITY_FIELDS if clean(row.get(field,"")))
 def identity_key(row):return tuple(clean(row.get(field,"")) for field in IDENTITY_FIELDS)
 
+def set_display_query(query):
+    """Set the active search query used only for final display-group priority."""
+    global _ACTIVE_QUERY
+    _ACTIVE_QUERY=clean(query)
+
 def model_family(value):
-    """Return a conservative model-family key for suffix variants such as A59s/A59t/A59 5G."""
+    """Return a conservative model-family key for known suffix variants."""
     text=clean(value)
     if not text:return ""
     base=clean(text.split("(",1)[0])
     compact=re.sub(r"\s+","",base).casefold()
     if compact.endswith("5g"):
         compact=compact[:-2]
-    match=re.match(r"^(.+?\d+)(?:[a-z]{1,2})?$",compact)
+    match=re.match(r"^(.+?\d+)(?:[smt])$",compact)
+    if match:return match.group(1)
+    match=re.match(r"^(.+?\d+)$",compact)
     return match.group(1) if match else compact
 
 def model_group_key(row):
@@ -50,19 +59,37 @@ def _model_group_sort_key(group_key,rows):
     representative=rows[0] if rows else {}
     return tuple(clean(representative.get(field,"" )).casefold() for field in ("category","brand")) + (group_key[-1].casefold(), clean(representative.get("series","")).casefold())
 
+def _query_model_key(query):
+    return normalize(query)
+
+def _group_exact_match(group_rows,query_key):
+    if not query_key:return False
+    for row in group_rows:
+        brand=normalize(row.get("brand","")); model=normalize(row.get("model","")); series=normalize(row.get("series",""))
+        if brand and normalize(f"{row.get('brand','')} {row.get('model','')}")==query_key:return True
+        if model==query_key or series==query_key:return True
+    return False
+
 def canonical_display_sort(rows):
     """Final display order shared by search and favorites.
 
-    Search relevance is deliberately ignored here. First group all matching rows by
-    canonical category/brand/model-family, then sort groups deterministically. Inside
-    each group, dates are descending and model-code/detail blocks stay together.
+    Matching/relevance is computed by SearchService. This function only decides the
+    final display layout: exact query model group first, then related model groups;
+    dates are descending inside each group. Favorites use the same function and the
+    same active query context, so their visible grouping remains identical.
     """
     grouped={}
     for position,row in enumerate(list(rows or [])):
         key_=model_group_key(row)
         grouped.setdefault(key_,[]).append((position,row))
 
-    ordered_groups=sorted(grouped.items(),key=lambda item:_model_group_sort_key(item[0],[r for _,r in item[1]]))
+    query_key=_query_model_key(_ACTIVE_QUERY)
+    def group_sort(item):
+        group_key,items=item
+        group_rows=[r for _,r in items]
+        exact_rank=0 if _group_exact_match(group_rows,query_key) else 1
+        return (exact_rank,_model_group_sort_key(group_key,group_rows))
+    ordered_groups=sorted(grouped.items(),key=group_sort)
     result=[]
     for _,items in ordered_groups:
         items.sort(key=lambda pair:(-_date_key(pair[1].get("data_date","")),clean(pair[1].get("model_code","")).casefold(),tuple(-x for x in value_rank(pair[1])),clean(pair[1].get("condition","")).casefold(),pair[0]))
