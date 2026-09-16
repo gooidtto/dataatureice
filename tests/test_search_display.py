@@ -27,6 +27,13 @@ def test_different_periods_preserve_supplied_order_with_one_blank_separator():
 def test_different_models_get_one_blank_separator():
     rows=[row(record_id="a",model="畅玩8x (3+32)",model_code="BNK-AL00",condition="开机靓好",price="900"),row(record_id="b",model="畅玩7x (3+32)",model_code="BND-AL00",condition="开机靓好",price="700")];result=normalize_search_results(rows);assert sum(1 for r in result if r.get("_separator")=="model")==1;assert [r["_model_index"] for r in payloads(result)]==[0,1]
 
+def test_interleaved_rows_are_reassembled_into_contiguous_model_groups():
+    rows=[row(record_id="a1",brand="OPPO",series="A系列",model="A59",data_date="2026-08-31",condition="开机好屏",price="500"),row(record_id="b1",brand="华为",series="荣耀系列",model="畅玩7x",data_date="2026-08-31",condition="开机好屏",price="450"),row(record_id="a2",brand="OPPO",series="A系列",model="A59s",data_date="2026-08-25",condition="开机靓好",price="480")]
+    result=normalize_search_results(rows);blocks=payloads(result)
+    assert [b["_model_index"] for b in blocks]==[0,0,1]
+    assert [b["data_date"] for b in blocks]==["2026-08-31","2026-08-25","2026-08-31"]
+    assert [s["_separator"] for s in result if s.get("_separator")] == ["model"]
+
 def test_same_model_different_periods_have_distinct_period_indexes():
     rows=[row(record_id="a",data_date="2026-08-31",condition="开机靓好",price="700"),row(record_id="b",data_date="2026-08-25",condition="开机靓好",price="800")];result=payloads(normalize_search_results(rows));assert [(r["data_date"],r["_model_index"],r["_period_index"]) for r in result]==[("2026-08-31",0,0),("2026-08-25",0,1)]
 
