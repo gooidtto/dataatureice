@@ -19,4 +19,4 @@ def test_favorite_groups_contract_matches_show_favorites_consumer():
             return [{"data_date":"2026-08-31","category":"手机","brand":"OPPO","series":"A","model":"A59","model_code":"","condition":"开机屏好"},{"data_date":"2026-08-25","category":"手机","brand":"OPPO","series":"A","model":"A59","model_code":"","condition":"不开机"}]
     class FakeApp: fav=FakeFavorites()
     groups=ui_bootstrap.favorite_groups(FakeApp());assert len(groups)==2
-    assert [(key[2],date,len(blocks)) for key,date,blocks,_,_ in groups]==[("a59","2026-08-31",1),("a59","2026-08-25",1)]
+    assert [(key[3],date,len(blocks)) for key,date,blocks,_,_ in groups]==[("A59","2026-08-31",1),("A59","2026-08-25",1)]
