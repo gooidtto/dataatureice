@@ -21,9 +21,9 @@ THEME = {
     "accent": "#2878c8",
     "accent_hover": "#1f66ad",
     "accent_soft": "#e2effb",
-    "selection": "#dcecff",
-    "selection_strong": "#c8e1fa",
-    "selection_text": "#102235",
+    "selection": "#e5f0e8",
+    "selection_strong": "#d5e8dc",
+    "selection_text": "#18201b",
 
     "success": "#28734b",
     "warning": "#9a6818",
@@ -72,6 +72,7 @@ THEME = {
 
 FONT_FAMILY = "SimHei"
 FONT_BODY = (FONT_FAMILY, 10)
+FONT_TABLE_DATA = (FONT_FAMILY, 10, "bold")
 FONT_LABEL = (FONT_FAMILY, 11)
 FONT_TITLE = (FONT_FAMILY, 11, "bold")
 FONT_SEARCH = (FONT_FAMILY, 14)
