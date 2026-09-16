@@ -9,7 +9,7 @@ import phone_search
 from app_actions import install as install_app_actions
 from matrix_ui_actions import install as install_matrix_actions
 from search_display import build_result_blocks, group_model_dates
-from ui_theme import THEME, FONT_BODY, FONT_LABEL, FONT_TITLE, FONT_SEARCH
+from ui_theme import THEME, FONT_BODY, FONT_TABLE_DATA, FONT_LABEL, FONT_TITLE, FONT_SEARCH
 
 _UI_QUEUE = __import__("queue").Queue()
 
@@ -111,9 +111,9 @@ class SearchApp(phone_search.App):
             for name in ("Primary.TButton", "Favorite.TButton", "Compare.TButton"):
                 style.configure(name, **base, foreground=THEME["button_accent_text"])
                 style.map(name, background=[("active", THEME["accent_soft"]), ("pressed", THEME["button_pressed"]), ("disabled", THEME["button_disabled"])])
-            style.configure("Search.Treeview", font=FONT_BODY, rowheight=THEME["table_row_height"], background=THEME["table_bg"], fieldbackground=THEME["table_bg"], foreground=THEME["text"], borderwidth=0, relief="flat")
+            style.configure("Search.Treeview", font=FONT_TABLE_DATA, rowheight=THEME["table_row_height"], background=THEME["table_bg"], fieldbackground=THEME["table_bg"], foreground=THEME["text"], borderwidth=0, relief="flat")
             style.configure("Search.Treeview.Heading", font=FONT_TITLE, background=THEME["table_header"], foreground=THEME["text"], padding=(THEME["space_sm"], 5), relief="flat", borderwidth=0)
-            style.map("Search.Treeview", background=[("selected", THEME["selection"])], foreground=[("selected", THEME["text"])])
+            style.map("Search.Treeview", background=[("selected", THEME["selection"])], foreground=[("selected", THEME["selection_text"]), ("!disabled", THEME["text"])])
             style.configure("TCombobox", fieldbackground=THEME["surface"], background=THEME["surface"], foreground=THEME["text"], arrowcolor=THEME["accent"])
         except tk.TclError:
             pass
@@ -121,9 +121,6 @@ class SearchApp(phone_search.App):
         # Canonical horizontal search toolbar: input+clear, search button, category group.
         toolbar = tk.Frame(root, bg=THEME["window_bg"], bd=0, highlightthickness=0)
         toolbar.pack(fill="x", padx=THEME["space_lg"], pady=(THEME["space_lg"], THEME["space_sm"]))
-        # The search field is flexible; the button and category group are fixed-width peers.
-        # This prevents the category group from collapsing and keeps the search field from
-        # consuming the space that belongs to the category control.
         toolbar.grid_columnconfigure(0, weight=1, minsize=520)
         toolbar.grid_columnconfigure(1, weight=0)
         toolbar.grid_columnconfigure(2, weight=0)
@@ -148,8 +145,6 @@ class SearchApp(phone_search.App):
         search_button.grid(row=0, column=1, sticky="ns", padx=(THEME["space_sm"], 0))
         self.search_button = search_button
 
-        # Explicit width is required because propagation is intentionally disabled to
-        # keep this control vertically aligned with the 44px search/search-button row.
         category_group = tk.Frame(toolbar, bg=THEME["window_bg"], bd=0, highlightthickness=0, width=145, height=44)
         category_group.grid(row=0, column=2, sticky="nsew", padx=(THEME["space_lg"], 0))
         category_group.grid_propagate(False)
@@ -184,7 +179,6 @@ class SearchApp(phone_search.App):
         actions.pack(side="right", padx=THEME["space_sm"], pady=THEME["space_sm"])
         def action(text, command, accent=False):
             return _make_button(actions, text, command, accent_text=accent)
-        # Required order: favorites, data operations, comparison utilities.
         action("☆ 一键收藏", self.add_favorite, True).pack(side="left", padx=4)
         action("展示收藏", self.show_favorites, True).pack(side="left", padx=4)
         action("复制全部", self.copy_all).pack(side="left", padx=4)
@@ -346,7 +340,7 @@ def _configure_result_tree(tree,columns,iid,display,favorite):
     for field,title,width in columns:
         anchor="center" if field=="data_date" or field.startswith("condition_") else "w"; tree.heading(field,text=title); tree.column(field,width=width,minwidth=max(60,min(width,90)),anchor=anchor,stretch=True)
     tree.heading("favorite",text="收藏"); tree.column("favorite",width=110,minwidth=90,anchor="center",stretch=True)
-    values=[display.get(field,"") for field,_,_ in columns]; values.append("★ 已收藏" if favorite else "☆ 收藏"); tag=f"m{display['_model_index']}d{display['_period_index']}"; tree.insert("","end",iid=iid,values=values,tags=(tag,)); tree.tag_configure(tag,background=THEME["model_bands"][display["_model_index"]%len(THEME["model_bands"])])
+    values=[display.get(field,"") for field,_,_ in columns]; values.append("★ 已收藏" if favorite else "☆ 收藏"); tag=f"m{display['_model_index']}d{display['_period_index']}"; tree.insert("","end",iid=iid,values=values,tags=(tag,)); tree.tag_configure(tag,background=THEME["model_bands"][display["_model_index"]%len(THEME["model_bands"])],foreground=THEME["text"])
 
 
 def _render_search_matrix(self,result):
@@ -354,12 +348,9 @@ def _render_search_matrix(self,result):
     if parent is None:self.rows=list(result or []);return
     previous_model=None
     for block in blocks:
-        model_index=block["_model_index"]; period_index=block["_period_index"]
+        model_index=block["_model_index"]
         if previous_model is not None and model_index!=previous_model:
-            for _ in range(2):
-                spacer=tk.Frame(parent,height=THEME["model_gap"],background=THEME["model_separator"],highlightthickness=1,highlightbackground=THEME["model_separator_line"]); spacer.pack(fill="x",pady=(THEME["space_xs"],THEME["space_xs"])); self._result_views.append(spacer)
-        elif period_index>0:
-            spacer=tk.Frame(parent,height=THEME["period_gap"],background=THEME["period_separator"],highlightthickness=1,highlightbackground=THEME["separator_line"]); spacer.pack(fill="x",pady=(THEME["space_xs"],THEME["space_xs"])); self._result_views.append(spacer)
+            spacer=tk.Frame(parent,height=THEME["model_gap"],background=THEME["model_separator"],highlightthickness=1,highlightbackground=THEME["model_separator_line"]); spacer.pack(fill="x",pady=(THEME["space_xs"],THEME["space_xs"])); self._result_views.append(spacer)
         columns=tuple(block.get("_columns") or ()); self._display_columns=columns or self._display_columns; iid=f"result-{len(self._matrix_map)}"; rows=list(block.get("_rows") or []); favorite_keys={self.fav.identity(r) for r in self.fav.dedupe()}; favorite=any(self.fav.identity(r) in favorite_keys for r in rows)
         frame=tk.Frame(parent,bd=0,highlightthickness=0,background=THEME["surface"]); tree=ttk.Treeview(frame,columns=(),show="headings",height=1,selectmode="none",style="Search.Treeview"); _configure_result_tree(tree,columns,iid,block,favorite); tree.bind("<Double-1>",lambda _event,value=iid:self._result_double_click(value))
         def on_click(event,value=iid):
