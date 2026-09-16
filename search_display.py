@@ -25,12 +25,7 @@ def build_identity(row):return " ".join(clean(row.get(field,"")) for field in ID
 def identity_key(row):return tuple(clean(row.get(field,"")) for field in IDENTITY_FIELDS)
 
 def model_family(value):
-    """Return a conservative real-world model-family key.
-
-    Candidate variants such as OPPO A59, A59s, A59m, A59t and A59 5G share
-    the A59 family key for grouping. The displayed model text is never changed.
-    Models that do not match the numeric-root pattern remain unchanged.
-    """
+    """Return a conservative real-world model-family key."""
     text=clean(value)
     if not text:return ""
     base=clean(text.split("(",1)[0])
@@ -40,8 +35,7 @@ def model_family(value):
     match=re.match(r"^(.+?\d+)(?:[a-z]+)?$",compact)
     return match.group(1) if match else compact
 
-def model_group_key(row):
-    return (clean(row.get("category","")),clean(row.get("brand","")),clean(row.get("series","")),model_family(row.get("model","")))
+def model_group_key(row):return (clean(row.get("category","")),clean(row.get("brand","")),clean(row.get("series","")),model_family(row.get("model","")))
 def block_key(row):return identity_key(row)
 def sort_rows(rows):return list(rows or [])
 def _condition_key(value):return clean(value).replace(" ","")
@@ -51,29 +45,43 @@ def column_width(title,values=(),minimum=90,maximum=420):
     occupied=max([_char_width(title)]+[_char_width(v) for v in values]);return max(minimum,min(maximum,occupied*9+22))
 
 def group_model_dates(rows):
-    """Group by search-family model/date while retaining distinct detail blocks.
+    """Group identical real-world models first, then keep their date/detail blocks together.
 
-    The real-world model family is category/brand/series plus a conservative
-    normalized model root, so A59/A59s/A59m/A59t stay together across dates.
-    A different network model code may create another detail block inside the
-    same model and date, but it never creates a model/date separator. Input
-    order is authoritative and is never sorted here.
+    Search-result input order is used only to establish the first-seen order of model
+    groups and the first-seen order inside each group. Rows belonging to the same
+    category/brand/series/model family are never allowed to be split by another model.
+    Different dates stay inside the same model group. Model variants such as A59/A59s/
+    A59m/A59t/A59 5G share the same family key while their displayed names remain intact.
     """
-    groups=[];current_model=None;current_date=None;current_code=None;current_rows=[];model_index=-1;period_index=0
+    model_groups={}
+    model_order=[]
     for row in list(rows or []):
-        model=model_group_key(row);date=clean(row.get("data_date",""));code=clean(row.get("model_code",""))
-        if current_rows and (model!=current_model or date!=current_date or code!=current_code):
-            groups.append((block_key(current_rows[0]),current_date,current_rows,model_index,period_index));current_rows=[]
-            if model!=current_model:
-                model_index+=1
-                period_index=0
-            elif date!=current_date:
-                period_index+=1
-        if not current_rows and model!=current_model:
-            if model_index<0:model_index=0
-            period_index=0
-        current_model,current_date,current_code=model,date,code;current_rows.append(row)
-    if current_rows:groups.append((block_key(current_rows[0]),current_date,current_rows,model_index,period_index))
+        model=model_group_key(row)
+        if model not in model_groups:
+            model_groups[model]=[]
+            model_order.append(model)
+        model_groups[model].append(row)
+
+    groups=[]
+    for model_index,model in enumerate(model_order):
+        current_date=None
+        current_code=None
+        current_rows=[]
+        period_index=-1
+        for row in model_groups[model]:
+            date=clean(row.get("data_date",""))
+            code=clean(row.get("model_code",""))
+            if current_rows and (date!=current_date or code!=current_code):
+                groups.append((block_key(current_rows[0]),current_date,current_rows,model_index,period_index))
+                current_rows=[]
+            if not current_rows:
+                if date!=current_date:
+                    period_index+=1
+                current_date=date
+                current_code=code
+            current_rows.append(row)
+        if current_rows:
+            groups.append((block_key(current_rows[0]),current_date,current_rows,model_index,period_index))
     return groups
 
 def build_display_columns(rows):
@@ -114,10 +122,8 @@ def build_result_blocks(rows):
 def normalize_search_results(rows):
     blocks=build_result_blocks(rows);result=[]
     for index,block in enumerate(blocks):
-        if index and block["_model_index"]==blocks[index-1]["_model_index"] and block["_period_key"]!=blocks[index-1]["_period_key"]:
-            result.append({"_separator":"period","_model_index":block["_model_index"],"_period_index":block["_period_index"]})
-        elif index and block["_model_index"]!=blocks[index-1]["_model_index"]:
-            result.extend(({"_separator":"model","_model_index":blocks[index-1]["_model_index"]},{"_separator":"model","_model_index":blocks[index-1]["_model_index"]}))
+        if index and block["_model_index"]!=blocks[index-1]["_model_index"]:
+            result.append({"_separator":"model","_model_index":blocks[index-1]["_model_index"]})
         result.append(block)
     return result
 
