@@ -11,26 +11,18 @@ THEME = {
     "border": "#cbd5cc",
     "border_soft": "#dfe6df",
     "border_strong": "#aebbb0",
-
-    # High-clarity text: selection never turns text gray or white.
     "text": "#18201b",
     "text_secondary": "#334139",
     "text_muted": "#68756d",
-
-    # Modern blue-green primary accent.
     "accent": "#2878c8",
     "accent_hover": "#1f66ad",
     "accent_soft": "#e2effb",
     "selection": "#e5f0e8",
     "selection_strong": "#d5e8dc",
     "selection_text": "#18201b",
-
     "success": "#28734b",
     "warning": "#9a6818",
     "danger": "#a33f4a",
-
-    # Subtle chromatic bands: used for visual rhythm, not for data meaning.
-    # They stay light enough to preserve black text readability.
     "model_bands": (
         "#fbfcf8",
         "#f5f8ff",
@@ -43,8 +35,6 @@ THEME = {
     "model_separator": "#b9d8c4",
     "separator_line": "#d7e0d8",
     "model_separator_line": "#c7d5cc",
-
-    # Buttons: clean modern cards with restrained accent text.
     "button_bg": "#f9fbf8",
     "button_hover": "#edf4ee",
     "button_pressed": "#dfeae2",
@@ -52,8 +42,6 @@ THEME = {
     "button_text": "#18201b",
     "button_accent_text": "#1f66ad",
     "button_disabled": "#e1e6e2",
-
-    # Layout rhythm.
     "space_xs": 3,
     "space_sm": 6,
     "space_md": 10,
@@ -71,7 +59,7 @@ THEME = {
 }
 
 FONT_FAMILY = "SimHei"
-FONT_BODY = (FONT_FAMILY, 10)
+FONT_BODY = (FONT_FAMILY, 10, "bold")
 FONT_TABLE_DATA = (FONT_FAMILY, 10, "bold")
 FONT_LABEL = (FONT_FAMILY, 11)
 FONT_TITLE = (FONT_FAMILY, 11, "bold")
