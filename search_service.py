@@ -8,6 +8,7 @@ value. Canonical real-world value ordering remains the responsibility of
 from bisect import bisect_left
 import re
 import unicodedata
+from search_display import set_display_query
 
 MODEL_FIELDS = ("model", "series")
 ALIAS_FIELD = "alias"
@@ -151,6 +152,7 @@ class SearchService:
     def search(self, query, category="全部"):
         q = clean(query)
         if not q: return []
+        set_display_query(q)
         index = self.index; brand_key, remainder = self._detect_brand(index, q); query_key = normalize(remainder if brand_key else q)
         if brand_key:
             candidates = index.exact("brand", brand_key)
